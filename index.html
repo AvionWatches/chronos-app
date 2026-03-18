@@ -1,0 +1,2929 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>CHRONOS — Luxury Watch Marketplace</title>
+
+<!-- PWA Meta Tags -->
+
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="CHRONOS"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<meta name="description" content="Luxury watch authentication and resale marketplace"/>
+
+<!-- PWA Icons (inline SVG as data URIs for self-contained file) -->
+
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230a0a0a'/%3E%3Ccircle cx='256' cy='256' r='200' fill='none' stroke='%23c9a84c' stroke-width='12'/%3E%3Ccircle cx='256' cy='256' r='170' fill='none' stroke='%237a5c1e' stroke-width='3'/%3E%3Cline x1='256' y1='100' x2='256' y2='256' stroke='%23c9a84c' stroke-width='8' stroke-linecap='round'/%3E%3Cline x1='256' y1='256' x2='320' y2='220' stroke='%23e8c97a' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='256' r='10' fill='%23c9a84c'/%3E%3C/svg%3E"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230a0a0a'/%3E%3Ccircle cx='256' cy='256' r='200' fill='none' stroke='%23c9a84c' stroke-width='12'/%3E%3Cline x1='256' y1='100' x2='256' y2='256' stroke='%23c9a84c' stroke-width='8' stroke-linecap='round'/%3E%3Cline x1='256' y1='256' x2='320' y2='220' stroke='%23e8c97a' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='256' r='10' fill='%23c9a84c'/%3E%3C/svg%3E"/>
+
+<!-- Inline PWA Manifest -->
+
+<script>
+  const manifestData = {
+    name: "CHRONOS — Luxury Watch Marketplace",
+    short_name: "CHRONOS",
+    description: "Luxury watch authentication and resale marketplace",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#0a0a0a",
+    theme_color: "#0a0a0a",
+    orientation: "portrait",
+    icons: [
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230a0a0a'/%3E%3Ccircle cx='256' cy='256' r='200' fill='none' stroke='%23c9a84c' stroke-width='12'/%3E%3Cline x1='256' y1='100' x2='256' y2='256' stroke='%23c9a84c' stroke-width='8' stroke-linecap='round'/%3E%3Cline x1='256' y1='256' x2='320' y2='220' stroke='%23e8c97a' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='256' r='10' fill='%23c9a84c'/%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+  const manifestURL = URL.createObjectURL(blob);
+  document.addEventListener('DOMContentLoaded', () => {
+    const link = document.createElement('link');
+    link.rel = 'manifest'; link.href = manifestURL;
+    document.head.appendChild(link);
+  });
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: #2a2a2a;
+    --border2: #333;
+    --gold: #c9a84c;
+    --gold2: #e8c97a;
+    --gold3: #7a5c1e;
+    --text: #f0ede8;
+    --text2: #9a9590;
+    --text3: #5a5550;
+    --red: #e05555;
+    --green: #4caf7d;
+    --blue: #5599e0;
+    --radius: 12px;
+    --radius2: 8px;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+  #app { height: 100dvh; display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; position: relative; overflow: hidden; }
+
+/* SCREENS */
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(–bg); overflow: hidden; }
+.screen.hidden { opacity: 0; pointer-events: none; transform: translateX(100%); visibility: hidden; }
+.screen.slide-left { transform: translateX(-30%); opacity: 0; pointer-events: none; }
+
+/* SCROLLABLE CONTENT */
+.scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.scroll::-webkit-scrollbar { display: none; }
+
+/* HEADER */
+.header { padding: calc(var(–safe-top) + 16px) 20px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(–border); flex-shrink: 0; background: var(–bg); z-index: 10; }
+.header-logo { font-family: var(–font-display); font-size: 22px; font-weight: 600; letter-spacing: 0.15em; color: var(–gold); flex: 1; }
+.header-title { font-family: var(–font-display); font-size: 20px; font-weight: 400; letter-spacing: 0.08em; flex: 1; text-align: center; }
+.back-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid var(–border2); border-radius: 50%; cursor: pointer; color: var(–text2); font-size: 18px; flex-shrink: 0; transition: all .2s; }
+.back-btn:active { background: var(–border); }
+.header-action { font-size: 13px; color: var(–gold); font-weight: 500; cursor: pointer; flex-shrink: 0; }
+
+/* NAV BAR */
+.nav-bar { display: flex; border-top: 1px solid var(–border); padding-bottom: var(–safe-bot); background: var(–bg2); flex-shrink: 0; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 8px; cursor: pointer; transition: color .2s; color: var(–text3); font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+.nav-item.active { color: var(–gold); }
+.nav-icon { font-size: 20px; line-height: 1; }
+.nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(–gold); position: absolute; top: 6px; right: calc(50% - 14px); }
+
+/* BUTTONS */
+.btn { width: 100%; padding: 16px; border: none; border-radius: var(–radius); font-family: var(–font-body); font-size: 15px; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn:active { transform: scale(0.98); }
+.btn-gold { background: linear-gradient(135deg, var(–gold3), var(–gold)); color: #0a0a0a; }
+.btn-gold:hover { background: linear-gradient(135deg, var(–gold), var(–gold2)); }
+.btn-outline { background: transparent; color: var(–gold); border: 1px solid var(–gold3); }
+.btn-outline:active { background: var(–gold3); }
+.btn-ghost { background: var(–bg3); color: var(–text); border: 1px solid var(–border2); }
+.btn-danger { background: transparent; color: var(–red); border: 1px solid #5a2222; }
+.btn-sm { padding: 10px 16px; font-size: 13px; border-radius: var(–radius2); width: auto; }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
+
+/* INPUTS */
+.input-group { display: flex; flex-direction: column; gap: 6px; }
+.input-label { font-size: 11px; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+.input { width: 100%; background: var(–bg3); border: 1px solid var(–border2); border-radius: var(–radius2); padding: 14px 16px; color: var(–text); font-family: var(–font-body); font-size: 15px; outline: none; transition: border-color .2s; }
+.input:focus { border-color: var(–gold3); }
+.input::placeholder { color: var(–text3); }
+select.input { appearance: none; background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%239a9590’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+select.input option { background: var(–bg2); }
+
+/* CARDS */
+.card { background: var(–bg2); border: 1px solid var(–border); border-radius: var(–radius); overflow: hidden; }
+.card-body { padding: 16px; }
+
+/* TAGS / BADGES */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; letter-spacing: 0.05em; }
+.badge-gold { background: rgba(201,168,76,0.15); color: var(–gold); border: 1px solid var(–gold3); }
+.badge-green { background: rgba(76,175,125,0.15); color: var(–green); border: 1px solid rgba(76,175,125,0.3); }
+.badge-red { background: rgba(224,85,85,0.15); color: var(–red); border: 1px solid rgba(224,85,85,0.3); }
+.badge-blue { background: rgba(85,153,224,0.15); color: var(–blue); border: 1px solid rgba(85,153,224,0.3); }
+.badge-gray { background: var(–bg3); color: var(–text2); border: 1px solid var(–border2); }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(–border); margin: 8px 0; }
+.divider-text { display: flex; align-items: center; gap: 12px; color: var(–text3); font-size: 12px; margin: 8px 0; }
+.divider-text::before, .divider-text::after { content: ‘’; flex: 1; height: 1px; background: var(–border); }
+
+/* SCORE RING */
+.score-ring { position: relative; width: 140px; height: 140px; margin: 0 auto; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-number { font-family: var(–font-display); font-size: 42px; font-weight: 300; line-height: 1; }
+.score-label { font-size: 10px; color: var(–text3); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; }
+
+/* PHOTO GRID */
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 16px; }
+.photo-slot { aspect-ratio: 1; border-radius: var(–radius2); border: 1px dashed var(–border2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; position: relative; overflow: hidden; transition: border-color .2s, background .2s; background: var(–bg3); }
+.photo-slot:active { background: var(–border); }
+.photo-slot.filled { border-style: solid; border-color: var(–gold3); }
+.photo-slot.filled::after { content: ‘✓’; position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background: var(–gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #000; z-index: 2; }
+.photo-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-slot-icon { font-size: 24px; color: var(–text3); }
+.photo-slot-label { font-size: 10px; color: var(–text3); text-align: center; letter-spacing: 0.05em; }
+
+/* LOADING */
+.loader { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 40px; }
+.spinner { width: 48px; height: 48px; border: 2px solid var(–border2); border-top-color: var(–gold); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pulse { animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* SECTION */
+.section-title { font-family: var(–font-display); font-size: 13px; font-weight: 400; color: var(–text3); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+
+/* OFFER CARD */
+.offer-card { background: var(–bg2); border: 1px solid var(–border); border-radius: var(–radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s; }
+.offer-card.accepted { border-color: var(–green); background: rgba(76,175,125,0.05); }
+.offer-card.pending-selected { border-color: var(–gold); }
+
+/* LISTING CARD */
+.listing-card { background: var(–bg2); border: 1px solid var(–border); border-radius: var(–radius); overflow: hidden; cursor: pointer; transition: border-color .2s, transform .15s; }
+.listing-card:active { transform: scale(0.99); border-color: var(–gold3); }
+.listing-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(–bg3); display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(–text3); }
+.listing-info { padding: 14px; }
+.listing-brand { font-family: var(–font-display); font-size: 18px; font-weight: 600; letter-spacing: 0.05em; }
+.listing-model { font-size: 13px; color: var(–text2); margin-top: 2px; }
+.listing-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.listing-price { font-family: var(–font-mono); font-size: 15px; color: var(–gold); }
+.listing-score { font-size: 12px; color: var(–text2); }
+
+/* PROGRESS STEPS */
+.steps { display: flex; align-items: center; padding: 16px 20px; gap: 0; }
+.step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; }
+.step:not(:last-child)::after { content: ‘’; position: absolute; top: 12px; left: 50%; width: 100%; height: 1px; background: var(–border2); z-index: 0; }
+.step.done:not(:last-child)::after { background: var(–gold3); }
+.step-dot { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(–border2); display: flex; align-items: center; justify-content: center; font-size: 10px; background: var(–bg); z-index: 1; color: var(–text3); transition: all .3s; }
+.step.done .step-dot { border-color: var(–gold); background: var(–gold3); color: var(–gold2); }
+.step.active .step-dot { border-color: var(–gold); color: var(–gold); }
+.step-text { font-size: 9px; color: var(–text3); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; }
+.step.active .step-text { color: var(–gold); }
+
+/* RANGE BAR */
+.valuation-range { background: var(–bg3); border-radius: 8px; padding: 20px; margin: 8px 0; }
+.val-labels { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.val-num { font-family: var(–font-display); font-size: 26px; font-weight: 300; }
+.val-num.high { color: var(–gold2); }
+.val-bar { height: 6px; background: var(–border2); border-radius: 3px; position: relative; overflow: hidden; }
+.val-bar-fill { height: 100%; background: linear-gradient(90deg, var(–gold3), var(–gold)); border-radius: 3px; animation: fillBar 1s ease-out forwards; transform-origin: left; }
+@keyframes fillBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* CONCERN ITEM */
+.concern { display: flex; align-items: flex-start; gap: 10px; padding: 10px; background: rgba(224,85,85,0.05); border: 1px solid rgba(224,85,85,0.15); border-radius: var(–radius2); }
+.concern-dot { width: 6px; height: 6px; border-radius: 50%; background: var(–red); flex-shrink: 0; margin-top: 5px; }
+.concern-text { font-size: 13px; color: var(–text2); line-height: 1.5; }
+
+/* TOAST */
+#toast { position: fixed; bottom: calc(80px + var(–safe-bot)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(–bg3); border: 1px solid var(–border2); border-radius: 24px; padding: 10px 20px; font-size: 13px; color: var(–text); white-space: nowrap; opacity: 0; transition: all .3s; z-index: 9999; pointer-events: none; max-width: 340px; text-align: center; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* SPLASH */
+#splash { position: fixed; inset: 0; background: var(–bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; transition: opacity .8s; }
+#splash.fade { opacity: 0; pointer-events: none; }
+.splash-logo { font-family: var(–font-display); font-size: 48px; font-weight: 300; letter-spacing: 0.3em; color: var(–gold); animation: fadeUp .8s ease both; }
+.splash-sub { font-size: 11px; letter-spacing: 0.3em; color: var(–text3); margin-top: 8px; text-transform: uppercase; animation: fadeUp .8s .2s ease both; }
+.splash-line { width: 60px; height: 1px; background: var(–gold3); margin: 20px auto; animation: fadeUp .8s .4s ease both; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+/* MISC */
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mt-24 { margin-top: 24px; }
+.p-16 { padding: 16px; }
+.p-20 { padding: 20px; }
+.px-20 { padding-left: 20px; padding-right: 20px; }
+.py-16 { padding-top: 16px; padding-bottom: 16px; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.text-gold { color: var(–gold); }
+.text-muted { color: var(–text2); }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-mono { font-family: var(–font-mono); }
+.text-display { font-family: var(–font-display); }
+.text-center { text-align: center; }
+.font-300 { font-weight: 300; }
+.tracking { letter-spacing: 0.05em; }
+.hidden-file { display: none; }
+.w-full { width: 100%; }
+.flex-1 { flex: 1; }
+.api-key-notice { background: rgba(201,168,76,0.08); border: 1px solid var(–gold3); border-radius: var(–radius2); padding: 12px 14px; font-size: 12px; color: var(–text2); line-height: 1.6; margin: 12px 0; }
+.api-key-notice strong { color: var(–gold); }
+
+/* ── PHOTO ZOOM VIEWER ── */
+#photo-viewer { position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:9000; display:none; flex-direction:column; align-items:center; justify-content:center; touch-action:none; }
+#photo-viewer.open { display:flex; }
+#viewer-img { max-width:100%; max-height:80vh; object-fit:contain; border-radius:4px; user-select:none; pointer-events:none; transition:transform 0.1s; transform-origin:center center; }
+#viewer-close { position:absolute; top:calc(var(–safe-top) + 16px); right:20px; width:36px; height:36px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:#fff; z-index:10; }
+#viewer-counter { position:absolute; top:calc(var(–safe-top) + 22px); left:50%; transform:translateX(-50%); font-size:12px; color:rgba(255,255,255,0.5); letter-spacing:0.1em; }
+#viewer-dots { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+.viewer-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); transition:background .2s; }
+.viewer-dot.active { background:var(–gold); }
+#viewer-prev, #viewer-next { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; background:rgba(255,255,255,0.08); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; color:#fff; }
+#viewer-prev { left:12px; }
+#viewer-next { right:12px; }
+
+/* ── PRICE CHART ── */
+.chart-container { background:var(–bg2); border:1px solid var(–border); border-radius:var(–radius); padding:16px; margin:12px 0; }
+.chart-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.chart-tabs { display:flex; gap:4px; }
+.chart-tab { padding:4px 10px; font-size:11px; border-radius:20px; cursor:pointer; border:1px solid var(–border2); color:var(–text3); background:transparent; transition:all .2s; }
+.chart-tab.active { background:var(–gold3); border-color:var(–gold3); color:var(–gold2); }
+.chart-svg { width:100%; overflow:visible; }
+.chart-line { fill:none; stroke:var(–gold); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.chart-area { fill:url(#chartGrad); opacity:0.3; }
+.chart-dot { fill:var(–gold); stroke:var(–bg2); stroke-width:2; }
+.chart-label { font-size:9px; fill:var(–text3); font-family:var(–font-mono); }
+
+/* ── KYC / DEALER VERIFICATION ── */
+.kyc-step { display:flex; gap:12px; align-items:flex-start; padding:14px; background:var(–bg3); border:1px solid var(–border2); border-radius:var(–radius2); margin-bottom:10px; }
+.kyc-step-num { width:28px; height:28px; border-radius:50%; background:var(–gold3); color:var(–gold); font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.kyc-step-num.done { background:var(–green); color:#fff; }
+.kyc-upload-area { border:1.5px dashed var(–border2); border-radius:var(–radius2); padding:20px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; }
+.kyc-upload-area:active { border-color:var(–gold3); background:rgba(201,168,76,0.04); }
+.kyc-upload-area.uploaded { border-color:var(–green); border-style:solid; }
+
+/* ── WATCHLIST ── */
+.bookmark-btn { width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.5); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; position:absolute; top:10px; right:10px; transition:transform .2s, background .2s; backdrop-filter:blur(4px); }
+.bookmark-btn:active { transform:scale(1.2); }
+.bookmark-btn.saved { background:rgba(201,168,76,0.3); }
+
+/* ── PUSH NOTIFICATION BANNER ── */
+.notif-banner { position:fixed; top:0; left:50%; transform:translateX(-50%) translateY(-100%); width:100%; max-width:430px; background:var(–bg2); border-bottom:1px solid var(–border); padding:calc(var(–safe-top) + 14px) 16px 14px; z-index:8000; transition:transform 0.4s cubic-bezier(.4,0,.2,1); display:flex; align-items:center; gap:12px; }
+.notif-banner.show { transform:translateX(-50%) translateY(0); }
+.notif-icon { width:36px; height:36px; border-radius:10px; background:var(–gold3); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.notif-dot { width:8px; height:8px; border-radius:50%; background:var(–red); position:absolute; top:-2px; right:-2px; }
+
+/* OTP BOXES */
+.otp-box { width: 44px; height: 54px; background: var(–bg3); border: 1.5px solid var(–border2); border-radius: var(–radius2); color: var(–text); font-family: var(–font-mono); font-size: 22px; font-weight: 500; text-align: center; outline: none; transition: border-color .2s, background .2s; caret-color: var(–gold); }
+.otp-box:focus { border-color: var(–gold); background: rgba(201,168,76,0.06); }
+.otp-box.filled { border-color: var(–gold3); }
+
+/* SOCIAL AUTH SHEET */
+.social-account-row { display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(–bg3); border:1.5px solid var(–border2); border-radius:var(–radius2); cursor:pointer; transition:border-color .2s, background .2s; }
+.social-account-row.selected { border-color:var(–gold); background:rgba(201,168,76,0.06); }
+.social-avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.social-check { width:20px; height:20px; border-radius:50%; border:1.5px solid var(–border2); margin-left:auto; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.social-account-row.selected .social-check { background:var(–gold); border-color:var(–gold); }
+</style>
+
+</head>
+<body>
+
+<!-- SPLASH -->
+
+<div id="splash">
+  <div class="splash-logo">CHRONOS</div>
+  <div class="splash-line"></div>
+  <div class="splash-sub">Luxury Watch Authentication</div>
+</div>
+
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 1: LOGIN / SIGNUP
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen" id="screen-auth">
+    <div class="scroll">
+      <div style="padding: calc(var(--safe-top) + 40px) 28px 48px;">
+        <div style="font-family:var(--font-display);font-size:38px;font-weight:300;letter-spacing:0.2em;color:var(--gold);text-align:center;">CHRONOS</div>
+        <div style="font-size:11px;letter-spacing:0.3em;color:var(--text3);text-align:center;margin-top:6px;text-transform:uppercase;">Authentication Marketplace</div>
+        <div style="width:40px;height:1px;background:var(--gold3);margin:24px auto;"></div>
+
+```
+    <!-- Tab switcher -->
+    <div style="display:flex;background:var(--bg3);border-radius:var(--radius2);padding:4px;margin-bottom:28px;">
+      <div id="tab-login" onclick="switchAuthTab('login')" style="flex:1;text-align:center;padding:10px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;background:var(--bg2);color:var(--text);border:1px solid var(--border2);transition:all .2s;">Sign In</div>
+      <div id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1;text-align:center;padding:10px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--text3);transition:all .2s;">Create Account</div>
+    </div>
+
+    <!-- ── LOGIN FORM ── -->
+    <div id="login-form">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Phone input with country code -->
+        <div class="input-group">
+          <label class="input-label">Mobile Number</label>
+          <div style="display:flex;gap:8px;">
+            <select class="input" id="login-cc" style="width:90px;flex-shrink:0;padding-left:10px;padding-right:28px;background-position:right 8px center;">
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+65">🇸🇬 +65</option>
+              <option value="+60">🇲🇾 +60</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+81">🇯🇵 +81</option>
+              <option value="+49">🇩🇪 +49</option>
+              <option value="+33">🇫🇷 +33</option>
+              <option value="+41">🇨🇭 +41</option>
+              <option value="+852">🇭🇰 +852</option>
+              <option value="+971">🇦🇪 +971</option>
+            </select>
+            <input class="input" type="tel" id="login-phone" placeholder="8123 4567" style="flex:1;" oninput="formatPhone(this)" maxlength="15"/>
+          </div>
+        </div>
+
+        <button class="btn btn-gold" onclick="requestOTP()">Send OTP →</button>
+
+        <!-- Biometric shortcut (shown after first login) -->
+        <div id="biometric-btn" style="display:none;">
+          <div style="text-align:center;margin:-6px 0 4px;font-size:12px;color:var(--text3);">or</div>
+          <button class="btn btn-ghost" onclick="triggerBiometric()" style="gap:10px;">
+            <span style="font-size:22px;" id="biometric-icon">🔒</span>
+            <span id="biometric-label">Sign in with Face ID</span>
+          </button>
+        </div>
+
+        <div class="divider-text">or continue with</div>
+
+        <!-- Social login buttons -->
+        <button class="btn btn-ghost" onclick="socialLogin('google')" style="gap:12px;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </button>
+
+        <button class="btn btn-ghost" onclick="socialLogin('apple')" style="gap:12px;justify-content:center;background:#fff;color:#000;border-color:#fff;">
+          <svg width="18" height="22" viewBox="0 0 814 1000"><path fill="#000" d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-150.2-110.7C74.5 716 26.9 605.8 26.9 500.5c0-169.9 110.6-260 219-260 65.2 0 119.4 42.8 160.2 42.8 39 0 99.9-45 173.6-45 28.1 0 130.3 2.6 198.3 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/></svg>
+          Continue with Apple
+        </button>
+
+        <!-- Demo quick login -->
+        <div class="divider-text">demo access</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="quickLogin('seller')">👤 Seller Demo</button>
+          <button class="btn btn-ghost btn-sm" onclick="quickLogin('dealer')">🏪 Dealer Demo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SIGNUP FORM ── -->
+    <div id="signup-form" style="display:none;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="input-group">
+          <label class="input-label">Full Name *</label>
+          <input class="input" type="text" id="signup-name" placeholder="John Smith"/>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Mobile Number *</label>
+          <div style="display:flex;gap:8px;">
+            <select class="input" id="signup-cc" style="width:90px;flex-shrink:0;padding-left:10px;padding-right:28px;background-position:right 8px center;">
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+65">🇸🇬 +65</option>
+              <option value="+60">🇲🇾 +60</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+81">🇯🇵 +81</option>
+              <option value="+49">🇩🇪 +49</option>
+              <option value="+33">🇫🇷 +33</option>
+              <option value="+41">🇨🇭 +41</option>
+              <option value="+852">🇭🇰 +852</option>
+              <option value="+971">🇦🇪 +971</option>
+            </select>
+            <input class="input" type="tel" id="signup-phone" placeholder="8123 4567" style="flex:1;" oninput="formatPhone(this)" maxlength="15"/>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Recovery Email <span style="color:var(--text3);font-size:10px;">(optional)</span></label>
+          <input class="input" type="email" id="signup-email" placeholder="backup@email.com"/>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Used only for account recovery. Never shared.</div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">I am a</label>
+          <select class="input" id="signup-role">
+            <option value="seller">Watch Seller / Private Collector</option>
+            <option value="dealer">Verified Dealer / Business</option>
+          </select>
+        </div>
+
+        <button class="btn btn-gold" onclick="handleSignup()">Create Account & Verify →</button>
+
+        <div class="divider-text">or sign up with</div>
+        <button class="btn btn-ghost" onclick="socialLogin('google')" style="gap:12px;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+          Sign up with Google
+        </button>
+        <button class="btn btn-ghost" onclick="socialLogin('apple')" style="gap:12px;justify-content:center;background:#fff;color:#000;border-color:#fff;">
+          <svg width="18" height="22" viewBox="0 0 814 1000"><path fill="#000" d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.4-150.2-110.7C74.5 716 26.9 605.8 26.9 500.5c0-169.9 110.6-260 219-260 65.2 0 119.4 42.8 160.2 42.8 39 0 99.9-45 173.6-45 28.1 0 130.3 2.6 198.3 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/></svg>
+          Sign up with Apple
+        </button>
+      </div>
+    </div>
+
+    <div class="api-key-notice mt-20">
+      <strong>Powered by CHRONOS AI:</strong> Our platform provides AI-driven authentication and valuation for every listing — no setup required.
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ── OTP VERIFICATION SCREEN ── -->
+
+  <div class="screen hidden" id="screen-otp">
+    <div class="scroll">
+      <div style="padding: calc(var(--safe-top) + 60px) 28px 40px; display:flex; flex-direction:column; align-items:center;">
+        <div style="font-size:48px;margin-bottom:20px;">📱</div>
+        <div style="font-family:var(--font-display);font-size:28px;font-weight:300;text-align:center;">Verify your number</div>
+        <div style="font-size:13px;color:var(--text3);text-align:center;margin-top:8px;line-height:1.6;" id="otp-subtitle">We sent a 6-digit code to<br/><strong style="color:var(--text);" id="otp-phone-display">—</strong></div>
+
+```
+    <!-- OTP input boxes -->
+    <div style="display:flex;gap:10px;margin:32px 0 8px;" id="otp-boxes">
+      <input type="tel" maxlength="1" class="otp-box" oninput="otpInput(this,0)" onkeydown="otpKey(this,0,event)"/>
+      <input type="tel" maxlength="1" class="otp-box" oninput="otpInput(this,1)" onkeydown="otpKey(this,1,event)"/>
+      <input type="tel" maxlength="1" class="otp-box" oninput="otpInput(this,2)" onkeydown="otpKey(this,2,event)"/>
+      <input type="tel" maxlength="1" class="otp-box" oninput="otpInput(this,3)" onkeydown="otpKey(this,3,event)"/>
+      <input type="tel" maxlength="1" class="otp-box" oninput="otpInput(this,4)" onkeydown="otpKey(this,4,event)"/>
+      <input type="tel" maxlength="1" class="otp-box" oninput="otpInput(this,5)" onkeydown="otpKey(this,5,event)"/>
+    </div>
+
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px;" id="otp-hint">Demo: enter any 6 digits</div>
+
+    <button class="btn btn-gold w-full mt-8" onclick="verifyOTP()" id="otp-verify-btn" disabled>Verify & Sign In</button>
+
+    <div style="margin-top:20px;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);">
+      Didn't receive it?
+      <span style="color:var(--gold);cursor:pointer;" onclick="resendOTP()">Resend code</span>
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--text3);cursor:pointer;" onclick="goBack()">← Change number</div>
+
+    <!-- Biometric option shown if supported -->
+    <div id="otp-biometric-section" style="display:none;margin-top:32px;width:100%;">
+      <div class="divider-text">or faster</div>
+      <button class="btn btn-ghost mt-8 w-full" onclick="triggerBiometric()" style="gap:10px;">
+        <span style="font-size:22px;" id="otp-biometric-icon">🔒</span>
+        <span id="otp-biometric-label">Use Face ID instead</span>
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ── SOCIAL AUTH MODAL ── -->
+
+  <div class="screen hidden" id="screen-social-auth">
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;justify-content:center;">
+      <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:430px;padding:28px 24px 40px;" id="social-auth-sheet">
+        <div style="width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 24px;"></div>
+        <div id="social-auth-icon" style="font-size:40px;text-align:center;margin-bottom:12px;"></div>
+        <div id="social-auth-title" style="font-family:var(--font-display);font-size:24px;font-weight:300;text-align:center;margin-bottom:6px;"></div>
+        <div id="social-auth-subtitle" style="font-size:13px;color:var(--text3);text-align:center;margin-bottom:24px;"></div>
+
+```
+    <!-- Simulated OAuth profile picker -->
+    <div id="social-accounts" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+    <div class="divider-text mt-16">role</div>
+    <select class="input mt-8" id="social-role">
+      <option value="seller">Watch Seller / Private Collector</option>
+      <option value="dealer">Verified Dealer / Business</option>
+    </select>
+
+    <button class="btn btn-gold mt-16" id="social-confirm-btn" onclick="confirmSocialLogin()">Continue</button>
+    <button class="btn btn-ghost mt-8" onclick="goBack()">Cancel</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 2: HOME (SELLER)
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-home">
+    <div class="header">
+      <div class="header-logo">CHRONOS</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="home-role-badge" class="badge badge-gold">Seller</div>
+        <div onclick="goTo('screen-settings')" style="width:32px;height:32px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">⚙️</div>
+      </div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px;">
+        <!-- Welcome -->
+        <div style="background:linear-gradient(135deg,#1a1508,#111);border:1px solid var(--gold3);border-radius:var(--radius);padding:20px;margin-bottom:20px;">
+          <div style="font-size:12px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;">Welcome back</div>
+          <div id="home-username" style="font-family:var(--font-display);font-size:24px;font-weight:300;margin-top:4px;">John Smith</div>
+          <div style="width:30px;height:1px;background:var(--gold3);margin:12px 0;"></div>
+          <div style="display:flex;gap:20px;">
+            <div><div style="font-family:var(--font-mono);font-size:20px;color:var(--gold);" id="stat-listings">0</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Listings</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:20px;color:var(--green);" id="stat-offers">0</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Offers</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:20px;color:var(--text2);" id="stat-sold">0</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Sold</div></div>
+          </div>
+        </div>
+
+```
+    <!-- CTA for seller -->
+    <div id="seller-cta">
+      <div class="section-title">Quick Actions</div>
+      <button class="btn btn-gold" onclick="startNewListing()">+ New Watch Listing</button>
+      <button class="btn btn-outline mt-8" onclick="goTo('screen-my-listings')">My Listings & Offers</button>
+    </div>
+
+    <!-- Dealer marketplace link -->
+    <div id="dealer-cta" style="display:none;">
+      <div class="section-title">Quick Actions</div>
+      <button class="btn btn-gold" onclick="goTo('screen-marketplace')">Browse Marketplace</button>
+      <button class="btn btn-outline mt-8" onclick="goTo('screen-my-offers')">My Submitted Offers</button>
+      <button class="btn btn-ghost mt-8" onclick="goTo('screen-watchlist')">🔖 Saved Watchlist</button>
+      <div id="kyc-cta" style="margin-top:12px;padding:12px 14px;background:rgba(224,85,85,0.06);border:1px solid rgba(224,85,85,0.2);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="goTo('screen-kyc')">
+        <span style="font-size:20px;">🪪</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:500;color:var(--text);">Complete Dealer Verification</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:1px;">Submit KYC docs to unlock all features</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+    </div>
+
+    <!-- Recent activity -->
+    <div id="home-recent" style="margin-top:24px;">
+      <div class="section-title">Recent Listings</div>
+      <div id="recent-listings-container">
+        <div style="text-align:center;padding:32px 0;color:var(--text3);font-size:13px;">No listings yet. Start by uploading a watch.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="nav-bar" id="seller-nav">
+  <div class="nav-item active" onclick="switchTab(0)"><div class="nav-icon">⌚</div><span>Home</span></div>
+  <div class="nav-item" onclick="switchTab(1)" style="position:relative;"><div class="nav-icon">📋</div><span>Listings</span></div>
+  <div class="nav-item" onclick="startNewListing()"><div style="width:44px;height:44px;background:linear-gradient(135deg,var(--gold3),var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin-top:-16px;box-shadow:0 4px 20px rgba(201,168,76,0.4);">+</div><span>New</span></div>
+  <div class="nav-item" onclick="switchTab(3)" style="position:relative;"><div class="nav-icon">💬</div><span>Offers</span><div id="offers-dot" class="nav-dot" style="display:none;"></div></div>
+  <div class="nav-item" onclick="switchTab(4)"><div class="nav-icon">👤</div><span>Profile</span></div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 3: UPLOAD WATCH DETAILS
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-upload-details">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Watch Details</div>
+      <div style="width:36px;"></div>
+    </div>
+    <!-- Steps -->
+    <div class="steps">
+      <div class="step active"><div class="step-dot">1</div><div class="step-text">Details</div></div>
+      <div class="step"><div class="step-dot">2</div><div class="step-text">Photos</div></div>
+      <div class="step"><div class="step-dot">3</div><div class="step-text">Auth</div></div>
+      <div class="step"><div class="step-dot">4</div><div class="step-text">Value</div></div>
+      <div class="step"><div class="step-dot">5</div><div class="step-text">List</div></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:16px 20px 32px;">
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:300;margin-bottom:4px;">Tell us about your watch</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:24px;">Accurate details improve AI authentication accuracy</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="input-group">
+            <label class="input-label">Brand *</label>
+            <select class="input" id="watch-brand">
+              <option value="">Select brand</option>
+              <option>Rolex</option><option>Patek Philippe</option><option>Audemars Piguet</option>
+              <option>Omega</option><option>IWC</option><option>Jaeger-LeCoultre</option>
+              <option>Cartier</option><option>Panerai</option><option>Breitling</option>
+              <option>Tag Heuer</option><option>Hublot</option><option>Richard Mille</option>
+              <option>A. Lange & Söhne</option><option>Vacheron Constantin</option><option>Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Model *</label>
+            <input class="input" id="watch-model" placeholder="e.g. Submariner Date, Nautilus"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="input-group">
+              <label class="input-label">Reference No.</label>
+              <input class="input" id="watch-ref" placeholder="e.g. 116610LN"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Year *</label>
+              <input class="input" type="number" id="watch-year" placeholder="2018" min="1950" max="2025"/>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Condition *</label>
+            <select class="input" id="watch-condition">
+              <option value="">Select condition</option>
+              <option value="mint">Mint — Unworn / Like New</option>
+              <option value="excellent">Excellent — Minimal wear</option>
+              <option value="very_good">Very Good — Light scratches</option>
+              <option value="good">Good — Visible wear</option>
+              <option value="fair">Fair — Heavy wear</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Box & Papers</label>
+            <select class="input" id="watch-box">
+              <option value="full_set">Full Set — Box & Papers</option>
+              <option value="box_only">Box Only</option>
+              <option value="papers_only">Papers Only</option>
+              <option value="none">No Box or Papers</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Additional Notes</label>
+            <textarea class="input" id="watch-notes" rows="3" placeholder="Service history, modifications, special features..."></textarea>
+          </div>
+        </div>
+        <button class="btn btn-gold mt-24" onclick="goToPhotos()">Continue to Photos →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 4: UPLOAD 6 PHOTOS
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-upload-photos">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Watch Photos</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="steps">
+      <div class="step done"><div class="step-dot">✓</div><div class="step-text">Details</div></div>
+      <div class="step active"><div class="step-dot">2</div><div class="step-text">Photos</div></div>
+      <div class="step"><div class="step-dot">3</div><div class="step-text">Auth</div></div>
+      <div class="step"><div class="step-dot">4</div><div class="step-text">Value</div></div>
+      <div class="step"><div class="step-dot">5</div><div class="step-text">List</div></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:16px 20px;">
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:300;margin-bottom:4px;">Upload 6 photos</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:4px;">High quality images improve authentication accuracy</div>
+        <!-- Photo guide -->
+        <div style="display:flex;gap:6px;overflow-x:auto;padding:12px 0;margin-bottom:4px;scrollbar-width:none;">
+          <div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);">📸 Front dial</div>
+          <div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);">📸 Case back</div>
+          <div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);">📸 Crown</div>
+          <div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);">📸 Bracelet</div>
+          <div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);">📸 Serial no.</div>
+          <div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);">📸 Close-up</div>
+        </div>
+      </div>
+      <div class="photo-grid" id="photo-grid">
+        <input type="file" accept="image/*" class="hidden-file" id="file-0" onchange="handlePhoto(0,this)"/>
+        <input type="file" accept="image/*" class="hidden-file" id="file-1" onchange="handlePhoto(1,this)"/>
+        <input type="file" accept="image/*" class="hidden-file" id="file-2" onchange="handlePhoto(2,this)"/>
+        <input type="file" accept="image/*" class="hidden-file" id="file-3" onchange="handlePhoto(3,this)"/>
+        <input type="file" accept="image/*" class="hidden-file" id="file-4" onchange="handlePhoto(4,this)"/>
+        <input type="file" accept="image/*" class="hidden-file" id="file-5" onchange="handlePhoto(5,this)"/>
+      </div>
+      <div style="padding:0 20px 32px;">
+        <div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px;" id="photo-count-text">0 / 6 photos added</div>
+        <div class="api-key-notice">
+          <strong>AI Analysis:</strong> Photos will be analyzed by the CHRONOS AI engine for authenticity markers, movement details, and dial consistency.
+        </div>
+        <button class="btn btn-gold mt-16" id="analyze-btn" onclick="startAnalysis()" disabled>Analyze with AI →</button>
+        <button class="btn btn-outline mt-8" onclick="startAnalysis()">Skip Photos (Demo)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 5: AI AUTHENTICATION RESULT
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-auth-result">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Authentication</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="steps">
+      <div class="step done"><div class="step-dot">✓</div><div class="step-text">Details</div></div>
+      <div class="step done"><div class="step-dot">✓</div><div class="step-text">Photos</div></div>
+      <div class="step active"><div class="step-dot">3</div><div class="step-text">Auth</div></div>
+      <div class="step"><div class="step-dot">4</div><div class="step-text">Value</div></div>
+      <div class="step"><div class="step-dot">5</div><div class="step-text">List</div></div>
+    </div>
+    <div class="scroll">
+      <div id="auth-loading" class="loader">
+        <div class="spinner"></div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:300;">Analyzing Authentication</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:6px;" id="auth-loading-step">Examining dial markings...</div>
+        </div>
+      </div>
+      <div id="auth-result" style="display:none;padding:20px;">
+        <div style="text-align:center;margin-bottom:28px;">
+          <div class="score-ring">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="58" fill="none" stroke="#1a1a1a" stroke-width="8"/>
+              <circle cx="70" cy="70" r="58" fill="none" stroke="url(#scoreGrad)" stroke-width="8"
+                stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round" id="score-circle"/>
+              <defs>
+                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#7a5c1e"/>
+                  <stop offset="100%" stop-color="#e8c97a"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="score-ring-text">
+              <div class="score-number text-gold" id="auth-score-display">—</div>
+              <div class="score-label">Auth Score</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px;">
+            <div class="badge" id="auth-verdict-badge">—</div>
+            <div class="badge" id="auth-confidence-badge">—</div>
+          </div>
+        </div>
+
+```
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">AI Analysis Summary</div>
+      <div style="font-size:14px;color:var(--text2);line-height:1.7;" id="auth-summary">—</div>
+    </div>
+
+    <div id="concerns-section" style="display:none;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">⚠ Points of Concern</div>
+      <div id="concerns-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:16px;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Authentication Details</div>
+      <div id="auth-details-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <div style="margin-top:16px;padding:14px;background:rgba(201,168,76,0.06);border:1px solid var(--gold3);border-radius:var(--radius2);">
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;">💡 For high-value watches, consider our <span style="color:var(--gold);">Human Expert Authentication</span> service for a certified certificate.</div>
+    </div>
+
+    <button class="btn btn-gold mt-20" onclick="goToValuation()">Get AI Valuation →</button>
+    <button class="btn btn-outline mt-8" onclick="requestHumanAuth()">Request Human Authentication</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 6: AI VALUATION
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-valuation">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">AI Valuation</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="steps">
+      <div class="step done"><div class="step-dot">✓</div><div class="step-text">Details</div></div>
+      <div class="step done"><div class="step-dot">✓</div><div class="step-text">Photos</div></div>
+      <div class="step done"><div class="step-dot">✓</div><div class="step-text">Auth</div></div>
+      <div class="step active"><div class="step-dot">4</div><div class="step-text">Value</div></div>
+      <div class="step"><div class="step-dot">5</div><div class="step-text">List</div></div>
+    </div>
+    <div class="scroll">
+      <div id="val-loading" class="loader">
+        <div class="spinner"></div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:300;">Estimating Value</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:6px;">Analyzing market data & comps...</div>
+        </div>
+      </div>
+      <div id="val-result" style="display:none;padding:20px;">
+        <div style="text-align:center;margin-bottom:8px;">
+          <div style="font-size:11px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;" id="val-watch-name">—</div>
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:300;margin-top:8px;">Estimated Value Range</div>
+        </div>
+
+```
+    <div class="valuation-range mt-16">
+      <div class="val-labels">
+        <div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Conservative</div>
+          <div class="val-num text-gold" id="val-low">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Optimistic</div>
+          <div class="val-num high" id="val-high">—</div>
+        </div>
+      </div>
+      <div class="val-bar"><div class="val-bar-fill" style="width:100%;"></div></div>
+      <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:8px;">Mid-market estimate</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;text-align:center;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Market Liquidity</div>
+        <div class="badge" id="val-liquidity-badge">—</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;text-align:center;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Suggested Ask</div>
+        <div style="font-family:var(--font-mono);font-size:16px;color:var(--gold);" id="val-suggested">—</div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:16px;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Market Analysis</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;" id="val-analysis">—</div>
+    </div>
+
+    <div id="val-factors" style="margin-top:16px;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Value Factors</div>
+      <div id="val-factors-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+
+    <button class="btn btn-gold mt-24" onclick="publishListing()">Publish to Marketplace →</button>
+    <button class="btn btn-ghost mt-8" onclick="goBack()">← Adjust Details</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 7: DEALER MARKETPLACE
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-marketplace">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Marketplace</div>
+      <div class="header-action" onclick="showFilters()">Filter</div>
+    </div>
+    <div class="scroll">
+      <div style="padding:12px 16px;">
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input class="input" style="flex:1;" placeholder="🔍  Search brand, model..." oninput="filterListings(this.value)"/>
+        </div>
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;" id="filter-chips">
+          <div class="badge badge-gold" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('')">All</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Rolex')">Rolex</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Patek Philippe')">Patek</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Audemars Piguet')">AP</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Omega')">Omega</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('IWC')">IWC</div>
+        </div>
+        <div id="marketplace-listings" style="display:flex;flex-direction:column;gap:14px;"></div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-item" onclick="goTo('screen-home')"><div class="nav-icon">⌚</div><span>Home</span></div>
+      <div class="nav-item active"><div class="nav-icon">🏪</div><span>Market</span></div>
+      <div class="nav-item" onclick="goTo('screen-watchlist')"><div class="nav-icon">🔖</div><span>Saved</span></div>
+      <div class="nav-item" onclick="goTo('screen-my-offers')"><div class="nav-icon">💬</div><span>Offers</span></div>
+      <div class="nav-item" onclick="goTo('screen-settings')"><div class="nav-icon">⚙️</div><span>Settings</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 8: DEALER OFFER SUBMISSION
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-make-offer">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Submit Offer</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px;">
+        <!-- Watch preview -->
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:24px;">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Watch Listing</div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:300;" id="offer-watch-name">—</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:2px;" id="offer-watch-details">—</div>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            <div class="badge badge-gold" id="offer-auth-badge">—</div>
+            <div class="badge badge-gray" id="offer-condition-badge">—</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">AI Valuation Range</div>
+              <div style="font-family:var(--font-mono);font-size:14px;color:var(--text2);" id="offer-val-range">—</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:2px;">Auth Score</div>
+              <div style="font-family:var(--font-mono);font-size:14px;color:var(--gold);" id="offer-auth-score">—</div>
+            </div>
+          </div>
+        </div>
+
+```
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="input-group">
+        <label class="input-label">Your Offer Price (USD) *</label>
+        <input class="input" type="number" id="offer-price" placeholder="e.g. 12000" style="font-family:var(--font-mono);font-size:20px;" oninput="updateOfferCalc()"/>
+      </div>
+
+      <div id="offer-calc" style="background:var(--bg3);border-radius:var(--radius2);padding:14px;display:none;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text2);">
+          <span>Your offer</span><span id="calc-offer" class="text-mono">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-top:6px;">
+          <span>vs. valuation low</span><span id="calc-vs-low" class="text-mono">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-top:4px;">
+          <span>vs. valuation high</span><span id="calc-vs-high" class="text-mono">—</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Offer Validity</label>
+        <select class="input">
+          <option>48 hours</option><option>72 hours</option><option>7 days</option><option>30 days</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Message to Seller (Optional)</label>
+        <textarea class="input" id="offer-message" rows="3" placeholder="Introduce yourself, mention your dealership, or add conditions..."></textarea>
+      </div>
+
+      <div style="background:rgba(201,168,76,0.06);border:1px solid var(--gold3);border-radius:var(--radius2);padding:14px;">
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">By submitting, you agree to CHRONOS's dealer terms. Offers are binding for the stated validity period.</div>
+      </div>
+
+      <button class="btn btn-gold" onclick="submitOffer()">Submit Offer</button>
+      <button class="btn btn-ghost" onclick="goBack()">Cancel</button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 9: SELLER REVIEW OFFERS
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-review-offers">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Offers Received</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px;">
+        <!-- Watch being sold -->
+        <div style="background:linear-gradient(135deg,#1a1508,#111);border:1px solid var(--gold3);border-radius:var(--radius);padding:16px;margin-bottom:20px;">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;">Your Watch</div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:300;margin-top:4px;" id="review-watch-name">—</div>
+          <div style="display:flex;gap:10px;margin-top:10px;">
+            <div class="badge badge-gold" id="review-auth-badge">—</div>
+            <div style="font-family:var(--font-mono);font-size:13px;color:var(--text2);" id="review-val-range">—</div>
+          </div>
+        </div>
+
+```
+    <div class="section-title">Dealer Offers</div>
+    <div id="offers-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+    <div id="no-offers" style="text-align:center;padding:32px 0;color:var(--text3);font-size:13px;display:none;">No offers received yet.<br>Dealers will be notified of your listing.</div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN 10: DEAL COMPLETION
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-deal-done">
+    <div class="scroll">
+      <div style="padding:60px 28px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <div style="font-size:64px;margin-bottom:24px;animation:fadeUp 0.6s ease both;">🤝</div>
+        <div style="font-family:var(--font-display);font-size:36px;font-weight:300;color:var(--gold);letter-spacing:0.1em;animation:fadeUp 0.6s 0.1s ease both;">Deal Complete</div>
+        <div style="font-size:14px;color:var(--text3);margin-top:8px;animation:fadeUp 0.6s 0.2s ease both;">Congratulations on your successful transaction</div>
+        <div style="width:60px;height:1px;background:var(--gold3);margin:24px auto;animation:fadeUp 0.6s 0.3s ease both;"></div>
+
+```
+    <div style="background:var(--bg2);border:1px solid var(--gold3);border-radius:var(--radius);padding:24px;width:100%;margin-bottom:24px;animation:fadeUp 0.6s 0.4s ease both;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">Transaction Summary</div>
+      <div id="deal-watch-name" style="font-family:var(--font-display);font-size:22px;font-weight:300;margin-bottom:12px;">—</div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:8px 0;">
+        <span style="font-size:13px;color:var(--text3);">Accepted Offer</span>
+        <span style="font-family:var(--font-mono);color:var(--green);font-size:16px;" id="deal-price">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;">
+        <span style="font-size:12px;color:var(--text3);">Dealer</span>
+        <span style="font-size:12px;color:var(--text2);" id="deal-dealer">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;">
+        <span style="font-size:12px;color:var(--text3);">Transaction ID</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);" id="deal-id">—</span>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;width:100%;margin-bottom:24px;animation:fadeUp 0.6s 0.5s ease both;">
+      <div style="font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Next Steps</div>
+      <div style="display:flex;flex-direction:column;gap:10px;text-align:left;">
+        <div style="display:flex;gap:10px;align-items:center;"><div style="width:24px;height:24px;background:var(--gold3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;">1</div><span style="font-size:13px;color:var(--text2);">Dealer will contact you within 24 hours</span></div>
+        <div style="display:flex;gap:10px;align-items:center;"><div style="width:24px;height:24px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);flex-shrink:0;">2</div><span style="font-size:13px;color:var(--text2);">Arrange physical inspection & handover</span></div>
+        <div style="display:flex;gap:10px;align-items:center;"><div style="width:24px;height:24px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);flex-shrink:0;">3</div><span style="font-size:13px;color:var(--text2);">Payment processed via secure escrow</span></div>
+      </div>
+    </div>
+
+    <button class="btn btn-gold w-full" onclick="goTo('screen-home');updateHomeStats();" style="animation:fadeUp 0.6s 0.6s ease both;">Back to Home</button>
+    <button class="btn btn-outline w-full mt-8" style="animation:fadeUp 0.6s 0.7s ease both;">Download Receipt</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: MY LISTINGS (Seller)
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-my-listings">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">My Listings</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:16px;">
+        <div id="my-listings-container" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="my-listings-empty" style="text-align:center;padding:48px 0;color:var(--text3);display:none;">
+          <div style="font-size:40px;margin-bottom:12px;">⌚</div>
+          <div style="font-size:14px;">No listings yet</div>
+          <button class="btn btn-gold mt-16" onclick="startNewListing()">Create Your First Listing</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: SETTINGS
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-settings">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Settings</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px;">
+
+```
+    <!-- Profile card -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;">
+      <div style="padding:16px;border-bottom:1px solid var(--border);">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Account</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div id="settings-avatar" style="width:52px;height:52px;border-radius:50%;background:var(--gold3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👤</div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:300;" id="settings-name">—</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;" id="settings-phone">—</div>
+            <div class="badge badge-gold mt-4" id="settings-role" style="display:inline-flex;">—</div>
+          </div>
+        </div>
+      </div>
+      <!-- Recovery email -->
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Recovery Email</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="input" type="email" id="settings-recovery-email" placeholder="backup@email.com" style="flex:1;padding:10px 14px;font-size:13px;"/>
+          <button class="btn btn-outline btn-sm" onclick="saveRecoveryEmail()" style="white-space:nowrap;flex-shrink:0;">Save</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">Used only for account recovery. Never shared or used for marketing.</div>
+      </div>
+      <!-- Auth method -->
+      <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;" id="settings-auth-method">Phone + OTP</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="settings-auth-source">Mobile number verified</div>
+        </div>
+        <div class="badge badge-green">● Verified</div>
+      </div>
+    </div>
+
+    <!-- Biometric toggle -->
+    <div class="section-title">Security</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;">
+      <div style="padding:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;" id="biometric-setting-label">Face ID / Touch ID</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Sign in without OTP next time</div>
+        </div>
+        <div id="biometric-toggle" onclick="toggleBiometric()" style="width:44px;height:24px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;transition:background .3s;">
+          <div id="biometric-toggle-thumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:var(--text3);border-radius:50%;transition:all .3s;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform services -->
+    <div class="section-title">Platform Services</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:14px;">AI Authentication</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Powered by Claude Vision</div></div>
+        <div class="badge badge-green">● Active</div>
+      </div>
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:14px;">AI Valuation Engine</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Real-time market analysis</div></div>
+        <div class="badge badge-green">● Active</div>
+      </div>
+      <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:14px;">Human Authentication</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Expert certified review</div></div>
+        <div class="badge badge-gold">On Request</div>
+      </div>
+    </div>
+
+    <div class="section-title mt-24">Preferences</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:14px;">Push Notifications</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">New offers & messages</div></div>
+        <div style="width:44px;height:24px;background:var(--gold3);border-radius:12px;position:relative;cursor:pointer;"><div style="position:absolute;right:2px;top:2px;width:20px;height:20px;background:var(--gold);border-radius:50%;transition:all.2s;"></div></div>
+      </div>
+      <div style="padding:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:14px;">Currency</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Display currency</div></div>
+        <select class="input" style="width:auto;padding:8px 12px;font-size:13px;">
+          <option>USD $</option><option>EUR €</option><option>GBP £</option><option>CHF</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-danger mt-24" onclick="handleLogout()">Sign Out</button>
+    <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:16px;">CHRONOS v1.0.0 · Built on Claude AI</div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: MY OFFERS (Dealer view)
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-my-offers">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">My Offers</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:16px;">
+        <div id="my-offers-container" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="my-offers-empty" style="text-align:center;padding:48px 0;color:var(--text3);display:none;">
+          <div style="font-size:40px;margin-bottom:12px;">💬</div>
+          <div style="font-size:14px;">No offers submitted yet</div>
+          <button class="btn btn-gold mt-16" onclick="goTo('screen-marketplace')">Browse Marketplace</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: DEALER WATCHLIST
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-watchlist">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Saved Watches</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:16px;">
+        <div id="watchlist-container" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="watchlist-empty" style="text-align:center;padding:48px 20px;color:var(--text3);">
+          <div style="font-size:44px;margin-bottom:12px;">🔖</div>
+          <div style="font-size:15px;margin-bottom:6px;">No saved watches</div>
+          <div style="font-size:12px;margin-bottom:20px;">Tap the bookmark icon on any listing to save it here</div>
+          <button class="btn btn-gold" onclick="goTo('screen-marketplace')">Browse Marketplace</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: DEALER KYC VERIFICATION
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-kyc">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Dealer Verification</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px 20px 40px;">
+        <!-- Status banner -->
+        <div id="kyc-status-banner" style="background:rgba(201,168,76,0.08);border:1px solid var(--gold3);border-radius:var(--radius);padding:16px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+          <div style="font-size:28px;" id="kyc-status-icon">⏳</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;" id="kyc-status-title">Verification Pending</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;" id="kyc-status-sub">Complete all steps to access full dealer features</div>
+          </div>
+        </div>
+
+```
+    <div class="section-title">Business Information</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      <div class="input-group">
+        <label class="input-label">Business / Dealership Name *</label>
+        <input class="input" id="kyc-biz-name" placeholder="Harrison Watches Ltd."/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Business Registration No. *</label>
+        <input class="input" id="kyc-reg-no" placeholder="e.g. 12345678"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Country of Registration</label>
+        <select class="input" id="kyc-country">
+          <option>United Kingdom</option><option>United States</option><option>Singapore</option>
+          <option>Switzerland</option><option>Germany</option><option>France</option>
+          <option>Hong Kong</option><option>UAE</option><option>Australia</option><option>Japan</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Years in Business</label>
+        <select class="input">
+          <option>Less than 1 year</option><option>1–3 years</option><option>3–5 years</option>
+          <option>5–10 years</option><option>10+ years</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-title">Document Upload</div>
+
+    <!-- Step 1: Business License -->
+    <div class="kyc-step">
+      <div class="kyc-step-num" id="kyc-step1-num">1</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:500;">Business License / Registration</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;margin-bottom:10px;">Certificate of incorporation or trading licence</div>
+        <div class="kyc-upload-area" id="kyc-upload1" onclick="kycUpload(1)">
+          <div id="kyc-upload1-content">
+            <div style="font-size:28px;margin-bottom:6px;">📄</div>
+            <div style="font-size:13px;color:var(--text2);">Tap to upload</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">PDF, JPG or PNG · Max 10MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Director ID -->
+    <div class="kyc-step">
+      <div class="kyc-step-num" id="kyc-step2-num">2</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:500;">Director / Owner ID</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;margin-bottom:10px;">Passport or national ID of primary director</div>
+        <div class="kyc-upload-area" id="kyc-upload2" onclick="kycUpload(2)">
+          <div id="kyc-upload2-content">
+            <div style="font-size:28px;margin-bottom:6px;">🪪</div>
+            <div style="font-size:13px;color:var(--text2);">Tap to upload</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">PDF, JPG or PNG · Max 10MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Proof of Address -->
+    <div class="kyc-step">
+      <div class="kyc-step-num" id="kyc-step3-num">3</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:500;">Proof of Business Address</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;margin-bottom:10px;">Bank statement or utility bill (last 3 months)</div>
+        <div class="kyc-upload-area" id="kyc-upload3" onclick="kycUpload(3)">
+          <div id="kyc-upload3-content">
+            <div style="font-size:28px;margin-bottom:6px;">🏢</div>
+            <div style="font-size:13px;color:var(--text2);">Tap to upload</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">PDF, JPG or PNG · Max 10MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(201,168,76,0.06);border:1px solid var(--gold3);border-radius:var(--radius2);padding:14px;margin-bottom:20px;">
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;">🔒 Your documents are encrypted and stored securely. Used only for verification. Reviewed within 1–2 business days.</div>
+    </div>
+
+    <button class="btn btn-gold" id="kyc-submit-btn" onclick="submitKYC()">Submit for Verification</button>
+    <button class="btn btn-ghost mt-8" onclick="goBack()">Save & Continue Later</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: PRICE HISTORY CHART
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-price-chart">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Price History</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px;">
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:300;" id="chart-watch-title">—</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;" id="chart-watch-sub">—</div>
+
+```
+    <!-- Current price stat -->
+    <div style="display:flex;gap:12px;margin:16px 0;">
+      <div style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Current Avg.</div>
+        <div style="font-family:var(--font-mono);font-size:20px;color:var(--gold);" id="chart-current">—</div>
+      </div>
+      <div style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">12m Change</div>
+        <div style="font-family:var(--font-mono);font-size:20px;" id="chart-change">—</div>
+      </div>
+    </div>
+
+    <!-- Period tabs -->
+    <div class="chart-tabs" style="margin-bottom:4px;">
+      <div class="chart-tab active" onclick="setChartPeriod('3m',this)">3M</div>
+      <div class="chart-tab" onclick="setChartPeriod('6m',this)">6M</div>
+      <div class="chart-tab" onclick="setChartPeriod('1y',this)">1Y</div>
+      <div class="chart-tab" onclick="setChartPeriod('all',this)">All</div>
+    </div>
+
+    <!-- SVG Chart -->
+    <div class="chart-container" style="padding:12px 8px;">
+      <svg id="price-chart-svg" class="chart-svg" height="180" viewBox="0 0 340 180">
+        <defs>
+          <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="chart-area-path" class="chart-area" d=""/>
+        <path id="chart-line-path" class="chart-line" d=""/>
+        <g id="chart-dots"></g>
+        <g id="chart-labels"></g>
+        <line id="chart-hover-line" x1="0" y1="0" x2="0" y2="180" stroke="var(--gold3)" stroke-width="1" stroke-dasharray="4" opacity="0"/>
+      </svg>
+      <div style="display:flex;justify-content:space-between;padding:0 4px;margin-top:-4px;" id="chart-x-labels"></div>
+    </div>
+
+    <!-- Trade history -->
+    <div class="section-title mt-8">Recent Sales</div>
+    <div id="chart-trades" style="display:flex;flex-direction:column;gap:8px;"></div>
+
+    <!-- Market stats -->
+    <div class="section-title mt-16">Market Data</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;" id="chart-market-stats"></div>
+  </div>
+</div>
+```
+
+  </div>
+
+</div><!-- /app -->
+
+<!-- ── PHOTO ZOOM VIEWER (outside app, fullscreen) ── -->
+
+<div id="photo-viewer">
+  <div id="viewer-close" onclick="closeViewer()">✕</div>
+  <div id="viewer-counter">1 / 6</div>
+  <div id="viewer-prev" onclick="viewerNav(-1)">‹</div>
+  <img id="viewer-img" src="" alt="Watch photo"/>
+  <div id="viewer-next" onclick="viewerNav(1)">›</div>
+  <div id="viewer-dots"></div>
+</div>
+
+<!-- ── IN-APP NOTIFICATION BANNER ── -->
+
+<div class="notif-banner" id="notif-banner">
+  <div class="notif-icon" id="notif-icon" style="position:relative;">🔔</div>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:13px;font-weight:500;" id="notif-title">New listing alert</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="notif-body">—</div>
+  </div>
+  <div onclick="dismissNotif()" style="color:var(--text3);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0;">✕</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// PLATFORM CONFIG — Set your Anthropic API key here (server-side in production)
+// ═══════════════════════════════════════════════════════════════
+const PLATFORM_API_KEY = ''; // ← Paste your Anthropic API key here as platform owner
+
+const state = {
+  user: null,
+  listings: JSON.parse(localStorage.getItem('chronos_listings') || '[]'),
+  offers: JSON.parse(localStorage.getItem('chronos_offers') || '[]'),
+  currentListing: null,
+  authResult: null,
+  valResult: null,
+  selectedListing: null,
+  screenStack: ['screen-auth'],
+  photos: new Array(6).fill(null),
+  photoCount: 0
+};
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+
+// Hard-reset every screen to a clean slate, then show only the target
+function resetToScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.style.transition = 'none';
+    s.style.transform = 'translateX(100%)';
+    s.style.opacity = '0';
+    s.classList.add('hidden');
+    s.classList.remove('slide-left');
+  });
+  const target = document.getElementById(screenId);
+  if (!target) return;
+  target.classList.remove('hidden');
+  // Force reflow so the browser registers the hidden state before animating
+  void target.offsetWidth;
+  target.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s';
+  target.style.transform = '';
+  target.style.opacity = '1';
+  state.screenStack = [screenId];
+}
+
+function goTo(screenId) {
+  const current = state.screenStack[state.screenStack.length - 1];
+  if (current === screenId) return;
+  const currentEl = current ? document.getElementById(current) : null;
+  const nextEl = document.getElementById(screenId);
+  if (!nextEl) { console.warn('Screen not found:', screenId); return; }
+
+  // Slide current screen out to the left
+  if (currentEl) {
+    currentEl.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s';
+    currentEl.style.transform = 'translateX(-30%)';
+    currentEl.style.opacity = '0';
+    currentEl.classList.remove('slide-left');
+    setTimeout(() => { currentEl.classList.add('hidden'); currentEl.style.transform = ''; currentEl.style.opacity = ''; }, 360);
+  }
+
+  // Slide next screen in from the right
+  nextEl.classList.remove('hidden', 'slide-left');
+  nextEl.style.transition = 'none';
+  nextEl.style.transform = 'translateX(100%)';
+  nextEl.style.opacity = '0';
+  void nextEl.offsetWidth; // force reflow
+  nextEl.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s';
+  nextEl.style.transform = '';
+  nextEl.style.opacity = '1';
+
+  state.screenStack.push(screenId);
+
+  // Lifecycle hooks
+  if (screenId === 'screen-marketplace') setTimeout(renderMarketplace, 80);
+  if (screenId === 'screen-my-listings') setTimeout(renderMyListings, 80);
+  if (screenId === 'screen-my-offers') setTimeout(renderMyOffers, 80);
+  if (screenId === 'screen-watchlist') setTimeout(renderWatchlist, 80);
+}
+
+function goBack() {
+  if (state.screenStack.length <= 1) {
+    // Nothing to go back to — if not on home, jump home
+    if (state.screenStack[0] !== 'screen-home' && state.user) {
+      resetToScreen('screen-home');
+    }
+    return;
+  }
+  const current = state.screenStack.pop();
+  const prev = state.screenStack[state.screenStack.length - 1];
+  const currentEl = document.getElementById(current);
+  const prevEl = document.getElementById(prev);
+
+  // Slide current out to the right
+  if (currentEl) {
+    currentEl.style.transition = 'transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s';
+    currentEl.style.transform = 'translateX(100%)';
+    currentEl.style.opacity = '0';
+    setTimeout(() => {
+      currentEl.classList.add('hidden');
+      currentEl.style.transform = '';
+      currentEl.style.opacity = '';
+      currentEl.style.transition = '';
+    }, 320);
+  }
+
+  // Restore previous screen cleanly
+  if (prevEl) {
+    prevEl.classList.remove('hidden', 'slide-left');
+    prevEl.style.transition = 'none';
+    prevEl.style.transform = '';
+    prevEl.style.opacity = '1';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AUTH — Phone / OTP / Biometric / Social
+// ═══════════════════════════════════════════════════════════════
+
+// Pending login context (stored between auth screen and OTP screen)
+let pendingAuth = { phone: '', cc: '', name: '', email: '', role: 'seller', source: 'phone' };
+let otpCode = ''; // simulated OTP
+
+function switchAuthTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tab-login').style.cssText = isLogin
+    ? 'flex:1;text-align:center;padding:10px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;background:var(--bg2);color:var(--text);border:1px solid var(--border2);transition:all .2s;'
+    : 'flex:1;text-align:center;padding:10px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--text3);transition:all .2s;';
+  document.getElementById('tab-signup').style.cssText = !isLogin
+    ? 'flex:1;text-align:center;padding:10px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;background:var(--bg2);color:var(--text);border:1px solid var(--border2);transition:all .2s;'
+    : 'flex:1;text-align:center;padding:10px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--text3);transition:all .2s;';
+  document.getElementById('login-form').style.display = isLogin ? '' : 'none';
+  document.getElementById('signup-form').style.display = !isLogin ? '' : 'none';
+}
+
+function formatPhone(input) {
+  // Strip non-digits and format nicely
+  let v = input.value.replace(/\D/g, '');
+  if (v.length > 4) v = v.slice(0,4) + ' ' + v.slice(4);
+  if (v.length > 9) v = v.slice(0,9) + ' ' + v.slice(9);
+  input.value = v;
+}
+
+// ── OTP REQUEST ──
+function requestOTP() {
+  const cc = document.getElementById('login-cc').value;
+  const phone = document.getElementById('login-phone').value.replace(/\s/g,'');
+  if (phone.length < 6) { showToast('Please enter a valid mobile number'); return; }
+  pendingAuth = { ...pendingAuth, phone, cc, source: 'phone', name: '', role: 'seller' };
+  launchOTPScreen(cc + ' ' + phone);
+}
+
+function handleSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const cc = document.getElementById('signup-cc').value;
+  const phone = document.getElementById('signup-phone').value.replace(/\s/g,'');
+  const email = document.getElementById('signup-email').value.trim();
+  const role = document.getElementById('signup-role').value;
+  if (!name) { showToast('Please enter your full name'); return; }
+  if (phone.length < 6) { showToast('Please enter a valid mobile number'); return; }
+  pendingAuth = { phone, cc, name, email, role, source: 'phone' };
+  launchOTPScreen(cc + ' ' + phone);
+}
+
+function launchOTPScreen(displayNumber) {
+  // Generate a 6-digit demo OTP and store it
+  otpCode = String(Math.floor(100000 + Math.random() * 900000));
+  document.getElementById('otp-phone-display').textContent = displayNumber;
+  document.getElementById('otp-hint').textContent = `Demo OTP: ${otpCode}`;
+  // Clear boxes
+  document.querySelectorAll('.otp-box').forEach(b => { b.value = ''; b.classList.remove('filled'); });
+  document.getElementById('otp-verify-btn').disabled = true;
+  // Show biometric option if supported
+  detectBiometric().then(type => {
+    const sec = document.getElementById('otp-biometric-section');
+    if (type) {
+      sec.style.display = '';
+      document.getElementById('otp-biometric-icon').textContent = type === 'face' ? '🔒' : '👆';
+      document.getElementById('otp-biometric-label').textContent = type === 'face' ? 'Use Face ID instead' : 'Use Touch ID instead';
+    } else sec.style.display = 'none';
+  });
+  goTo('screen-otp');
+  // Focus first box after transition
+  setTimeout(() => document.querySelector('.otp-box')?.focus(), 400);
+}
+
+// ── OTP BOX INTERACTION ──
+function otpInput(el, idx) {
+  el.value = el.value.replace(/\D/g, '').slice(-1);
+  if (el.value) {
+    el.classList.add('filled');
+    const next = document.querySelectorAll('.otp-box')[idx + 1];
+    if (next) next.focus();
+  } else el.classList.remove('filled');
+  checkOTPComplete();
+}
+
+function otpKey(el, idx, e) {
+  if (e.key === 'Backspace' && !el.value) {
+    const prev = document.querySelectorAll('.otp-box')[idx - 1];
+    if (prev) { prev.value = ''; prev.classList.remove('filled'); prev.focus(); }
+  }
+}
+
+function checkOTPComplete() {
+  const boxes = document.querySelectorAll('.otp-box');
+  const val = Array.from(boxes).map(b => b.value).join('');
+  document.getElementById('otp-verify-btn').disabled = val.length < 6;
+}
+
+function verifyOTP() {
+  const boxes = document.querySelectorAll('.otp-box');
+  const entered = Array.from(boxes).map(b => b.value).join('');
+  // In demo: accept the shown code OR any 6 digits
+  if (entered.length === 6) {
+    completePhoneLogin();
+  } else {
+    showToast('Please enter all 6 digits');
+  }
+}
+
+function resendOTP() {
+  otpCode = String(Math.floor(100000 + Math.random() * 900000));
+  document.getElementById('otp-hint').textContent = `New OTP: ${otpCode}`;
+  showToast('New OTP sent ✓');
+}
+
+function completePhoneLogin() {
+  // If no name (login flow), use phone as identifier
+  const name = pendingAuth.name || ('User ' + pendingAuth.phone.slice(-4));
+  const user = {
+    name,
+    phone: pendingAuth.cc + ' ' + pendingAuth.phone,
+    email: pendingAuth.email || '',
+    role: pendingAuth.role,
+    source: 'phone',
+    avatar: '📱'
+  };
+  // Offer to enable biometrics after first OTP login
+  localStorage.setItem('chronos_phone_registered', user.phone);
+  loginUser(user);
+  // Prompt biometric enrolment after a short delay
+  setTimeout(() => offerBiometricEnrolment(), 1500);
+}
+
+// ── BIOMETRIC ──
+async function detectBiometric() {
+  // Check WebAuthn / platform authenticator availability
+  if (!window.PublicKeyCredential) return null;
+  try {
+    const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if (!available) return null;
+    // Heuristic: face on iOS, touch on others
+    const isIOS = /iphone|ipad/i.test(navigator.userAgent);
+    return isIOS ? 'face' : 'touch';
+  } catch { return null; }
+}
+
+async function triggerBiometric() {
+  const type = await detectBiometric();
+  const label = type === 'face' ? 'Face ID' : type === 'touch' ? 'Touch ID' : 'biometrics';
+  if (!type) { showToast('Biometric auth not available on this device'); return; }
+  // Check if a registered phone exists
+  const registeredPhone = localStorage.getItem('chronos_phone_registered');
+  if (!registeredPhone) { showToast('Please sign in with OTP first to register biometrics'); return; }
+  showToast(`Requesting ${label}…`);
+  try {
+    // Attempt WebAuthn get (platform authenticator = Face ID / Touch ID)
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        timeout: 60000,
+        userVerification: 'required',
+        rpId: window.location.hostname || 'localhost'
+      }
+    });
+    // Success — log in
+    const storedUser = JSON.parse(localStorage.getItem('chronos_user') || 'null');
+    if (storedUser) { loginUser(storedUser); return; }
+  } catch (e) {
+    // WebAuthn failed or cancelled — fall back to demo simulation
+  }
+  // Demo fallback: simulate successful biometric
+  showToast(`${label} verified ✓`);
+  setTimeout(() => {
+    const storedUser = JSON.parse(localStorage.getItem('chronos_user') || 'null');
+    if (storedUser) loginUser(storedUser);
+    else { pendingAuth.name = pendingAuth.name || 'Returning User'; completePhoneLogin(); }
+  }, 800);
+}
+
+async function offerBiometricEnrolment() {
+  const type = await detectBiometric();
+  if (!type) return;
+  const label = type === 'face' ? 'Face ID' : 'Touch ID';
+  showToast(`Tip: Enable ${label} in Settings for faster sign-in`);
+  // Show biometric button on login screen for next time
+  const btn = document.getElementById('biometric-btn');
+  if (btn) {
+    btn.style.display = '';
+    document.getElementById('biometric-icon').textContent = type === 'face' ? '🔒' : '👆';
+    document.getElementById('biometric-label').textContent = `Sign in with ${label}`;
+  }
+}
+
+async function toggleBiometric() {
+  const toggle = document.getElementById('biometric-toggle');
+  const thumb = document.getElementById('biometric-toggle-thumb');
+  const isOn = toggle.dataset.on === '1';
+  if (!isOn) {
+    const type = await detectBiometric();
+    if (!type) { showToast('Biometric auth not supported on this device'); return; }
+    const label = type === 'face' ? 'Face ID' : 'Touch ID';
+    // Try to register via WebAuthn
+    try {
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+      const uid = new TextEncoder().encode(state.user?.phone || 'chronos-user');
+      await navigator.credentials.create({
+        publicKey: {
+          challenge, rp: { name: 'CHRONOS', id: window.location.hostname || 'localhost' },
+          user: { id: uid, name: state.user?.phone || 'user', displayName: state.user?.name || 'User' },
+          pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+          authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' },
+          timeout: 60000
+        }
+      });
+    } catch(e) { /* demo mode — simulate success */ }
+    toggle.dataset.on = '1';
+    toggle.style.background = 'var(--gold3)';
+    thumb.style.left = '22px';
+    thumb.style.background = 'var(--gold)';
+    localStorage.setItem('chronos_biometric', '1');
+    showToast(`${label} enabled ✓`);
+  } else {
+    toggle.dataset.on = '0';
+    toggle.style.background = 'var(--border2)';
+    thumb.style.left = '2px';
+    thumb.style.background = 'var(--text3)';
+    localStorage.removeItem('chronos_biometric');
+    showToast('Biometric sign-in disabled');
+  }
+}
+
+// ── SOCIAL LOGIN ──
+const SOCIAL_PROFILES = {
+  google: [
+    { name: 'James Whitmore', email: 'james.whitmore@gmail.com', avatar: '🟦', color: '#4285F4' },
+    { name: 'Sarah Chen', email: 's.chen@gmail.com', avatar: '🟩', color: '#34A853' }
+  ],
+  apple: [
+    { name: 'James Whitmore', email: 'jwhitmore@icloud.com', avatar: '⬛', color: '#1c1c1e' },
+    { name: 'Hidden Email', email: 'r4nd0m@privaterelay.appleid.com', avatar: '🔒', color: '#555' }
+  ]
+};
+let socialProvider = '';
+let selectedSocialProfile = null;
+
+function socialLogin(provider) {
+  socialProvider = provider;
+  selectedSocialProfile = null;
+  const isGoogle = provider === 'google';
+  document.getElementById('social-auth-icon').textContent = isGoogle ? '🔵' : '⚫';
+  document.getElementById('social-auth-title').textContent = isGoogle ? 'Sign in with Google' : 'Sign in with Apple';
+  document.getElementById('social-auth-subtitle').textContent = isGoogle
+    ? 'Choose your Google account'
+    : 'Use your Apple ID to sign in';
+  const profiles = SOCIAL_PROFILES[provider];
+  document.getElementById('social-accounts').innerHTML = profiles.map((p, i) => `
+    <div class="social-account-row" id="social-row-${i}" onclick="selectSocialProfile(${i})">
+      <div class="social-avatar" style="background:${p.color}20;border:1px solid ${p.color}40;font-size:20px;">${p.avatar}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:500;">${p.name}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.email}</div>
+      </div>
+      <div class="social-check" id="social-check-${i}"></div>
+    </div>`).join('');
+  goTo('screen-social-auth');
+}
+
+function selectSocialProfile(idx) {
+  selectedSocialProfile = idx;
+  document.querySelectorAll('.social-account-row').forEach((r, i) => {
+    r.classList.toggle('selected', i === idx);
+    const check = document.getElementById(`social-check-${i}`);
+    check.innerHTML = i === idx ? '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#000" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>' : '';
+  });
+}
+
+function confirmSocialLogin() {
+  if (selectedSocialProfile === null) { showToast('Please select an account'); return; }
+  const profile = SOCIAL_PROFILES[socialProvider][selectedSocialProfile];
+  const role = document.getElementById('social-role').value;
+  const user = {
+    name: profile.name,
+    phone: '',
+    email: profile.email,
+    role,
+    source: socialProvider,
+    avatar: socialProvider === 'google' ? '🔵' : '⚫'
+  };
+  goBack(); // dismiss social sheet
+  setTimeout(() => loginUser(user), 360);
+}
+
+// ── QUICK DEMO LOGIN ──
+function quickLogin(role) {
+  const profiles = { seller: { name: 'James Whitmore', phone: '+1 8001 2345', email: '', role: 'seller', source: 'demo', avatar: '👤' }, dealer: { name: 'Harrison & Co.', phone: '+44 7911 2345', email: 'info@harrison.co.uk', role: 'dealer', source: 'demo', avatar: '🏪' } };
+  loginUser(profiles[role]);
+}
+
+// ── CORE LOGIN / LOGOUT ──
+function loginUser(user) {
+  state.user = user;
+  state.listings = JSON.parse(localStorage.getItem('chronos_listings') || '[]');
+  state.offers = JSON.parse(localStorage.getItem('chronos_offers') || '[]');
+  localStorage.setItem('chronos_user', JSON.stringify(user));
+  resetToScreen('screen-home');
+  updateHomeForRole(user.role);
+  populateDemoListings();
+  showToast(`Welcome, ${user.name.split(' ')[0]} ✓`);
+}
+
+function handleLogout() {
+  state.user = null;
+  state.listings = [];
+  state.offers = [];
+  localStorage.removeItem('chronos_listings');
+  localStorage.removeItem('chronos_offers');
+  localStorage.removeItem('chronos_user');
+  resetToScreen('screen-auth');
+  showToast('Signed out');
+}
+
+function updateHomeForRole(role) {
+  const u = state.user;
+  document.getElementById('home-username').textContent = u.name;
+  document.getElementById('home-role-badge').textContent = role === 'dealer' ? '🏪 Dealer' : '👤 Seller';
+  document.getElementById('seller-cta').style.display = role === 'seller' ? '' : 'none';
+  document.getElementById('dealer-cta').style.display = role === 'dealer' ? '' : 'none';
+  document.getElementById('home-recent').style.display = role === 'seller' ? '' : 'none';
+  const nav = document.getElementById('seller-nav');
+  nav.style.display = role === 'dealer' ? 'none' : '';
+  updateHomeStats();
+  // Settings
+  document.getElementById('settings-name').textContent = u.name;
+  document.getElementById('settings-avatar').textContent = u.avatar || '👤';
+  document.getElementById('settings-phone').textContent = u.phone || (u.email ? u.email : 'No phone on file');
+  document.getElementById('settings-role').textContent = role === 'dealer' ? '🏪 Verified Dealer' : '👤 Seller';
+  document.getElementById('settings-auth-method').textContent =
+    u.source === 'google' ? 'Google Account' : u.source === 'apple' ? 'Apple ID' : u.source === 'demo' ? 'Demo Access' : 'Phone + OTP';
+  document.getElementById('settings-auth-source').textContent =
+    u.source === 'google' ? u.email : u.source === 'apple' ? u.email : u.source === 'demo' ? 'Demo mode' : 'Mobile number verified';
+  if (u.email) document.getElementById('settings-recovery-email').value = u.email;
+  // Biometric toggle state
+  const isBioOn = localStorage.getItem('chronos_biometric') === '1';
+  const toggle = document.getElementById('biometric-toggle');
+  const thumb = document.getElementById('biometric-toggle-thumb');
+  toggle.dataset.on = isBioOn ? '1' : '0';
+  toggle.style.background = isBioOn ? 'var(--gold3)' : 'var(--border2)';
+  thumb.style.left = isBioOn ? '22px' : '2px';
+  thumb.style.background = isBioOn ? 'var(--gold)' : 'var(--text3)';
+  // Show biometric login button if registered
+  detectBiometric().then(type => {
+    const btn = document.getElementById('biometric-btn');
+    const registered = localStorage.getItem('chronos_phone_registered');
+    if (type && (registered || isBioOn)) {
+      // Will show on next visit to auth screen — already handled
+    }
+    const label = type === 'face' ? 'Face ID' : type === 'touch' ? 'Touch ID' : '';
+    if (label) document.getElementById('biometric-setting-label').textContent = `${label} Sign-In`;
+  });
+  // Request notification permission for dealers
+  if (role === 'dealer') setTimeout(() => requestNotifPermission(), 2000);
+}
+
+function saveRecoveryEmail() {
+  const email = document.getElementById('settings-recovery-email').value.trim();
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+  if (state.user) { state.user.email = email; localStorage.setItem('chronos_user', JSON.stringify(state.user)); }
+  showToast('Recovery email saved ✓');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DEMO DATA
+// ═══════════════════════════════════════════════════════════════
+function populateDemoListings() {
+  const userName = state.user?.name || 'Demo Seller';
+  if (state.listings.length === 0) {
+    state.listings = [
+      { id: 'L001', brand: 'Rolex', model: 'Submariner Date', ref: '116610LN', year: 2019, condition: 'excellent', box: 'full_set', authScore: 91, authConfidence: 'high', concerns: [], valLow: 11500, valHigh: 14200, liquidity: 'high', status: 'listed', seller: userName, offers: ['O001','O002'] },
+      { id: 'L002', brand: 'Omega', model: 'Speedmaster Professional', ref: '310.30.42.50', year: 2021, condition: 'mint', box: 'full_set', authScore: 88, authConfidence: 'high', concerns: ['Minor bezel rotation stiffness'], valLow: 6800, valHigh: 8900, liquidity: 'high', status: 'listed', seller: userName, offers: [] },
+      { id: 'L003', brand: 'IWC', model: 'Portugieser Chronograph', ref: 'IW371605', year: 2017, condition: 'very_good', box: 'box_only', authScore: 79, authConfidence: 'medium', concerns: ['Slight crystal scratch', 'No papers present'], valLow: 4200, valHigh: 5800, liquidity: 'medium', status: 'listed', seller: 'Other Seller', offers: ['O003'] },
+      { id: 'L004', brand: 'Patek Philippe', model: 'Aquanaut 5167A', ref: '5167A-001', year: 2020, condition: 'excellent', box: 'full_set', authScore: 94, authConfidence: 'high', concerns: [], valLow: 28000, valHigh: 35000, liquidity: 'high', status: 'listed', seller: 'Other Seller', offers: [] },
+    ];
+  }
+  if (state.offers.length === 0) {
+    state.offers = [
+      { id: 'O001', listingId: 'L001', dealer: 'Harrison & Co.', dealerEmail: 'harrison@demo.com', price: 12800, message: 'We specialize in Rolex. Ready to proceed immediately.', status: 'pending', validity: '48 hours' },
+      { id: 'O002', listingId: 'L001', dealer: 'Geneva Watches Ltd.', dealerEmail: 'gw@demo.com', price: 13200, message: 'Excellent piece. Happy to arrange collection.', status: 'pending', validity: '72 hours' },
+      { id: 'O003', listingId: 'L003', dealer: 'Harrison & Co.', dealerEmail: 'harrison@demo.com', price: 4900, message: 'Solid IWC. Offering fair market price.', status: 'pending', validity: '7 days' },
+    ];
+  }
+  updateHomeStats();
+  renderRecentListings();
+}
+
+function updateHomeStats() {
+  const myListings = state.listings.filter(l => l.seller === (state.user?.name || ''));
+  const myOffers = myListings.reduce((a, l) => a + l.offers.length, 0);
+  const mySold = myListings.filter(l => l.status === 'sold').length;
+  document.getElementById('stat-listings').textContent = myListings.length;
+  document.getElementById('stat-offers').textContent = myOffers;
+  document.getElementById('stat-sold').textContent = mySold;
+  if (myOffers > 0) document.getElementById('offers-dot').style.display = '';
+}
+
+function renderRecentListings() {
+  const container = document.getElementById('recent-listings-container');
+  const myListings = state.listings.filter(l => l.seller === (state.user?.name || '')).slice(0,3);
+  if (myListings.length === 0) { container.innerHTML = '<div style="text-align:center;padding:32px 0;color:var(--text3);font-size:13px;">No listings yet. Start by uploading a watch.</div>'; return; }
+  container.innerHTML = myListings.map(l => listingCardHTML(l, true)).join('');
+}
+
+function listingCardHTML(l, compact=false) {
+  const scoreColor = l.authScore >= 85 ? 'var(--green)' : l.authScore >= 65 ? 'var(--gold)' : 'var(--red)';
+  const offersCount = l.offers.length;
+  const isSaved = isWatchlisted(l.id);
+  return `<div class="listing-card" onclick="openListing('${l.id}')">
+    <div style="position:relative;">
+      <div class="listing-thumb" style="background:var(--bg3);height:${compact?'120px':'160px'};display:flex;align-items:center;justify-content:center;font-size:${compact?'36px':'48px'};cursor:pointer;" onclick="event.stopPropagation();openPhotoViewer('${l.id}')">⌚</div>
+      ${state.user?.role === 'dealer' ? `<button class="bookmark-btn ${isSaved?'saved':''}" onclick="event.stopPropagation();toggleWatchlist('${l.id}')" id="bm-${l.id}">${isSaved?'🔖':'🔖'}</button>` : ''}
+    </div>
+    <div class="listing-info">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="listing-brand">${l.brand}</div>
+          <div class="listing-model">${l.model} · ${l.year}</div>
+        </div>
+        <div class="badge ${l.status==='sold'?'badge-green':l.status==='listed'?'badge-gold':'badge-gray'}">${l.status.toUpperCase()}</div>
+      </div>
+      <div class="listing-meta">
+        <div class="listing-price">$${l.valLow.toLocaleString()} – $${l.valHigh.toLocaleString()}</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-size:12px;color:${scoreColor};font-family:var(--font-mono);">${l.authScore}</div>
+          ${offersCount > 0 ? `<div class="badge badge-blue" style="font-size:10px;">${offersCount} offer${offersCount>1?'s':''}</div>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;font-size:11px;padding:8px;" onclick="event.stopPropagation();openPriceChart('${l.id}')">📈 Price History</button>
+        ${state.user?.role === 'dealer' ? `<button class="btn btn-gold btn-sm" style="font-size:11px;padding:8px 14px;" onclick="event.stopPropagation();openListing('${l.id}')">Make Offer</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function openListing(id) {
+  const listing = state.listings.find(l => l.id === id);
+  if (!listing) return;
+  state.selectedListing = listing;
+  if (state.user?.role === 'dealer') {
+    openMakeOffer(listing);
+  } else {
+    openReviewOffers(listing);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LISTING FLOW
+// ═══════════════════════════════════════════════════════════════
+function startNewListing() {
+  state.currentListing = { id: 'L' + Date.now(), photos: [], status: 'draft' };
+  state.photos = new Array(6).fill(null);
+  state.photoCount = 0;
+  renderPhotoGrid();
+  goTo('screen-upload-details');
+}
+
+function goToPhotos() {
+  const brand = document.getElementById('watch-brand').value;
+  const model = document.getElementById('watch-model').value;
+  const year = document.getElementById('watch-year').value;
+  const condition = document.getElementById('watch-condition').value;
+  if (!brand || !model || !year || !condition) { showToast('Please fill in all required fields'); return; }
+  state.currentListing = { ...state.currentListing, brand, model, year, condition, ref: document.getElementById('watch-ref').value, box: document.getElementById('watch-box').value, notes: document.getElementById('watch-notes').value };
+  goTo('screen-upload-photos');
+}
+
+function renderPhotoGrid() {
+  const grid = document.getElementById('photo-grid');
+  const labels = ['Front Dial', 'Case Back', 'Crown', 'Bracelet', 'Serial No.', 'Close-up'];
+  const slots = Array.from({length: 6}, (_, i) => {
+    const p = state.photos[i];
+    return `<div class="photo-slot ${p?'filled':''}" onclick="document.getElementById('file-${i}').click()">
+      ${p ? `<img src="${p}" alt="photo ${i+1}"/>` : `<div class="photo-slot-icon">📷</div><div class="photo-slot-label">${labels[i]}</div>`}
+    </div>`;
+  }).join('');
+  grid.innerHTML = `
+    <input type="file" accept="image/*" class="hidden-file" id="file-0" onchange="handlePhoto(0,this)"/>
+    <input type="file" accept="image/*" class="hidden-file" id="file-1" onchange="handlePhoto(1,this)"/>
+    <input type="file" accept="image/*" class="hidden-file" id="file-2" onchange="handlePhoto(2,this)"/>
+    <input type="file" accept="image/*" class="hidden-file" id="file-3" onchange="handlePhoto(3,this)"/>
+    <input type="file" accept="image/*" class="hidden-file" id="file-4" onchange="handlePhoto(4,this)"/>
+    <input type="file" accept="image/*" class="hidden-file" id="file-5" onchange="handlePhoto(5,this)"/>
+    ${slots}`;
+}
+
+function handlePhoto(idx, input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.photos[idx] = e.target.result;
+    state.photoCount = state.photos.filter(Boolean).length;
+    document.getElementById('photo-count-text').textContent = `${state.photoCount} / 6 photos added`;
+    document.getElementById('analyze-btn').disabled = state.photoCount < 1;
+    renderPhotoGrid();
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AI AUTHENTICATION
+// ═══════════════════════════════════════════════════════════════
+async function startAnalysis() {
+  goTo('screen-auth-result');
+  document.getElementById('auth-loading').style.display = '';
+  document.getElementById('auth-result').style.display = 'none';
+  const steps = ['Examining dial markings...', 'Analyzing case proportions...', 'Checking movement signatures...', 'Verifying authentication markers...', 'Generating confidence score...'];
+  let si = 0;
+  const stepInterval = setInterval(() => {
+    if (si < steps.length) document.getElementById('auth-loading-step').textContent = steps[si++];
+  }, 700);
+  try {
+    const result = PLATFORM_API_KEY ? await callOpenAIAuth() : generateDemoAuthResult();
+    clearInterval(stepInterval);
+    await new Promise(r => setTimeout(r, 500));
+    state.authResult = result;
+    state.currentListing = { ...state.currentListing, ...result };
+    showAuthResult(result);
+  } catch(e) {
+    clearInterval(stepInterval);
+    const result = generateDemoAuthResult();
+    state.authResult = result;
+    showAuthResult(result);
+  }
+}
+
+function generateDemoAuthResult() {
+  const brand = state.currentListing?.brand || 'Rolex';
+  const score = 72 + Math.floor(Math.random() * 25);
+  const isHigh = score >= 85;
+  return {
+    auth_score: score,
+    confidence: score >= 85 ? 'high' : score >= 65 ? 'medium' : 'low',
+    concerns: score < 85 ? ['Bezel alignment slightly off-center — warrants physical inspection', 'Lume plots show minor inconsistency at 12 o\'clock position'] : [],
+    summary: isHigh
+      ? `Strong authentication indicators detected. The ${brand} shows consistent hallmarks including proper case finishing, correct font weights on dial text, and appropriate crown dimensions. Serial number format matches the stated production year.`
+      : `Authentication shows mostly positive markers for this ${brand}. A few minor inconsistencies were detected that are common in worn examples. Physical inspection recommended for high-value transactions.`,
+    details: [
+      { label: 'Dial Typography', value: score >= 80 ? '✓ Consistent' : '⚠ Minor variance', ok: score >= 80 },
+      { label: 'Case Proportions', value: '✓ Within tolerance', ok: true },
+      { label: 'Crown Dimensions', value: '✓ Authentic', ok: true },
+      { label: 'Lume Application', value: score >= 85 ? '✓ Uniform' : '⚠ Slight variation', ok: score >= 85 },
+      { label: 'Serial Format', value: '✓ Year-correct', ok: true },
+      { label: 'Movement Signs', value: score >= 75 ? '✓ Expected' : '⚠ Unclear', ok: score >= 75 },
+    ]
+  };
+}
+
+async function callOpenAIAuth() {
+  const listing = state.currentListing;
+  const imageContent = state.photos.filter(Boolean).slice(0,3).map(p => ({ type: 'image_url', image_url: { url: p } }));
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': PLATFORM_API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: 'You are a luxury watch authentication AI. Analyze watch images and return ONLY a JSON object with no extra text: {"auth_score": number 0-100, "confidence": "low"|"medium"|"high", "concerns": [array of concern strings], "summary": "brief analysis string", "details": [{"label":"string","value":"string","ok":boolean}]}',
+      messages: [{ role: 'user', content: [...imageContent, { type: 'text', text: `Authenticate this ${listing.brand} ${listing.model} (${listing.year}), condition: ${listing.condition}` }] }]
+    })
+  });
+  const data = await resp.json();
+  const text = data.content.map(i => i.text || '').join('');
+  return JSON.parse(text.replace(/```json|```/g, '').trim());
+}
+
+function showAuthResult(result) {
+  document.getElementById('auth-loading').style.display = 'none';
+  document.getElementById('auth-result').style.display = '';
+  const score = result.auth_score;
+  const circumference = 2 * Math.PI * 58;
+  const offset = circumference - (score / 100) * circumference;
+  const circle = document.getElementById('score-circle');
+  circle.style.strokeDashoffset = circumference;
+  setTimeout(() => { circle.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)'; circle.style.strokeDashoffset = offset; circle.style.stroke = score >= 85 ? 'url(#scoreGrad)' : score >= 65 ? '#c9a84c' : '#e05555'; }, 100);
+  let displayScore = 0;
+  const scoreEl = document.getElementById('auth-score-display');
+  const scoreInterval = setInterval(() => { displayScore = Math.min(displayScore + 2, score); scoreEl.textContent = displayScore; if (displayScore >= score) clearInterval(scoreInterval); }, 30);
+  const verdict = score >= 85 ? 'Likely Authentic' : score >= 65 ? 'Probably Authentic' : 'Needs Verification';
+  const verdictClass = score >= 85 ? 'badge-green' : score >= 65 ? 'badge-gold' : 'badge-red';
+  const confClass = { high: 'badge-green', medium: 'badge-gold', low: 'badge-red' }[result.confidence];
+  document.getElementById('auth-verdict-badge').className = `badge ${verdictClass}`;
+  document.getElementById('auth-verdict-badge').textContent = verdict;
+  document.getElementById('auth-confidence-badge').className = `badge ${confClass}`;
+  document.getElementById('auth-confidence-badge').textContent = `${result.confidence.toUpperCase()} confidence`;
+  document.getElementById('auth-summary').textContent = result.summary || '';
+  const concernsSection = document.getElementById('concerns-section');
+  if (result.concerns?.length > 0) {
+    concernsSection.style.display = '';
+    document.getElementById('concerns-list').innerHTML = result.concerns.map(c => `<div class="concern"><div class="concern-dot"></div><div class="concern-text">${c}</div></div>`).join('');
+  } else concernsSection.style.display = 'none';
+  document.getElementById('auth-details-list').innerHTML = (result.details || []).map(d =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:13px;color:var(--text2);">${d.label}</span>
+      <span style="font-size:12px;color:${d.ok?'var(--green)':'var(--gold)'};">${d.value}</span>
+    </div>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VALUATION
+// ═══════════════════════════════════════════════════════════════
+async function goToValuation() {
+  goTo('screen-valuation');
+  document.getElementById('val-loading').style.display = '';
+  document.getElementById('val-result').style.display = 'none';
+  await new Promise(r => setTimeout(r, 1800)); // show loading for UX
+  try {
+    const result = PLATFORM_API_KEY ? await callOpenAIValuation() : generateDemoValuation();
+    state.valResult = result;
+    state.currentListing = { ...state.currentListing, ...result };
+    showValuation(result);
+  } catch(e) {
+    const result = generateDemoValuation();
+    state.valResult = result;
+    state.currentListing = { ...state.currentListing, ...result };
+    showValuation(result);
+  }
+}
+
+function generateDemoValuation() {
+  const brand = state.currentListing?.brand || 'Rolex';
+  const condition = state.currentListing?.condition || 'excellent';
+  const baseValues = { 'Rolex': 12000, 'Patek Philippe': 30000, 'Audemars Piguet': 25000, 'Omega': 7500, 'IWC': 5000, 'Jaeger-LeCoultre': 8000, 'Cartier': 6000, 'Panerai': 5500, 'Breitling': 4500, 'Tag Heuer': 2500, 'Hublot': 8000, 'Richard Mille': 80000 };
+  const base = baseValues[brand] || 5000;
+  const condMult = { mint: 1.15, excellent: 1.0, very_good: 0.87, good: 0.72, fair: 0.55 }[condition] || 1;
+  const low = Math.round(base * condMult * 0.88 / 100) * 100;
+  const high = Math.round(base * condMult * 1.18 / 100) * 100;
+  const liqMap = { 'Rolex': 'high', 'Patek Philippe': 'medium', 'Omega': 'high', 'Audemars Piguet': 'medium' };
+  return {
+    valuation_low: low, valuation_high: high,
+    liquidity: liqMap[brand] || 'medium',
+    analysis: `The ${brand} market remains ${liqMap[brand]||'medium'} demand globally. ${condition === 'mint' || condition === 'excellent' ? 'Full set examples command a significant premium.' : 'Condition affects pricing — polished service would improve sale value.'} Recent auction results support this estimate.`,
+    factors: [
+      { label: 'Brand Prestige', impact: '+', note: 'Top-tier manufacturer' },
+      { label: 'Condition', impact: condition === 'mint' ? '+' : condition === 'fair' ? '-' : '~', note: condition.replace('_', ' ') },
+      { label: 'Box & Papers', impact: state.currentListing?.box === 'full_set' ? '+' : '-', note: state.currentListing?.box?.replace('_',' ') || 'unknown' },
+      { label: 'Market Demand', impact: (liqMap[brand]||'medium') === 'high' ? '+' : '~', note: (liqMap[brand]||'medium') + ' liquidity' },
+    ]
+  };
+}
+
+async function callOpenAIValuation() {
+  const l = state.currentListing;
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': PLATFORM_API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+      system: 'You are a luxury watch valuation AI. Return ONLY JSON: {"valuation_low":number,"valuation_high":number,"liquidity":"low"|"medium"|"high","analysis":"string","factors":[{"label":"string","impact":"+"|"-"|"~","note":"string"}]}',
+      messages: [{ role: 'user', content: `Value this watch: ${l.brand} ${l.model} ${l.year}, condition: ${l.condition}, box/papers: ${l.box}` }]
+    })
+  });
+  const data = await resp.json();
+  const text = data.content.map(i => i.text || '').join('');
+  return JSON.parse(text.replace(/```json|```/g, '').trim());
+}
+
+function showValuation(r) {
+  document.getElementById('val-loading').style.display = 'none';
+  document.getElementById('val-result').style.display = '';
+  const l = state.currentListing;
+  document.getElementById('val-watch-name').textContent = `${l.brand} ${l.model} · ${l.year}`;
+  document.getElementById('val-low').textContent = '$' + r.valuation_low.toLocaleString();
+  document.getElementById('val-high').textContent = '$' + r.valuation_high.toLocaleString();
+  const liqClass = { high: 'badge-green', medium: 'badge-gold', low: 'badge-red' }[r.liquidity];
+  document.getElementById('val-liquidity-badge').className = `badge ${liqClass}`;
+  document.getElementById('val-liquidity-badge').textContent = r.liquidity.toUpperCase() + ' LIQUIDITY';
+  const suggested = Math.round((r.valuation_low + r.valuation_high) / 2 / 100) * 100;
+  document.getElementById('val-suggested').textContent = '$' + suggested.toLocaleString();
+  document.getElementById('val-analysis').textContent = r.analysis;
+  document.getElementById('val-factors-list').innerHTML = (r.factors || []).map(f =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);">
+      <span style="font-size:13px;color:var(--text2);">${f.label}</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="font-size:12px;color:var(--text3);">${f.note}</span>
+      <span style="font-size:16px;color:${f.impact==='+' ? 'var(--green)' : f.impact==='-' ? 'var(--red)' : 'var(--text3)'};">${f.impact}</span></span>
+    </div>`
+  ).join('');
+}
+
+function publishListing() {
+  const l = state.currentListing;
+  const r = state.valResult || state.currentListing;
+  const newListing = {
+    ...l,
+    id: l.id || ('L' + Date.now()),
+    authScore: state.authResult?.auth_score || l.auth_score || 80,
+    authConfidence: state.authResult?.confidence || 'medium',
+    concerns: state.authResult?.concerns || [],
+    valLow: r.valuation_low || l.valLow || 8000,
+    valHigh: r.valuation_high || l.valHigh || 12000,
+    liquidity: r.liquidity || l.liquidity || 'medium',
+    status: 'listed',
+    seller: state.user?.name || 'Unknown',
+    offers: []
+  };
+  state.listings.push(newListing);
+  localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
+  updateHomeStats();
+  renderRecentListings();
+  goTo('screen-home');
+  showToast('✓ Listing published to marketplace');
+  // Send push notification to dealers
+  sendListingNotification(newListing);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MARKETPLACE
+// ═══════════════════════════════════════════════════════════════
+function renderMarketplace(filter='') {
+  const container = document.getElementById('marketplace-listings');
+  let listings = state.listings.filter(l => l.status === 'listed');
+  if (filter) listings = listings.filter(l => l.brand.toLowerCase().includes(filter.toLowerCase()) || l.model.toLowerCase().includes(filter.toLowerCase()));
+  container.innerHTML = listings.length ? listings.map(l => listingCardHTML(l)).join('') : '<div style="text-align:center;padding:32px;color:var(--text3);">No listings match your search.</div>';
+}
+
+function filterListings(val) { renderMarketplace(val); }
+function filterByBrand(brand) { renderMarketplace(brand); }
+function showFilters() { showToast('Filter panel coming soon'); }
+
+// ═══════════════════════════════════════════════════════════════
+// MAKE OFFER
+// ═══════════════════════════════════════════════════════════════
+function openMakeOffer(listing) {
+  document.getElementById('offer-watch-name').textContent = `${listing.brand} ${listing.model}`;
+  document.getElementById('offer-watch-details').textContent = `${listing.year} · Ref. ${listing.ref || 'N/A'}`;
+  document.getElementById('offer-auth-badge').textContent = `Auth ${listing.authScore}/100`;
+  document.getElementById('offer-auth-badge').className = `badge ${listing.authScore >= 85 ? 'badge-green' : listing.authScore >= 65 ? 'badge-gold' : 'badge-red'}`;
+  document.getElementById('offer-condition-badge').textContent = (listing.condition || '').replace('_',' ');
+  document.getElementById('offer-val-range').textContent = `$${listing.valLow?.toLocaleString()} – $${listing.valHigh?.toLocaleString()}`;
+  document.getElementById('offer-auth-score').textContent = `${listing.authScore} / 100`;
+  document.getElementById('offer-price').value = '';
+  document.getElementById('offer-calc').style.display = 'none';
+  goTo('screen-make-offer');
+}
+
+function updateOfferCalc() {
+  const price = parseFloat(document.getElementById('offer-price').value);
+  const l = state.selectedListing;
+  if (!price || !l) { document.getElementById('offer-calc').style.display = 'none'; return; }
+  document.getElementById('offer-calc').style.display = '';
+  document.getElementById('calc-offer').textContent = '$' + price.toLocaleString();
+  const vl = l.valLow, vh = l.valHigh;
+  const pctLow = ((price / vl - 1) * 100).toFixed(1);
+  const pctHigh = ((price / vh - 1) * 100).toFixed(1);
+  document.getElementById('calc-vs-low').textContent = `${pctLow > 0 ? '+' : ''}${pctLow}% vs $${vl?.toLocaleString()}`;
+  document.getElementById('calc-vs-high').textContent = `${pctHigh > 0 ? '+' : ''}${pctHigh}% vs $${vh?.toLocaleString()}`;
+}
+
+function submitOffer() {
+  const price = parseFloat(document.getElementById('offer-price').value);
+  if (!price || price <= 0) { showToast('Please enter a valid offer price'); return; }
+  const offer = {
+    id: 'O' + Date.now(),
+    listingId: state.selectedListing?.id,
+    dealer: state.user?.name || 'Dealer',
+    dealerEmail: state.user?.email || '',
+    price,
+    message: document.getElementById('offer-message').value,
+    status: 'pending',
+    validity: '48 hours'
+  };
+  state.offers.push(offer);
+  const listing = state.listings.find(l => l.id === offer.listingId);
+  if (listing) listing.offers.push(offer.id);
+  localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
+  localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
+  goBack();
+  showToast(`✓ Offer of $${price.toLocaleString()} submitted`);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REVIEW OFFERS
+// ═══════════════════════════════════════════════════════════════
+function openReviewOffers(listing) {
+  document.getElementById('review-watch-name').textContent = `${listing.brand} ${listing.model}`;
+  document.getElementById('review-auth-badge').textContent = `Auth ${listing.authScore}/100`;
+  document.getElementById('review-auth-badge').className = `badge ${listing.authScore >= 85 ? 'badge-green' : 'badge-gold'}`;
+  document.getElementById('review-val-range').textContent = `$${listing.valLow?.toLocaleString()} – $${listing.valHigh?.toLocaleString()}`;
+  const offers = state.offers.filter(o => o.listingId === listing.id);
+  const container = document.getElementById('offers-list');
+  const noOffers = document.getElementById('no-offers');
+  if (offers.length === 0) { container.innerHTML = ''; noOffers.style.display = ''; }
+  else {
+    noOffers.style.display = 'none';
+    const sorted = [...offers].sort((a, b) => b.price - a.price);
+    container.innerHTML = sorted.map((o, i) => `
+      <div class="offer-card ${o.status === 'accepted' ? 'accepted' : ''}" id="offer-card-${o.id}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div style="font-size:14px;font-weight:500;">${o.dealer}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">${o.dealerEmail}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:var(--font-mono);font-size:20px;color:${i===0 && o.status!=='accepted' ? 'var(--gold)' : o.status==='accepted' ? 'var(--green)' : 'var(--text)'};">$${o.price.toLocaleString()}</div>
+            <div class="badge ${o.status==='accepted'?'badge-green':'badge-gray'} mt-4" style="font-size:10px;">${o.status==='accepted'?'✓ ACCEPTED':i===0?'HIGHEST':'OFFER'}</div>
+          </div>
+        </div>
+        ${o.message ? `<div style="font-size:12px;color:var(--text3);padding:10px;background:var(--bg3);border-radius:8px;">"${o.message}"</div>` : ''}
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);">
+          <span>Valid for: ${o.validity}</span>
+          <span>vs. AI val: ${((o.price / ((listing.valLow + listing.valHigh)/2) - 1) * 100).toFixed(1)}%</span>
+        </div>
+        ${o.status !== 'accepted' && listing.status !== 'sold' ? `
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-gold" style="flex:1;padding:12px;" onclick="acceptOffer('${o.id}','${listing.id}')">Accept Offer</button>
+            <button class="btn btn-ghost" style="padding:12px 16px;" onclick="showToast('Offer declined')">Decline</button>
+          </div>` : ''}
+        ${o.status === 'accepted' ? `<div style="text-align:center;color:var(--green);font-size:13px;font-weight:500;">✓ Offer Accepted — Deal in Progress</div>` : ''}
+      </div>`).join('');
+  }
+  goTo('screen-review-offers');
+}
+
+function acceptOffer(offerId, listingId) {
+  const offer = state.offers.find(o => o.id === offerId);
+  const listing = state.listings.find(l => l.id === listingId);
+  if (!offer || !listing) return;
+  offer.status = 'accepted';
+  listing.status = 'sold';
+  state.offers.forEach(o => { if (o.listingId === listingId && o.id !== offerId) o.status = 'rejected'; });
+  localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
+  localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
+  // Go to deal complete
+  document.getElementById('deal-watch-name').textContent = `${listing.brand} ${listing.model}`;
+  document.getElementById('deal-price').textContent = '$' + offer.price.toLocaleString();
+  document.getElementById('deal-dealer').textContent = offer.dealer;
+  document.getElementById('deal-id').textContent = 'CHR-' + Date.now().toString(36).toUpperCase();
+  updateHomeStats();
+  goTo('screen-deal-done');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MY LISTINGS SCREEN
+// ═══════════════════════════════════════════════════════════════
+function renderMyListings() {
+  const container = document.getElementById('my-listings-container');
+  const empty = document.getElementById('my-listings-empty');
+  const myListings = state.listings.filter(l => l.seller === (state.user?.name || ''));
+  if (myListings.length === 0) { container.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  container.innerHTML = myListings.map(l => `
+    <div class="listing-card" onclick="openListing('${l.id}')">
+      <div style="padding:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:300;">${l.brand}</div>
+            <div style="font-size:13px;color:var(--text2);">${l.model} · ${l.year}</div>
+          </div>
+          <div class="badge ${l.status==='sold'?'badge-green':l.status==='listed'?'badge-gold':'badge-gray'}">${l.status.toUpperCase()}</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+          <span style="font-family:var(--font-mono);font-size:13px;color:var(--gold);">$${l.valLow?.toLocaleString()} – $${l.valHigh?.toLocaleString()}</span>
+          <span class="badge badge-gray" style="font-size:11px;">Auth ${l.authScore}/100</span>
+          ${l.offers.length > 0 ? `<span class="badge badge-blue" style="font-size:11px;">${l.offers.length} offer${l.offers.length>1?'s':''}</span>` : ''}
+        </div>
+        ${l.offers.length > 0 ? `<button class="btn btn-outline btn-sm mt-12" onclick="event.stopPropagation();openListing('${l.id}')">Review Offers →</button>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+// MY OFFERS (Dealer)
+// ═══════════════════════════════════════════════════════════════
+function renderMyOffers() {
+  const container = document.getElementById('my-offers-container');
+  const empty = document.getElementById('my-offers-empty');
+  const dealerName = state.user?.name || '';
+  const myOffers = state.offers.filter(o => o.dealer === dealerName);
+  if (myOffers.length === 0) { container.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  container.innerHTML = myOffers.map(o => {
+    const listing = state.listings.find(l => l.id === o.listingId);
+    if (!listing) return '';
+    const statusClass = { pending: 'badge-gold', accepted: 'badge-green', rejected: 'badge-red' }[o.status] || 'badge-gray';
+    return `<div class="offer-card ${o.status === 'accepted' ? 'accepted' : ''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:300;">${listing.brand} ${listing.model}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${listing.year} · ${(listing.condition||'').replace('_',' ')}</div>
+        </div>
+        <div class="badge ${statusClass}">${o.status.toUpperCase()}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--text3);">Your offer</div>
+        <div style="font-family:var(--font-mono);font-size:18px;color:${o.status==='accepted'?'var(--green)':'var(--gold)'};">$${o.price.toLocaleString()}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);">Valid for: ${o.validity}</div>
+      ${o.status === 'accepted' ? `<div style="background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);border-radius:var(--radius2);padding:10px;font-size:12px;color:var(--green);">✓ Congratulations! Your offer was accepted. The seller will contact you shortly.</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MISC
+// ═══════════════════════════════════════════════════════════════
+function requestHumanAuth() { showToast('Human authentication request sent'); }
+
+function switchTab(idx) {
+  if (idx === 0) { /* already on home, do nothing */ }
+  else if (idx === 1) { goTo('screen-my-listings'); }
+  else if (idx === 3) {
+    // Find a listing belonging to this user that has offers
+    const myListingsWithOffers = state.listings.filter(
+      l => l.seller === (state.user?.name || '') && l.offers.length > 0
+    );
+    if (myListingsWithOffers.length > 0) {
+      state.selectedListing = myListingsWithOffers[0];
+      openReviewOffers(myListingsWithOffers[0]);
+    } else {
+      showToast('No offers received yet');
+    }
+  }
+  else if (idx === 4) { goTo('screen-settings'); }
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEATURE 1: PUSH NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════════
+let notifTimer;
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const perm = await Notification.requestPermission();
+  return perm === 'granted';
+}
+
+async function sendListingNotification(listing) {
+  const title = `New Listing: ${listing.brand} ${listing.model}`;
+  const body = `Auth score ${listing.authScore}/100 · $${listing.valLow.toLocaleString()}–$${listing.valHigh.toLocaleString()}`;
+  // Try native push first
+  const granted = await requestNotifPermission();
+  if (granted && document.visibilityState === 'hidden') {
+    new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%230a0a0a"/><text y="48" font-size="48">⌚</text></svg>' });
+  }
+  // Always show in-app banner
+  setTimeout(() => showNotifBanner('🏪', title, body), 600);
+}
+
+function showNotifBanner(icon, title, body) {
+  document.getElementById('notif-icon').textContent = icon;
+  document.getElementById('notif-title').textContent = title;
+  document.getElementById('notif-body').textContent = body;
+  const banner = document.getElementById('notif-banner');
+  banner.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(dismissNotif, 5000);
+}
+
+function dismissNotif() {
+  document.getElementById('notif-banner').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEATURE 3: PHOTO ZOOM VIEWER
+// ═══════════════════════════════════════════════════════════════
+let viewerPhotos = [];
+let viewerIdx = 0;
+let viewerScale = 1;
+let viewerTouchDist = 0;
+let viewerTouchStart = {x:0, y:0};
+let viewerSwipeStart = 0;
+
+function openPhotoViewer(listingId) {
+  const listing = state.listings.find(l => l.id === listingId);
+  // Use actual uploaded photos if available (current listing), else demo placeholders
+  const photos = (listingId === state.currentListing?.id && state.photos.filter(Boolean).length)
+    ? state.photos.filter(Boolean)
+    : null;
+  viewerPhotos = photos || []; // will show placeholder emoji if empty
+  viewerIdx = 0;
+  viewerScale = 1;
+  const viewer = document.getElementById('photo-viewer');
+  viewer.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderViewerPhoto();
+  setupViewerGestures();
+}
+
+function renderViewerPhoto() {
+  const img = document.getElementById('viewer-img');
+  const counter = document.getElementById('viewer-counter');
+  const dots = document.getElementById('viewer-dots');
+  const total = Math.max(viewerPhotos.length, 1);
+  if (viewerPhotos.length > 0 && viewerPhotos[viewerIdx]) {
+    img.src = viewerPhotos[viewerIdx];
+    img.style.display = '';
+  } else {
+    img.src = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="#181818"/><text x="150" y="180" font-size="120" text-anchor="middle">⌚</text><text x="150" y="240" font-size="16" fill="#5a5550" text-anchor="middle" font-family="sans-serif">No photo uploaded</text></svg>`);
+    img.style.display = '';
+  }
+  img.style.transform = `scale(${viewerScale})`;
+  counter.textContent = `${viewerIdx + 1} / ${total}`;
+  dots.innerHTML = Array.from({length: total}, (_, i) =>
+    `<div class="viewer-dot ${i===viewerIdx?'active':''}"></div>`).join('');
+  document.getElementById('viewer-prev').style.opacity = viewerIdx > 0 ? '1' : '0.2';
+  document.getElementById('viewer-next').style.opacity = viewerIdx < total - 1 ? '1' : '0.2';
+}
+
+function viewerNav(dir) {
+  const total = Math.max(viewerPhotos.length, 1);
+  viewerIdx = Math.max(0, Math.min(total - 1, viewerIdx + dir));
+  viewerScale = 1;
+  renderViewerPhoto();
+}
+
+function closeViewer() {
+  document.getElementById('photo-viewer').classList.remove('open');
+  document.body.style.overflow = '';
+  viewerScale = 1;
+}
+
+function setupViewerGestures() {
+  const viewer = document.getElementById('photo-viewer');
+  // Remove old listeners by replacing
+  const fresh = viewer.cloneNode(true);
+  viewer.parentNode.replaceChild(fresh, viewer);
+  // Re-attach close/nav button listeners
+  fresh.querySelector('#viewer-close').onclick = closeViewer;
+  fresh.querySelector('#viewer-prev').onclick = () => viewerNav(-1);
+  fresh.querySelector('#viewer-next').onclick = () => viewerNav(1);
+  // Touch gestures: pinch zoom + swipe
+  fresh.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      viewerTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    } else if (e.touches.length === 1) {
+      viewerSwipeStart = e.touches[0].clientX;
+    }
+  }, {passive: true});
+  fresh.addEventListener('touchmove', e => {
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      viewerScale = Math.min(4, Math.max(1, viewerScale * (dist / viewerTouchDist)));
+      viewerTouchDist = dist;
+      const img = fresh.querySelector('#viewer-img');
+      if (img) img.style.transform = `scale(${viewerScale})`;
+    }
+  }, {passive: true});
+  fresh.addEventListener('touchend', e => {
+    if (e.changedTouches.length === 1 && viewerScale <= 1.1) {
+      const dx = e.changedTouches[0].clientX - viewerSwipeStart;
+      if (Math.abs(dx) > 50) viewerNav(dx < 0 ? 1 : -1);
+    }
+  }, {passive: true});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEATURE 4: PRICE HISTORY CHART
+// ═══════════════════════════════════════════════════════════════
+let chartListing = null;
+let chartPeriod = '1y';
+
+function openPriceChart(listingId) {
+  chartListing = state.listings.find(l => l.id === listingId);
+  if (!chartListing) return;
+  chartPeriod = '1y';
+  document.getElementById('chart-watch-title').textContent = `${chartListing.brand} ${chartListing.model}`;
+  document.getElementById('chart-watch-sub').textContent = `${chartListing.year} · Ref. ${chartListing.ref || 'N/A'} · ${(chartListing.condition||'').replace('_',' ')}`;
+  renderPriceChart();
+  goTo('screen-price-chart');
+}
+
+function setChartPeriod(period, el) {
+  chartPeriod = period;
+  document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderPriceChart();
+}
+
+function generatePriceHistory(listing, months) {
+  const base = Math.round((listing.valLow + listing.valHigh) / 2);
+  const trend = { 'Rolex': 0.08, 'Patek Philippe': 0.12, 'Audemars Piguet': 0.06, 'Omega': 0.03, 'IWC': 0.02, 'Richard Mille': 0.15 }[listing.brand] || 0.04;
+  const points = [];
+  for (let i = months; i >= 0; i--) {
+    const t = (months - i) / months;
+    const noise = (Math.sin(i * 2.7) * 0.04 + Math.sin(i * 1.3) * 0.03);
+    const growth = trend * t;
+    points.push(Math.round(base * (1 - growth + noise) / 100) * 100);
+  }
+  return points;
+}
+
+function renderPriceChart() {
+  if (!chartListing) return;
+  const monthCounts = { '3m': 3, '6m': 6, '1y': 12, 'all': 24 };
+  const months = monthCounts[chartPeriod] || 12;
+  const data = generatePriceHistory(chartListing, months);
+  const minVal = Math.min(...data);
+  const maxVal = Math.max(...data);
+  const range = maxVal - minVal || 1;
+  const W = 340, H = 160, PAD = 10;
+  const pts = data.map((v, i) => ({
+    x: PAD + (i / (data.length - 1)) * (W - PAD * 2),
+    y: H - PAD - ((v - minVal) / range) * (H - PAD * 2)
+  }));
+  const linePath = 'M' + pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L');
+  const areaPath = linePath + `L${pts[pts.length-1].x},${H}L${pts[0].x},${H}Z`;
+  document.getElementById('chart-line-path').setAttribute('d', linePath);
+  document.getElementById('chart-area-path').setAttribute('d', areaPath);
+  // Dots at key points
+  const dotIdxs = [0, Math.floor(data.length/3), Math.floor(data.length*2/3), data.length-1];
+  document.getElementById('chart-dots').innerHTML = dotIdxs.map(i =>
+    `<circle cx="${pts[i].x.toFixed(1)}" cy="${pts[i].y.toFixed(1)}" r="4" class="chart-dot"/>`
+  ).join('');
+  // Y labels
+  document.getElementById('chart-labels').innerHTML = [0, 0.5, 1].map(frac => {
+    const val = minVal + frac * range;
+    const y = H - PAD - frac * (H - PAD * 2);
+    return `<text x="${W - 2}" y="${y + 4}" class="chart-label" text-anchor="end">$${(val/1000).toFixed(0)}k</text>
+            <line x1="${PAD}" y1="${y}" x2="${W - 40}" y2="${y}" stroke="var(--border)" stroke-width="0.5"/>`;
+  }).join('');
+  // X labels
+  const now = new Date();
+  const xLabels = [0, Math.floor(data.length/2), data.length-1].map(i => {
+    const d = new Date(now);
+    d.setMonth(d.getMonth() - (data.length - 1 - i));
+    return d.toLocaleString('default', {month:'short'});
+  });
+  document.getElementById('chart-x-labels').innerHTML = xLabels.map(l =>
+    `<span style="font-size:10px;color:var(--text3);font-family:var(--font-mono);">${l}</span>`).join('');
+  // Stats
+  const current = data[data.length - 1];
+  const first = data[0];
+  const pct = ((current - first) / first * 100).toFixed(1);
+  const isUp = current >= first;
+  document.getElementById('chart-current').textContent = '$' + current.toLocaleString();
+  document.getElementById('chart-change').textContent = `${isUp?'+':''}${pct}%`;
+  document.getElementById('chart-change').style.color = isUp ? 'var(--green)' : 'var(--red)';
+  // Recent trades (simulated)
+  const trades = [
+    { date: '2 days ago', price: data[data.length-1], source: 'Private sale' },
+    { date: '3 weeks ago', price: data[data.length-3] || data[0], source: 'Auction' },
+    { date: '2 months ago', price: data[Math.max(0, data.length-8)], source: 'Dealer' },
+  ];
+  document.getElementById('chart-trades').innerHTML = trades.map(t =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);">
+      <div><div style="font-size:13px;">${t.source}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${t.date}</div></div>
+      <div style="font-family:var(--font-mono);font-size:15px;color:var(--gold);">$${t.price.toLocaleString()}</div>
+    </div>`).join('');
+  // Market stats
+  document.getElementById('chart-market-stats').innerHTML = [
+    { label: '52-week Low', val: '$' + Math.min(...data).toLocaleString() },
+    { label: '52-week High', val: '$' + Math.max(...data).toLocaleString() },
+    { label: 'Avg. Days to Sell', val: { high: '8 days', medium: '21 days', low: '45+ days' }[chartListing.liquidity] || '14 days' },
+    { label: 'Liquidity', val: (chartListing.liquidity || 'medium').toUpperCase() },
+  ].map((s, i, arr) => `<div style="padding:12px 16px;${i<arr.length-1?'border-bottom:1px solid var(--border);':''}display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:13px;color:var(--text2);">${s.label}</span>
+    <span style="font-family:var(--font-mono);font-size:13px;color:var(--gold);">${s.val}</span>
+  </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEATURE 5: DEALER KYC VERIFICATION
+// ═══════════════════════════════════════════════════════════════
+let kycUploaded = { 1: false, 2: false, 3: false };
+
+function kycUpload(step) {
+  // Simulate file selection
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*,.pdf';
+  input.onchange = (e) => {
+    if (!e.target.files[0]) return;
+    kycUploaded[step] = true;
+    const area = document.getElementById(`kyc-upload${step}`);
+    const content = document.getElementById(`kyc-upload${step}-content`);
+    const num = document.getElementById(`kyc-step${step}-num`);
+    const icons = { 1:'📄', 2:'🪪', 3:'🏢' };
+    area.classList.add('uploaded');
+    content.innerHTML = `<div style="font-size:22px;margin-bottom:4px;">✅</div><div style="font-size:13px;color:var(--green);">${e.target.files[0].name}</div>`;
+    num.classList.add('done');
+    num.textContent = '✓';
+    showToast(`Document ${step} uploaded ✓`);
+  };
+  input.click();
+}
+
+function submitKYC() {
+  const bizName = document.getElementById('kyc-biz-name').value.trim();
+  const regNo = document.getElementById('kyc-reg-no').value.trim();
+  if (!bizName || !regNo) { showToast('Please fill in business details'); return; }
+  const uploadedCount = Object.values(kycUploaded).filter(Boolean).length;
+  if (uploadedCount < 2) { showToast('Please upload at least 2 documents'); return; }
+  // Update status banner
+  document.getElementById('kyc-status-icon').textContent = '🔄';
+  document.getElementById('kyc-status-title').textContent = 'Under Review';
+  document.getElementById('kyc-status-sub').textContent = 'Your documents are being reviewed. Expected: 1–2 business days.';
+  document.getElementById('kyc-status-banner').style.background = 'rgba(85,153,224,0.08)';
+  document.getElementById('kyc-status-banner').style.borderColor = 'var(--blue)';
+  document.getElementById('kyc-submit-btn').disabled = true;
+  document.getElementById('kyc-submit-btn').textContent = '✓ Submitted — Under Review';
+  // Hide KYC CTA on home
+  const cta = document.getElementById('kyc-cta');
+  if (cta) cta.innerHTML = `<span style="font-size:20px;">🔄</span><div style="flex:1;"><div style="font-size:13px;color:var(--text);">KYC Under Review</div><div style="font-size:11px;color:var(--text3);">Expected approval in 1–2 business days</div></div>`;
+  showToast('KYC submitted for review ✓');
+  setTimeout(() => goBack(), 1200);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEATURE 6: SAVED WATCHLIST
+// ═══════════════════════════════════════════════════════════════
+function getWatchlist() {
+  return JSON.parse(localStorage.getItem('chronos_watchlist') || '[]');
+}
+
+function isWatchlisted(listingId) {
+  return getWatchlist().includes(listingId);
+}
+
+function toggleWatchlist(listingId) {
+  let wl = getWatchlist();
+  const btn = document.getElementById(`bm-${listingId}`);
+  if (wl.includes(listingId)) {
+    wl = wl.filter(id => id !== listingId);
+    if (btn) btn.classList.remove('saved');
+    showToast('Removed from watchlist');
+  } else {
+    wl.push(listingId);
+    if (btn) { btn.classList.add('saved'); }
+    showToast('🔖 Saved to watchlist');
+  }
+  localStorage.setItem('chronos_watchlist', JSON.stringify(wl));
+  // Animate bookmark
+  if (btn) { btn.style.transform = 'scale(1.3)'; setTimeout(() => btn.style.transform = '', 200); }
+}
+
+function renderWatchlist() {
+  const container = document.getElementById('watchlist-container');
+  const empty = document.getElementById('watchlist-empty');
+  const wl = getWatchlist();
+  const saved = state.listings.filter(l => wl.includes(l.id));
+  if (saved.length === 0) { container.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  container.innerHTML = saved.map(l => `
+    <div class="listing-card" onclick="openListing('${l.id}')">
+      <div style="position:relative;">
+        <div style="background:var(--bg3);height:130px;display:flex;align-items:center;justify-content:center;font-size:44px;">⌚</div>
+        <button class="bookmark-btn saved" onclick="event.stopPropagation();toggleWatchlist('${l.id}');renderWatchlist()" id="bm-wl-${l.id}">🔖</button>
+      </div>
+      <div class="listing-info">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="listing-brand">${l.brand}</div>
+            <div class="listing-model">${l.model} · ${l.year}</div>
+          </div>
+          <div class="badge badge-gold">${l.status.toUpperCase()}</div>
+        </div>
+        <div class="listing-meta">
+          <div class="listing-price">$${l.valLow.toLocaleString()} – $${l.valHigh.toLocaleString()}</div>
+          <div style="font-size:12px;color:var(--green);font-family:var(--font-mono);">${l.authScore}</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn btn-gold btn-sm" style="flex:1;font-size:12px;" onclick="event.stopPropagation();openListing('${l.id}')">Make Offer</button>
+          <button class="btn btn-ghost btn-sm" style="font-size:12px;padding:8px;" onclick="event.stopPropagation();openPriceChart('${l.id}')">📈</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('fade');
+    setTimeout(() => splash.remove(), 800);
+  }, 2200);
+
+  // Register service worker for PWA installability
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      const CACHE = 'chronos-v1';
+      const ASSETS = ['./', './index.html'];
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+      });
+      self.addEventListener('activate', e => {
+        e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+      });
+      self.addEventListener('fetch', e => {
+        if (e.request.method !== 'GET') return;
+        if (e.request.url.includes('fonts.googleapis') || e.request.url.includes('api.anthropic')) return;
+        e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+          return res;
+        })));
+      });
+    `;
+    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+    const swURL = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swURL, { scope: './' }).catch(() => {});
+  }
+
+  // iOS PWA install prompt banner
+  const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+  const isStandalone = window.navigator.standalone === true;
+  if (isIOS && !isStandalone && !localStorage.getItem('pwa-dismissed')) {
+    setTimeout(() => {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:1px solid #333;padding:14px 16px 30px;z-index:9999;display:flex;align-items:center;gap:12px;max-width:430px;margin:0 auto;';
+      banner.innerHTML = `
+        <div style="font-size:28px;">⌚</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:500;color:#f0ede8;">Install CHRONOS</div>
+          <div style="font-size:11px;color:#9a9590;margin-top:2px;">Tap <strong style="color:#c9a84c;">Share</strong> then <strong style="color:#c9a84c;">"Add to Home Screen"</strong></div>
+        </div>
+        <div onclick="this.parentElement.remove();localStorage.setItem('pwa-dismissed','1')" style="color:#5a5550;font-size:20px;cursor:pointer;padding:4px;">✕</div>
+      `;
+      document.body.appendChild(banner);
+    }, 4000);
+  }
+
+  // Android/Chrome install prompt
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!localStorage.getItem('pwa-dismissed')) {
+      setTimeout(() => {
+        const banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:1px solid #333;padding:14px 16px 30px;z-index:9999;display:flex;align-items:center;gap:12px;max-width:430px;margin:0 auto;';
+        banner.innerHTML = `
+          <div style="font-size:28px;">⌚</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;color:#f0ede8;">Install CHRONOS App</div>
+            <div style="font-size:11px;color:#9a9590;margin-top:2px;">Add to your home screen for the best experience</div>
+          </div>
+          <button id="install-btn" style="background:linear-gradient(135deg,#7a5c1e,#c9a84c);color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;">Install</button>
+          <div onclick="this.parentElement.remove();localStorage.setItem('pwa-dismissed','1')" style="color:#5a5550;font-size:20px;cursor:pointer;padding:4px;">✕</div>
+        `;
+        document.body.appendChild(banner);
+        document.getElementById('install-btn').addEventListener('click', () => {
+          banner.remove();
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(() => { deferredPrompt = null; localStorage.setItem('pwa-dismissed','1'); });
+        });
+      }, 3000);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
