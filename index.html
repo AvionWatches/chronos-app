@@ -4,6 +4,9 @@
 <head>
 <meta name="supported-color-schemes" content="dark"/>
 <meta name="color-scheme" content="dark"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>CHRONOS — Luxury Watch Marketplace</title>
@@ -102,96 +105,62 @@
 .nav-icon { font-size: 20px; line-height: 1; }
 .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(–gold); position: absolute; top: 6px; right: calc(50% - 14px); }
 
-/* BUTTONS */
-.btn { width: 100%; padding: 16px; border: none; border-radius: var(–radius); font-family: var(–font-body); font-size: 15px; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+/* BUTTONS — all with !important to prevent iOS Safari from overriding */
+.btn { width: 100% !important; padding: 16px !important; border-radius: var(–radius) !important; font-family: var(–font-body) !important; font-size: 15px !important; font-weight: 500 !important; letter-spacing: 0.05em !important; cursor: pointer !important; transition: all .2s !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; -webkit-appearance: none !important; appearance: none !important; }
 .btn:active { transform: scale(0.98); }
-.btn-gold { background: linear-gradient(135deg, var(–gold3), var(–gold)); color: #0a0a0a; }
-.btn-gold:hover { background: linear-gradient(135deg, var(–gold), var(–gold2)); }
-.btn-outline { background: transparent; color: var(–gold); border: 1px solid var(–gold3); }
-.btn-outline:active { background: var(–gold3); }
-.btn-ghost { background: var(–bg3); color: var(–text); border: 1px solid var(–border2); }
-.btn-danger { background: transparent; color: var(–red); border: 1px solid #5a2222; }
-.btn-sm { padding: 10px 16px; font-size: 13px; border-radius: var(–radius2); width: auto; }
-.btn:disabled { opacity: 0.4; pointer-events: none; }
-/* Apple Sign In button — needs explicit overrides for iOS Safari */
-.btn-apple {
-background: #fff !important;
-background-color: #fff !important;
-color: #000 !important;
--webkit-text-fill-color: #000 !important;
-border: none !important;
-}
+.btn-gold { background: linear-gradient(135deg, var(–gold3), var(–gold)) !important; background-color: var(–gold) !important; color: #0a0a0a !important; -webkit-text-fill-color: #0a0a0a !important; border: none !important; }
+.btn-gold:hover { background: linear-gradient(135deg, var(–gold), var(–gold2)) !important; }
+.btn-outline { background: transparent !important; background-color: transparent !important; color: var(–gold) !important; -webkit-text-fill-color: var(–gold) !important; border: 1px solid var(–gold3) !important; }
+.btn-outline:active { background: var(–gold3) !important; background-color: var(–gold3) !important; }
+.btn-ghost { background: var(–bg3) !important; background-color: #181818 !important; color: var(–text) !important; -webkit-text-fill-color: #f0ede8 !important; border: 1px solid var(–border2) !important; }
+.btn-danger { background: transparent !important; background-color: transparent !important; color: var(–red) !important; -webkit-text-fill-color: var(–red) !important; border: 1px solid #5a2222 !important; }
+.btn-sm { padding: 10px 16px !important; font-size: 13px !important; border-radius: var(–radius2) !important; width: auto !important; }
+.btn:disabled { opacity: 0.4 !important; pointer-events: none !important; }
+/* Apple Sign In */
+.btn-apple { background: #ffffff !important; background-color: #ffffff !important; color: #000000 !important; -webkit-text-fill-color: #000000 !important; border: none !important; }
 .btn-apple:active { background: #e8e8e8 !important; background-color: #e8e8e8 !important; }
 
-/* iOS SAFARI OVERRIDE — prevent Safari from applying native light styling */
-input, select, textarea {
--webkit-appearance: none;
--moz-appearance: none;
-appearance: none;
-background-color: var(–bg3);
-color: var(–text);
-border-radius: var(–radius2);
-font-family: var(–font-body);
--webkit-text-fill-color: var(–text);
-opacity: 1;
-}
-input::placeholder, textarea::placeholder {
-color: var(–text3);
--webkit-text-fill-color: var(–text3);
-opacity: 1;
-}
-input:focus, select:focus, textarea:focus {
-outline: none;
--webkit-tap-highlight-color: transparent;
-}
-/* Prevent iOS zoom on input focus */
-input, select, textarea {
-font-size: 16px !important;
-}
-/* Fix select arrow on iOS */
-select {
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%239a9590’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”);
-background-repeat: no-repeat;
-background-position: right 16px center;
-padding-right: 40px;
-}
-select option {
-background-color: var(–bg2);
-color: var(–text);
-}
-/* Only apply appearance reset to buttons, but do NOT override background/color
-so .btn-gold, .btn-ghost etc. keep their own styles intact */
-button {
--webkit-appearance: none;
-appearance: none;
-cursor: pointer;
--webkit-tap-highlight-color: transparent;
-}
-/* Ensure .btn text is always visible on iOS — use inherit so each btn variant controls its own colour */
-.btn {
--webkit-text-fill-color: inherit;
-}
-/* btn-gold text must be dark */
-.btn-gold {
--webkit-text-fill-color: #0a0a0a;
-}
-/* btn-ghost, btn-outline text must follow their color */
-.btn-ghost, .btn-outline {
--webkit-text-fill-color: var(–text);
-}
-.btn-outline {
--webkit-text-fill-color: var(–gold);
-}
-.btn-danger {
--webkit-text-fill-color: var(–red);
-}
-.input-group { display: flex; flex-direction: column; gap: 6px; }
-.input-label { font-size: 11px; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
-.input { width: 100%; background: var(–bg3); border: 1px solid var(–border2); border-radius: var(–radius2); padding: 14px 16px; color: var(–text); font-family: var(–font-body); font-size: 15px; outline: none; transition: border-color .2s; }
-.input:focus { border-color: var(–gold3); }
-.input::placeholder { color: var(–text3); }
-select.input { appearance: none; background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%239a9590’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
-select.input option { background: var(–bg2); }
+/* iOS SAFARI — force dark styling on ALL form elements */
+
+- { -webkit-tap-highlight-color: transparent; }
+  input, select, textarea {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background: #181818 !important;
+  background-color: #181818 !important;
+  color: #f0ede8 !important;
+  -webkit-text-fill-color: #f0ede8 !important;
+  border: 1px solid #333333 !important;
+  border-radius: 8px !important;
+  font-family: ‘DM Sans’, sans-serif !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+  }
+  input::placeholder, textarea::placeholder {
+  color: #5a5550 !important;
+  -webkit-text-fill-color: #5a5550 !important;
+  opacity: 1 !important;
+  }
+  input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: #7a5c1e !important;
+  }
+  select {
+  background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%239a9590’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”) !important;
+  background-repeat: no-repeat !important;
+  background-position: right 16px center !important;
+  padding-right: 40px !important;
+  }
+  select option { background-color: #111111; color: #f0ede8; }
+  button { -webkit-appearance: none !important; appearance: none !important; cursor: pointer !important; }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-label { font-size: 11px; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+  .input { width: 100%; background: #181818; background-color: #181818; border: 1px solid #333333; border-radius: 8px; padding: 14px 16px; color: #f0ede8; font-family: ‘DM Sans’, sans-serif; font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; appearance: none; }
+  .input:focus { border-color: #7a5c1e; }
+  .input::placeholder { color: #5a5550; -webkit-text-fill-color: #5a5550; }
+  select.input { background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%239a9590’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+  select.input option { background: #111111; color: #f0ede8; }
 
 /* CARDS */
 .card { background: var(–bg2); border: 1px solid var(–border); border-radius: var(–radius); overflow: hidden; }
