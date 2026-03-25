@@ -124,7 +124,7 @@ border: none !important;
 .btn-apple:active { background: #e8e8e8 !important; background-color: #e8e8e8 !important; }
 
 /* iOS SAFARI OVERRIDE — prevent Safari from applying native light styling */
-input, select, textarea, button {
+input, select, textarea {
 -webkit-appearance: none;
 -moz-appearance: none;
 appearance: none;
@@ -159,14 +159,31 @@ select option {
 background-color: var(–bg2);
 color: var(–text);
 }
-/* Buttons should not inherit input background override */
+/* Only apply appearance reset to buttons, but do NOT override background/color
+so .btn-gold, .btn-ghost etc. keep their own styles intact */
 button {
-background-color: transparent;
-border: none;
+-webkit-appearance: none;
+appearance: none;
 cursor: pointer;
-}
-button:active {
 -webkit-tap-highlight-color: transparent;
+}
+/* Ensure .btn text is always visible on iOS — use inherit so each btn variant controls its own colour */
+.btn {
+-webkit-text-fill-color: inherit;
+}
+/* btn-gold text must be dark */
+.btn-gold {
+-webkit-text-fill-color: #0a0a0a;
+}
+/* btn-ghost, btn-outline text must follow their color */
+.btn-ghost, .btn-outline {
+-webkit-text-fill-color: var(–text);
+}
+.btn-outline {
+-webkit-text-fill-color: var(–gold);
+}
+.btn-danger {
+-webkit-text-fill-color: var(–red);
 }
 .input-group { display: flex; flex-direction: column; gap: 6px; }
 .input-label { font-size: 11px; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
