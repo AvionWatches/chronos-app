@@ -105,18 +105,17 @@
 .nav-icon { font-size: 20px; line-height: 1; }
 .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(–gold); position: absolute; top: 6px; right: calc(50% - 14px); }
 
-/* BUTTONS — all with !important to prevent iOS Safari from overriding */
-.btn { width: 100% !important; padding: 16px !important; border-radius: var(–radius) !important; font-family: var(–font-body) !important; font-size: 15px !important; font-weight: 500 !important; letter-spacing: 0.05em !important; cursor: pointer !important; transition: all .2s !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; -webkit-appearance: none !important; appearance: none !important; }
-.btn:active { transform: scale(0.98); }
-.btn-gold { background: linear-gradient(135deg, var(–gold3), var(–gold)) !important; background-color: var(–gold) !important; color: #0a0a0a !important; -webkit-text-fill-color: #0a0a0a !important; border: none !important; }
-.btn-gold:hover { background: linear-gradient(135deg, var(–gold), var(–gold2)) !important; }
-.btn-outline { background: transparent !important; background-color: transparent !important; color: var(–gold) !important; -webkit-text-fill-color: var(–gold) !important; border: 1px solid var(–gold3) !important; }
-.btn-outline:active { background: var(–gold3) !important; background-color: var(–gold3) !important; }
-.btn-ghost { background: var(–bg3) !important; background-color: #181818 !important; color: var(–text) !important; -webkit-text-fill-color: #f0ede8 !important; border: 1px solid var(–border2) !important; }
-.btn-danger { background: transparent !important; background-color: transparent !important; color: var(–red) !important; -webkit-text-fill-color: var(–red) !important; border: 1px solid #5a2222 !important; }
-.btn-sm { padding: 10px 16px !important; font-size: 13px !important; border-radius: var(–radius2) !important; width: auto !important; }
+/* BUTTONS — all hardcoded hex, no CSS variables, !important throughout */
+.btn { width: 100% !important; padding: 16px !important; border-radius: 12px !important; font-family: ‘DM Sans’, sans-serif !important; font-size: 15px !important; font-weight: 500 !important; letter-spacing: 0.05em !important; cursor: pointer !important; transition: all .2s !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; -webkit-appearance: none !important; appearance: none !important; box-sizing: border-box !important; }
+.btn:active { transform: scale(0.98) !important; }
+.btn-gold { background: linear-gradient(135deg, #7a5c1e, #c9a84c) !important; background-color: #c9a84c !important; color: #0a0a0a !important; -webkit-text-fill-color: #0a0a0a !important; border: none !important; }
+.btn-gold:hover { background: linear-gradient(135deg, #c9a84c, #e8c97a) !important; }
+.btn-outline { background: transparent !important; background-color: transparent !important; color: #c9a84c !important; -webkit-text-fill-color: #c9a84c !important; border: 1px solid #7a5c1e !important; }
+.btn-outline:active { background: #7a5c1e !important; background-color: #7a5c1e !important; }
+.btn-ghost { background: #181818 !important; background-color: #181818 !important; color: #f0ede8 !important; -webkit-text-fill-color: #f0ede8 !important; border: 1px solid #333333 !important; }
+.btn-danger { background: transparent !important; background-color: transparent !important; color: #e05555 !important; -webkit-text-fill-color: #e05555 !important; border: 1px solid #5a2222 !important; }
+.btn-sm { padding: 10px 16px !important; font-size: 13px !important; border-radius: 8px !important; width: auto !important; }
 .btn:disabled { opacity: 0.4 !important; pointer-events: none !important; }
-/* Apple Sign In */
 .btn-apple { background: #ffffff !important; background-color: #ffffff !important; color: #000000 !important; -webkit-text-fill-color: #000000 !important; border: none !important; }
 .btn-apple:active { background: #e8e8e8 !important; background-color: #e8e8e8 !important; }
 
@@ -154,6 +153,19 @@
   }
   select option { background-color: #111111; color: #f0ede8; }
   button { -webkit-appearance: none !important; appearance: none !important; cursor: pointer !important; }
+  /* Extra specificity for gold button — must come AFTER bare button rule */
+  button.btn-gold,
+  button.btn.btn-gold,
+  .btn.btn-gold,
+  [class*=“btn-gold”] {
+  background: linear-gradient(135deg, #7a5c1e, #c9a84c) !important;
+  background-color: #c9a84c !important;
+  background-image: linear-gradient(135deg, #7a5c1e, #c9a84c) !important;
+  color: #0a0a0a !important;
+  -webkit-text-fill-color: #0a0a0a !important;
+  border: none !important;
+  opacity: 1 !important;
+  }
   .input-group { display: flex; flex-direction: column; gap: 6px; }
   .input-label { font-size: 11px; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
   .input { width: 100%; background: #181818; background-color: #181818; border: 1px solid #333333; border-radius: 8px; padding: 14px 16px; color: #f0ede8; font-family: ‘DM Sans’, sans-serif; font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; appearance: none; }
@@ -175,9 +187,9 @@
 .badge-gray { background: var(–bg3); color: var(–text2); border: 1px solid var(–border2); }
 
 /* DIVIDER */
-.divider { height: 1px; background: var(–border); margin: 8px 0; }
-.divider-text { display: flex; align-items: center; gap: 12px; color: var(–text3); font-size: 12px; margin: 8px 0; }
-.divider-text::before, .divider-text::after { content: ‘’; flex: 1; height: 1px; background: var(–border); }
+.divider { height: 1px; background: #2a2a2a; margin: 8px 0; }
+.divider-text { display: flex; align-items: center; gap: 12px; color: #5a5550; font-size: 12px; margin: 8px 0; }
+.divider-text::before, .divider-text::after { content: ‘’; flex: 1; height: 1px; background: #2a2a2a; display: block; }
 
 /* SCORE RING */
 .score-ring { position: relative; width: 140px; height: 140px; margin: 0 auto; }
