@@ -237,13 +237,13 @@
 /* PROGRESS STEPS */
 .steps { display: flex; align-items: center; padding: 16px 20px; gap: 0; }
 .step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; }
-.step:not(:last-child)::after { content: ‘’; position: absolute; top: 12px; left: 50%; width: 100%; height: 1px; background: var(–border2); z-index: 0; }
-.step.done:not(:last-child)::after { background: var(–gold3); }
-.step-dot { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(–border2); display: flex; align-items: center; justify-content: center; font-size: 10px; background: var(–bg); z-index: 1; color: var(–text3); transition: all .3s; }
-.step.done .step-dot { border-color: var(–gold); background: var(–gold3); color: var(–gold2); }
-.step.active .step-dot { border-color: var(–gold); color: var(–gold); }
-.step-text { font-size: 9px; color: var(–text3); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; }
-.step.active .step-text { color: var(–gold); }
+.step:not(:last-child)::after { content: ‘’; position: absolute; top: 12px; left: 50%; width: 100%; height: 1px; background: #333333; z-index: 0; }
+.step.done:not(:last-child)::after { background: #7a5c1e; }
+.step-dot { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #333333; display: flex; align-items: center; justify-content: center; font-size: 10px; background: #0a0a0a; z-index: 1; color: #5a5550; transition: all .3s; }
+.step.done .step-dot { border-color: #c9a84c; background: #7a5c1e; color: #e8c97a; }
+.step.active .step-dot { border-color: #c9a84c; color: #c9a84c; background: #0a0a0a; }
+.step-text { font-size: 9px; color: #5a5550; letter-spacing: 0.05em; text-transform: uppercase; text-align: center; }
+.step.active .step-text { color: #c9a84c; }
 
 /* RANGE BAR */
 .valuation-range { background: var(–bg3); border-radius: 8px; padding: 20px; margin: 8px 0; }
@@ -324,9 +324,9 @@
 .chart-tab { padding:4px 10px; font-size:11px; border-radius:20px; cursor:pointer; border:1px solid var(–border2); color:var(–text3); background:transparent; transition:all .2s; }
 .chart-tab.active { background:var(–gold3); border-color:var(–gold3); color:var(–gold2); }
 .chart-svg { width:100%; overflow:visible; }
-.chart-line { fill:none; stroke:var(–gold); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-.chart-area { fill:url(#chartGrad); opacity:0.3; }
-.chart-dot { fill:var(–gold); stroke:var(–bg2); stroke-width:2; }
+.chart-line { fill:none; stroke:#e8c97a; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+.chart-area { fill:url(#chartGrad); opacity:0.5; }
+.chart-dot { fill:#e8c97a; stroke:#0a0a0a; stroke-width:2; }
 .chart-label { font-size:9px; fill:var(–text3); font-family:var(–font-mono); }
 
 /* ── KYC / DEALER VERIFICATION ── */
@@ -365,12 +365,6 @@
 <body>
 
 <!-- SPLASH -->
-
-<div id="splash">
-  <div class="splash-logo">CHRONOS</div>
-  <div class="splash-line"></div>
-  <div class="splash-sub">Luxury Watch Authentication</div>
-</div>
 
 <div id="app">
 
@@ -451,12 +445,12 @@
         </div>
 
         <div class="input-group">
-          <label class="input-label">Mobile Number <span style="color:var(--text3);font-size:10px;">(optional)</span></label>
+          <label class="input-label">Mobile Number *</label>
           <div style="display:flex;gap:8px;">
-            <select class="input" id="signup-cc" style="width:90px;flex-shrink:0;padding-left:10px;padding-right:28px;background-position:right 8px center;">
+            <select class="input" id="signup-cc" style="width:110px;flex-shrink:0;padding-left:8px;padding-right:24px;background-position:right 6px center;font-size:13px;">
+              <option value="+65">🇸🇬 +65</option>
               <option value="+1">🇺🇸 +1</option>
               <option value="+44">🇬🇧 +44</option>
-              <option value="+65">🇸🇬 +65</option>
               <option value="+60">🇲🇾 +60</option>
               <option value="+61">🇦🇺 +61</option>
               <option value="+81">🇯🇵 +81</option>
@@ -522,6 +516,12 @@
     </div>
 
     <div style="font-size:12px;color:var(--text3);margin-bottom:8px;" id="otp-hint">Demo: enter any 6 digits</div>
+
+    <!-- Name field shown only for new login (not signup) -->
+    <div id="otp-name-group" style="display:none;width:100%;margin-bottom:8px;">
+      <div class="input-label" style="margin-bottom:6px;">Your Name *</div>
+      <input class="input w-full" type="text" id="otp-name-input" placeholder="Enter your full name"/>
+    </div>
 
     <button class="btn btn-gold w-full mt-8" onclick="verifyOTP()" id="otp-verify-btn" disabled>Verify & Sign In</button>
 
@@ -704,8 +704,9 @@
             </select>
           </div>
           <div class="input-group">
-            <label class="input-label">Box & Papers</label>
+            <label class="input-label">Box & Papers *</label>
             <select class="input" id="watch-box">
+              <option value="">Select box & papers status</option>
               <option value="full_set">Full Set — Box & Papers</option>
               <option value="box_only">Box Only</option>
               <option value="papers_only">Papers Only</option>
@@ -764,10 +765,9 @@
       <div style="padding:0 20px 32px;">
         <div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px;" id="photo-count-text">0 / 6 photos added</div>
         <div class="api-key-notice">
-          <strong>AI Analysis:</strong> Photos will be analyzed by the CHRONOS AI engine for authenticity markers, movement details, and dial consistency.
+          <strong>AI Analysis:</strong> Photos will be analyzed by the CHRONOS AI engine for authenticity markers, movement details, and dial consistency. All 6 photos are required.
         </div>
         <button class="btn btn-gold mt-16" id="analyze-btn" onclick="startAnalysis()" disabled>Analyze with AI →</button>
-        <button class="btn btn-outline mt-8" onclick="startAnalysis()">Skip Photos (Demo)</button>
       </div>
     </div>
   </div>
@@ -918,9 +918,17 @@
       <div id="val-factors-list" style="display:flex;flex-direction:column;gap:6px;"></div>
     </div>
 
-    <button class="btn btn-gold mt-24" onclick="publishListing()">Publish to Marketplace →</button>
+    <div style="margin-top:20px;">
+      <div class="input-group">
+        <label class="input-label">Your Asking Price (SGD) *</label>
+        <input class="input" type="number" id="asking-price" placeholder="e.g. 12500" style="font-family:var(--font-mono);font-size:20px;" oninput="checkAskingPrice()"/>
+      </div>
+      <div id="asking-price-warning" style="display:none;margin-top:8px;padding:12px;background:rgba(224,85,85,0.08);border:1px solid rgba(224,85,85,0.3);border-radius:8px;font-size:12px;color:#e05555;line-height:1.6;"></div>
+      <div id="asking-price-ok" style="display:none;margin-top:8px;padding:12px;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.3);border-radius:8px;font-size:12px;color:var(--green);">✓ Asking price is within the AI recommended range.</div>
+    </div>
+
+    <button class="btn btn-gold mt-16" onclick="publishListing()">Publish to Marketplace →</button>
     <button class="btn btn-ghost mt-8" onclick="goBack()">← Adjust Details</button>
-  </div>
 </div>
 ```
 
@@ -934,21 +942,38 @@
     <div class="header">
       <div class="back-btn" onclick="goBack()">←</div>
       <div class="header-title">Marketplace</div>
-      <div class="header-action" onclick="showFilters()">Filter</div>
+      <div class="header-action" onclick="showFilters()">Sort / Filter</div>
     </div>
     <div class="scroll">
       <div style="padding:12px 16px;">
-        <div style="display:flex;gap:8px;margin-bottom:12px;">
-          <input class="input" style="flex:1;" placeholder="🔍  Search brand, model..." oninput="filterListings(this.value)"/>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input class="input" style="flex:1;" placeholder="🔍  Search brand, model..." oninput="filterListings(this.value)" id="marketplace-search"/>
+        </div>
+        <!-- Sort row -->
+        <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+          <span style="font-size:11px;color:#5a5550;flex-shrink:0;">Sort:</span>
+          <select class="input" id="marketplace-sort" style="flex:1;padding:8px 10px;font-size:12px;" onchange="renderMarketplace()">
+            <option value="recent">Recent</option>
+            <option value="price_asc">Price ↑</option>
+            <option value="price_desc">Price ↓</option>
+            <option value="score">Auth Score</option>
+            <option value="alpha">A–Z</option>
+          </select>
+          <select class="input" id="marketplace-filter-status" style="flex:1;padding:8px 10px;font-size:12px;" onchange="renderMarketplace()">
+            <option value="all">All Listings</option>
+            <option value="offered">With Offers</option>
+            <option value="no_offer">No Offers</option>
+          </select>
         </div>
         <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;" id="filter-chips">
-          <div class="badge badge-gold" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('')">All</div>
-          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Rolex')">Rolex</div>
-          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Patek Philippe')">Patek</div>
-          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Audemars Piguet')">AP</div>
-          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Omega')">Omega</div>
-          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('IWC')">IWC</div>
+          <div class="badge badge-gold" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('',this)">All</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Rolex',this)">Rolex</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Patek Philippe',this)">Patek</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Audemars Piguet',this)">AP</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('Omega',this)">Omega</div>
+          <div class="badge badge-gray" style="cursor:pointer;flex-shrink:0;" onclick="filterByBrand('IWC',this)">IWC</div>
         </div>
+        <div id="marketplace-count" style="font-size:11px;color:#5a5550;margin-bottom:8px;"></div>
         <div id="marketplace-listings" style="display:flex;flex-direction:column;gap:14px;"></div>
       </div>
     </div>
@@ -997,7 +1022,7 @@
 ```
     <div style="display:flex;flex-direction:column;gap:16px;">
       <div class="input-group">
-        <label class="input-label">Your Offer Price (USD) *</label>
+        <label class="input-label">Your Offer Price (SGD) *</label>
         <input class="input" type="number" id="offer-price" placeholder="e.g. 12000" style="font-family:var(--font-mono);font-size:20px;" oninput="updateOfferCalc()"/>
       </div>
 
@@ -1109,7 +1134,7 @@
     </div>
 
     <button class="btn btn-gold w-full" onclick="goTo('screen-home');updateHomeStats();" style="animation:fadeUp 0.6s 0.6s ease both;">Back to Home</button>
-    <button class="btn btn-outline w-full mt-8" style="animation:fadeUp 0.6s 0.7s ease both;">Download Receipt</button>
+    <button class="btn btn-outline w-full mt-8" onclick="downloadConfirmation()" style="animation:fadeUp 0.6s 0.7s ease both;">Download Confirmation</button>
   </div>
 </div>
 ```
@@ -1249,6 +1274,23 @@
     </div>
     <div class="scroll">
       <div style="padding:16px;">
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input class="input" style="flex:1;" placeholder="🔍  Search watch..." oninput="renderMyOffers()" id="my-offers-search"/>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <select class="input" id="my-offers-sort" style="flex:1;padding:8px 10px;font-size:12px;" onchange="renderMyOffers()">
+            <option value="recent">Recent</option>
+            <option value="price_desc">Price ↓</option>
+            <option value="price_asc">Price ↑</option>
+          </select>
+          <select class="input" id="my-offers-filter" style="flex:1;padding:8px 10px;font-size:12px;" onchange="renderMyOffers()">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Declined</option>
+            <option value="countered">Countered</option>
+          </select>
+        </div>
         <div id="my-offers-container" style="display:flex;flex-direction:column;gap:12px;"></div>
         <div id="my-offers-empty" style="text-align:center;padding:48px 0;color:var(--text3);display:none;">
           <div style="font-size:40px;margin-bottom:12px;">💬</div>
@@ -1317,9 +1359,7 @@
       <div class="input-group">
         <label class="input-label">Country of Registration</label>
         <select class="input" id="kyc-country">
-          <option>United Kingdom</option><option>United States</option><option>Singapore</option>
-          <option>Switzerland</option><option>Germany</option><option>France</option>
-          <option>Hong Kong</option><option>UAE</option><option>Australia</option><option>Japan</option>
+          <option value="SG">🇸🇬 Singapore</option>
         </select>
       </div>
       <div class="input-group">
@@ -1423,9 +1463,10 @@
 
     <!-- Period tabs -->
     <div class="chart-tabs" style="margin-bottom:4px;">
-      <div class="chart-tab active" onclick="setChartPeriod('3m',this)">3M</div>
+      <div class="chart-tab" onclick="setChartPeriod('1m',this)">1M</div>
+      <div class="chart-tab" onclick="setChartPeriod('3m',this)">3M</div>
       <div class="chart-tab" onclick="setChartPeriod('6m',this)">6M</div>
-      <div class="chart-tab" onclick="setChartPeriod('1y',this)">1Y</div>
+      <div class="chart-tab active" onclick="setChartPeriod('1y',this)">1Y</div>
       <div class="chart-tab" onclick="setChartPeriod('all',this)">All</div>
     </div>
 
@@ -1434,8 +1475,8 @@
       <svg id="price-chart-svg" class="chart-svg" height="180" viewBox="0 0 340 180">
         <defs>
           <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.6"/>
-            <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+            <stop offset="0%" stop-color="#e8c97a" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.02"/>
           </linearGradient>
         </defs>
         <path id="chart-area-path" class="chart-area" d=""/>
@@ -1454,6 +1495,89 @@
     <!-- Market stats -->
     <div class="section-title mt-16">Market Data</div>
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;" id="chart-market-stats"></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: HUMAN AUTHENTICATION
+  ═══════════════════════════════════════════ -->
+
+  <div class="screen hidden" id="screen-human-auth">
+    <div class="header">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div class="header-title">Expert Authentication</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="scroll">
+      <div style="padding:20px 20px 40px;">
+        <div style="background:linear-gradient(135deg,#1a1508,#111);border:1px solid var(--gold3);border-radius:var(--radius);padding:20px;margin-bottom:24px;text-align:center;">
+          <div style="font-size:36px;margin-bottom:8px;">🔍</div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--gold);">Human Expert Authentication</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:8px;line-height:1.6;">Our certified experts physically examine your watch and provide an officially certified authentication certificate.</div>
+        </div>
+
+```
+    <div class="section-title">Select Authentication Provider</div>
+    <div id="auth-provider-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <!-- Providers rendered by JS -->
+    </div>
+
+    <div id="selected-provider-details" style="display:none;background:var(--bg2);border:1px solid var(--gold3);border-radius:var(--radius);padding:16px;margin-bottom:20px;">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Selected Provider</div>
+      <div style="font-size:16px;font-weight:500;" id="sel-provider-name">—</div>
+      <div style="display:flex;justify-content:space-between;margin-top:12px;">
+        <div><div style="font-size:10px;color:var(--text3);">Fee</div><div style="font-family:var(--font-mono);font-size:15px;color:var(--gold);" id="sel-provider-fee">—</div></div>
+        <div><div style="font-size:10px;color:var(--text3);">Turnaround</div><div style="font-size:13px;" id="sel-provider-time">—</div></div>
+        <div><div style="font-size:10px;color:var(--text3);">Location</div><div style="font-size:13px;" id="sel-provider-loc">—</div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" id="human-auth-submit-btn" onclick="submitHumanAuth()" disabled>Request Authentication →</button>
+    <button class="btn btn-ghost mt-8" onclick="goBack()">Cancel</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ── HUMAN AUTH CONFIRMATION ── -->
+
+  <div class="screen hidden" id="screen-human-auth-confirm">
+    <div class="scroll">
+      <div style="padding:60px 28px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <div style="font-size:56px;margin-bottom:20px;">✅</div>
+        <div style="font-family:var(--font-display);font-size:30px;font-weight:300;color:var(--gold);">Request Submitted</div>
+        <div style="font-size:14px;color:var(--text3);margin-top:8px;line-height:1.7;">Your human authentication request has been received.</div>
+        <div style="width:50px;height:1px;background:var(--gold3);margin:24px auto;"></div>
+
+```
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;width:100%;margin-bottom:24px;text-align:left;">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">What Happens Next</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:24px;height:24px;background:var(--gold3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;">1</div>
+          <span style="font-size:13px;color:var(--text2);">Our team will review your listing and contact you within <strong style="color:var(--text);">3–5 working days</strong></span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:24px;height:24px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);flex-shrink:0;">2</div>
+          <span style="font-size:13px;color:var(--text2);">An appointment will be scheduled at the expert's location</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:24px;height:24px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);flex-shrink:0;">3</div>
+          <span style="font-size:13px;color:var(--text2);">Physical inspection and a certified authentication certificate issued</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(201,168,76,0.06);border:1px solid var(--gold3);border-radius:var(--radius2);padding:14px;width:100%;margin-bottom:24px;">
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;">📧 A confirmation email will be sent to <strong style="color:var(--gold);" id="human-auth-email">your email</strong> with appointment details.</div>
+    </div>
+
+    <button class="btn btn-gold w-full" onclick="goTo('screen-home')">Back to Home</button>
+    <button class="btn btn-ghost w-full mt-8" onclick="goTo('screen-auth-result')">← Back to Auth Result</button>
   </div>
 </div>
 ```
@@ -1483,6 +1607,10 @@
   </div>
   <div onclick="dismissNotif()" style="color:var(--text3);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0;">✕</div>
 </div>
+
+<!-- ── TOAST ── -->
+
+<div id="toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
@@ -1563,6 +1691,7 @@ function goTo(screenId) {
   if (screenId === 'screen-my-listings') setTimeout(renderMyListings, 80);
   if (screenId === 'screen-my-offers') setTimeout(renderMyOffers, 80);
   if (screenId === 'screen-watchlist') setTimeout(renderWatchlist, 80);
+  if (screenId === 'screen-human-auth') { /* handled by requestHumanAuth */ }
 }
 
 function goBack() {
@@ -1644,6 +1773,7 @@ function handleSignup() {
   const role = document.getElementById('signup-role').value;
   if (!name) { showToast('Please enter your full name'); return; }
   if (!email || !email.includes('@')) { showToast('Please enter a valid email address'); return; }
+  if (phone.length < 6) { showToast('Please enter a valid mobile number'); return; }
   pendingAuth = { phone, cc, name, email, role, source: 'email' };
   launchOTPScreen(email);
 }
@@ -1666,6 +1796,15 @@ function launchOTPScreen(displayEmail) {
     } else sec.style.display = 'none';
   });
   goTo('screen-otp');
+  // Show name field only for login flow (signup already has name)
+  const nameGroup = document.getElementById('otp-name-group');
+  const nameInput = document.getElementById('otp-name-input');
+  if (!pendingAuth.name) {
+    nameGroup.style.display = '';
+    if (nameInput) nameInput.value = '';
+  } else {
+    nameGroup.style.display = 'none';
+  }
   // Focus first box after transition
   setTimeout(() => document.querySelector('.otp-box')?.focus(), 400);
 }
@@ -1697,12 +1836,17 @@ function checkOTPComplete() {
 function verifyOTP() {
   const boxes = document.querySelectorAll('.otp-box');
   const entered = Array.from(boxes).map(b => b.value).join('');
-  // In demo: accept the shown code OR any 6 digits
-  if (entered.length === 6) {
-    completePhoneLogin();
-  } else {
-    showToast('Please enter all 6 digits');
+  if (entered.length < 6) { showToast('Please enter all 6 digits'); return; }
+  if (entered !== otpCode) {
+    showToast('Incorrect OTP. Please try again.');
+    // Shake the boxes
+    boxes.forEach(b => { b.style.borderColor = '#e05555'; });
+    setTimeout(() => boxes.forEach(b => { b.style.borderColor = ''; b.value = ''; b.classList.remove('filled'); }), 1200);
+    document.querySelectorAll('.otp-box')[0]?.focus();
+    document.getElementById('otp-verify-btn').disabled = true;
+    return;
   }
+  completePhoneLogin();
 }
 
 function resendOTP() {
@@ -1712,19 +1856,19 @@ function resendOTP() {
 }
 
 function completePhoneLogin() {
-  // If no name (login flow), derive from email
-  const name = pendingAuth.name || (pendingAuth.email ? pendingAuth.email.split('@')[0].replace(/[._\-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()).trim() : 'CHRONOS User');
+  const nameFromField = document.getElementById('otp-name-input')?.value.trim();
+  const name = pendingAuth.name || nameFromField || '';
+  if (!name) { showToast('Please enter your name'); return; }
   const user = {
     name,
     phone: pendingAuth.phone ? (pendingAuth.cc + ' ' + pendingAuth.phone) : '',
     email: pendingAuth.email || '',
-    role: pendingAuth.role,
+    role: pendingAuth.role || 'seller',
     source: 'email',
     avatar: '📧'
   };
   localStorage.setItem('chronos_email_registered', user.email);
   loginUser(user);
-  // Prompt biometric enrolment after a short delay
   setTimeout(() => offerBiometricEnrolment(), 1500);
 }
 
@@ -1961,11 +2105,26 @@ function updateHomeForRole(role) {
   if (role === 'dealer') setTimeout(() => requestNotifPermission(), 2000);
 }
 
+function downloadConfirmation() {
+  const watchName = document.getElementById('deal-watch-name')?.textContent || 'Watch';
+  const price = document.getElementById('deal-price')?.textContent || '—';
+  const dealer = document.getElementById('deal-dealer')?.textContent || '—';
+  const txId = document.getElementById('deal-id')?.textContent || '—';
+  const date = new Date().toLocaleString();
+  const content = `CHRONOS MARKETPLACE — DEAL CONFIRMATION\n${'='.repeat(44)}\n\nTransaction ID: ${txId}\nDate: ${date}\n\nWatch: ${watchName}\nAccepted Price: ${price}\nDealer: ${dealer}\nSeller: ${state.user?.name || '—'}\n\n${'='.repeat(44)}\nNEXT STEPS\n1. Dealer will contact you within 24 hours\n2. Arrange physical inspection & handover\n3. Payment processed via secure escrow\n${'='.repeat(44)}\n\nThis document confirms the deal has been agreed between both parties on CHRONOS Marketplace.\n\nCHRONOS © ${new Date().getFullYear()}`;
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `CHRONOS_Confirmation_${txId}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('✓ Confirmation downloaded');
+}
+
 function saveRecoveryEmail() {
   const email = document.getElementById('settings-recovery-email').value.trim();
-  if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email address'); return; }
   if (state.user) { state.user.email = email; localStorage.setItem('chronos_user', JSON.stringify(state.user)); }
-  showToast('Recovery email saved ✓');
+  showToast('✓ Email address saved');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1973,19 +2132,24 @@ function saveRecoveryEmail() {
 // ═══════════════════════════════════════════════════════════════
 function populateDemoListings() {
   const userName = state.user?.name || 'Demo Seller';
+  // Generate demo photo placeholders (coloured SVG watches)
+  const demoPhoto = (color, brand) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><rect width="400" height="400" fill="#${color}"/><circle cx="200" cy="200" r="140" fill="none" stroke="#c9a84c" stroke-width="8"/><circle cx="200" cy="200" r="120" fill="#0a0a0a"/><text x="200" y="185" font-family="serif" font-size="22" fill="#c9a84c" text-anchor="middle">${brand}</text><line x1="200" y1="80" x2="200" y2="200" stroke="#c9a84c" stroke-width="4" stroke-linecap="round"/><line x1="200" y1="200" x2="260" y2="160" stroke="#e8c97a" stroke-width="3" stroke-linecap="round"/><circle cx="200" cy="200" r="6" fill="#c9a84c"/></svg>`)}`;
+
+  const makePhotos = (color, brand) => Array(6).fill(demoPhoto(color, brand));
+
   if (state.listings.length === 0) {
     state.listings = [
-      { id: 'L001', brand: 'Rolex', model: 'Submariner Date', ref: '116610LN', year: 2019, condition: 'excellent', box: 'full_set', authScore: 91, authConfidence: 'high', concerns: [], valLow: 11500, valHigh: 14200, liquidity: 'high', status: 'listed', seller: userName, offers: ['O001','O002'] },
-      { id: 'L002', brand: 'Omega', model: 'Speedmaster Professional', ref: '310.30.42.50', year: 2021, condition: 'mint', box: 'full_set', authScore: 88, authConfidence: 'high', concerns: ['Minor bezel rotation stiffness'], valLow: 6800, valHigh: 8900, liquidity: 'high', status: 'listed', seller: userName, offers: [] },
-      { id: 'L003', brand: 'IWC', model: 'Portugieser Chronograph', ref: 'IW371605', year: 2017, condition: 'very_good', box: 'box_only', authScore: 79, authConfidence: 'medium', concerns: ['Slight crystal scratch', 'No papers present'], valLow: 4200, valHigh: 5800, liquidity: 'medium', status: 'listed', seller: 'Other Seller', offers: ['O003'] },
-      { id: 'L004', brand: 'Patek Philippe', model: 'Aquanaut 5167A', ref: '5167A-001', year: 2020, condition: 'excellent', box: 'full_set', authScore: 94, authConfidence: 'high', concerns: [], valLow: 28000, valHigh: 35000, liquidity: 'high', status: 'listed', seller: 'Other Seller', offers: [] },
+      { id: 'L001', brand: 'Rolex', model: 'Submariner Date', ref: '116610LN', year: 2019, condition: 'excellent', box: 'full_set', authScore: 91, authConfidence: 'high', concerns: [], valLow: 11500, valHigh: 14200, askPrice: 13500, liquidity: 'high', status: 'listed', seller: userName, offers: ['O001','O002'], photos: makePhotos('0d1a0a', 'ROLEX'), currency: 'SGD' },
+      { id: 'L002', brand: 'Omega', model: 'Speedmaster Professional', ref: '310.30.42.50', year: 2021, condition: 'mint', box: 'full_set', authScore: 88, authConfidence: 'high', concerns: ['Minor bezel rotation stiffness'], valLow: 6800, valHigh: 8900, askPrice: 8500, liquidity: 'high', status: 'listed', seller: userName, offers: [], photos: makePhotos('0a0d1a', 'OMEGA'), currency: 'SGD' },
+      { id: 'L003', brand: 'IWC', model: 'Portugieser Chronograph', ref: 'IW371605', year: 2017, condition: 'very_good', box: 'box_only', authScore: 79, authConfidence: 'medium', concerns: ['Slight crystal scratch', 'No papers present'], valLow: 4200, valHigh: 5800, askPrice: 5200, liquidity: 'medium', status: 'listed', seller: 'Other Seller', offers: ['O003'], photos: makePhotos('1a0a0a', 'IWC'), currency: 'SGD' },
+      { id: 'L004', brand: 'Patek Philippe', model: 'Aquanaut 5167A', ref: '5167A-001', year: 2020, condition: 'excellent', box: 'full_set', authScore: 94, authConfidence: 'high', concerns: [], valLow: 28000, valHigh: 35000, askPrice: 32000, liquidity: 'high', status: 'listed', seller: 'Other Seller', offers: [], photos: makePhotos('1a1508', 'PATEK'), currency: 'SGD' },
     ];
   }
   if (state.offers.length === 0) {
     state.offers = [
-      { id: 'O001', listingId: 'L001', dealer: 'Harrison & Co.', dealerEmail: 'harrison@demo.com', price: 12800, message: 'We specialize in Rolex. Ready to proceed immediately.', status: 'pending', validity: '48 hours' },
-      { id: 'O002', listingId: 'L001', dealer: 'Geneva Watches Ltd.', dealerEmail: 'gw@demo.com', price: 13200, message: 'Excellent piece. Happy to arrange collection.', status: 'pending', validity: '72 hours' },
-      { id: 'O003', listingId: 'L003', dealer: 'Harrison & Co.', dealerEmail: 'harrison@demo.com', price: 4900, message: 'Solid IWC. Offering fair market price.', status: 'pending', validity: '7 days' },
+      { id: 'O001', listingId: 'L001', dealer: 'Harrison & Co.', dealerEmail: 'harrison@demo.com', price: 12800, currency: 'SGD', message: 'We specialize in Rolex. Ready to proceed immediately.', status: 'pending', validity: '48 hours' },
+      { id: 'O002', listingId: 'L001', dealer: 'Geneva Watches Ltd.', dealerEmail: 'gw@demo.com', price: 13200, currency: 'SGD', message: 'Excellent piece. Happy to arrange collection.', status: 'pending', validity: '72 hours' },
+      { id: 'O003', listingId: 'L003', dealer: 'Harrison & Co.', dealerEmail: 'harrison@demo.com', price: 4900, currency: 'SGD', message: 'Solid IWC. Offering fair market price.', status: 'pending', validity: '7 days' },
     ];
   }
   updateHomeStats();
@@ -2010,13 +2174,16 @@ function renderRecentListings() {
 }
 
 function listingCardHTML(l, compact=false) {
-  const scoreColor = l.authScore >= 85 ? 'var(--green)' : l.authScore >= 65 ? 'var(--gold)' : 'var(--red)';
+  const scoreColor = l.authScore >= 85 ? '#4caf7d' : l.authScore >= 65 ? '#c9a84c' : '#e05555';
   const offersCount = l.offers.length;
   const isSaved = isWatchlisted(l.id);
+  const currency = 'SGD';
   return `<div class="listing-card" onclick="openListing('${l.id}')">
     <div style="position:relative;">
-      <div class="listing-thumb" style="background:var(--bg3);height:${compact?'120px':'160px'};display:flex;align-items:center;justify-content:center;font-size:${compact?'36px':'48px'};cursor:pointer;" onclick="event.stopPropagation();openPhotoViewer('${l.id}')">⌚</div>
-      ${state.user?.role === 'dealer' ? `<button class="bookmark-btn ${isSaved?'saved':''}" onclick="event.stopPropagation();toggleWatchlist('${l.id}')" id="bm-${l.id}">${isSaved?'🔖':'🔖'}</button>` : ''}
+      <div style="background:#181818;height:${compact?'120px':'160px'};display:flex;align-items:center;justify-content:center;font-size:${compact?'36px':'48px'};cursor:pointer;position:relative;overflow:hidden;" onclick="event.stopPropagation();openPhotoViewer('${l.id}')">
+        ${l.photos && l.photos.length > 0 ? `<img src="${l.photos[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>` : '⌚'}
+      </div>
+      ${state.user?.role === 'dealer' ? `<button class="bookmark-btn ${isSaved?'saved':''}" onclick="event.stopPropagation();toggleWatchlist('${l.id}')" id="bm-${l.id}">🔖</button>` : ''}
     </div>
     <div class="listing-info">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
@@ -2026,11 +2193,24 @@ function listingCardHTML(l, compact=false) {
         </div>
         <div class="badge ${l.status==='sold'?'badge-green':l.status==='listed'?'badge-gold':'badge-gray'}">${l.status.toUpperCase()}</div>
       </div>
-      <div class="listing-meta">
-        <div class="listing-price">$${l.valLow.toLocaleString()} – $${l.valHigh.toLocaleString()}</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="font-size:12px;color:${scoreColor};font-family:var(--font-mono);">${l.authScore}</div>
-          ${offersCount > 0 ? `<div class="badge badge-blue" style="font-size:10px;">${offersCount} offer${offersCount>1?'s':''}</div>` : ''}
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#5a5550;text-transform:uppercase;letter-spacing:0.08em;">AI Valuation</span>
+          <span style="font-family:var(--font-mono);font-size:13px;color:#9a9590;">${currency} ${l.valLow.toLocaleString()} – ${l.valHigh.toLocaleString()}</span>
+        </div>
+        ${l.askPrice ? `<div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#5a5550;text-transform:uppercase;letter-spacing:0.08em;">Asking Price</span>
+          <span style="font-family:var(--font-mono);font-size:15px;color:#c9a84c;font-weight:600;">${currency} ${l.askPrice.toLocaleString()}</span>
+        </div>` : ''}
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:10px;color:#5a5550;text-transform:uppercase;letter-spacing:0.08em;">Auth Score</span>
+            <span onclick="event.stopPropagation();showAuthInfo()" style="width:16px;height:16px;border-radius:50%;border:1px solid #5a5550;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#9a9590;cursor:pointer;">i</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-family:var(--font-mono);font-size:13px;color:${scoreColor};font-weight:600;">${l.authScore}/100</span>
+            ${offersCount > 0 ? `<div class="badge badge-blue" style="font-size:10px;">${offersCount} offer${offersCount>1?'s':''}</div>` : ''}
+          </div>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;">
@@ -2039,6 +2219,20 @@ function listingCardHTML(l, compact=false) {
       </div>
     </div>
   </div>`;
+}
+
+function showAuthInfo() {
+  const msg = document.createElement('div');
+  msg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:flex;align-items:center;justify-content:center;padding:32px;';
+  msg.innerHTML = `<div style="background:#111;border:1px solid #333;border-radius:12px;padding:24px;max-width:340px;">
+    <div style="font-size:16px;font-weight:600;margin-bottom:12px;color:#c9a84c;">Authentication Score</div>
+    <div style="font-size:13px;color:#9a9590;line-height:1.7;margin-bottom:16px;">The Auth Score (0–100) represents our AI's confidence in the watch's authenticity based on photo analysis of dial markings, case proportions, crown dimensions, lume application and serial formats.<br/><br/>
+    <strong style="color:#f0ede8;">85–100</strong> — Likely Authentic<br/>
+    <strong style="color:#f0ede8;">65–84</strong> — Probably Authentic<br/>
+    <strong style="color:#f0ede8;">Below 65</strong> — Needs Verification</div>
+    <button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:12px;background:linear-gradient(135deg,#7a5c1e,#c9a84c);border:none;border-radius:8px;color:#000;font-weight:600;cursor:pointer;">Got it</button>
+  </div>`;
+  document.body.appendChild(msg);
 }
 
 function openListing(id) {
@@ -2068,8 +2262,17 @@ function goToPhotos() {
   const model = document.getElementById('watch-model').value;
   const year = document.getElementById('watch-year').value;
   const condition = document.getElementById('watch-condition').value;
-  if (!brand || !model || !year || !condition) { showToast('Please fill in all required fields'); return; }
-  state.currentListing = { ...state.currentListing, brand, model, year, condition, ref: document.getElementById('watch-ref').value, box: document.getElementById('watch-box').value, notes: document.getElementById('watch-notes').value };
+  const box = document.getElementById('watch-box').value;
+  if (!brand) { showToast('Please select a brand'); return; }
+  if (!model) { showToast('Please enter the model'); return; }
+  if (!year) { showToast('Please enter the year'); return; }
+  if (!condition) { showToast('Please select the condition'); return; }
+  if (!box) { showToast('Please select box & papers status'); return; }
+  state.currentListing = { ...state.currentListing, brand, model, year, condition, ref: document.getElementById('watch-ref').value, box, notes: document.getElementById('watch-notes').value };
+  // Reset photos
+  state.photos = new Array(6).fill(null);
+  state.photoCount = 0;
+  renderPhotoGrid();
   goTo('screen-upload-photos');
 }
 
@@ -2099,16 +2302,43 @@ function handlePhoto(idx, input) {
     state.photos[idx] = e.target.result;
     state.photoCount = state.photos.filter(Boolean).length;
     document.getElementById('photo-count-text').textContent = `${state.photoCount} / 6 photos added`;
-    document.getElementById('analyze-btn').disabled = state.photoCount < 1;
+    // Require ALL 6 photos
+    const analyzeBtn = document.getElementById('analyze-btn');
+    if (analyzeBtn) analyzeBtn.disabled = state.photoCount < 6;
+    if (state.photoCount < 6) {
+      analyzeBtn.textContent = `Analyze with AI (${state.photoCount}/6 photos)`;
+    } else {
+      analyzeBtn.textContent = 'Analyze with AI →';
+    }
     renderPhotoGrid();
   };
   reader.readAsDataURL(input.files[0]);
+}
+
+function renderPhotoGrid() {
+  const labels = ['Front Dial', 'Case Back', 'Crown', 'Bracelet', 'Serial No.', 'Close-up'];
+  const grid = document.getElementById('photo-grid');
+  let html = '';
+  for (let i = 0; i < 6; i++) {
+    const p = state.photos[i];
+    html += `<input type="file" accept="image/*" class="hidden-file" id="file-${i}" onchange="handlePhoto(${i},this)"/>`;
+    html += `<div class="photo-slot ${p?'filled':''}" onclick="document.getElementById('file-${i}').click()">
+      ${p ? `<img src="${p}" alt="photo ${i+1}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+             <div style="position:absolute;top:6px;right:6px;width:22px;height:22px;background:#c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#000;z-index:2;font-weight:700;">✓</div>`
+           : `<div class="photo-slot-icon">📷</div><div class="photo-slot-label">${labels[i]}</div>`}
+    </div>`;
+  }
+  grid.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════════════════
 // AI AUTHENTICATION
 // ═══════════════════════════════════════════════════════════════
 async function startAnalysis() {
+  if (state.photoCount < 6) {
+    showToast(`Please upload all 6 photos. ${state.photoCount}/6 added.`);
+    return;
+  }
   goTo('screen-auth-result');
   document.getElementById('auth-loading').style.display = '';
   document.getElementById('auth-result').style.display = 'none';
@@ -2267,24 +2497,59 @@ function showValuation(r) {
   document.getElementById('val-result').style.display = '';
   const l = state.currentListing;
   document.getElementById('val-watch-name').textContent = `${l.brand} ${l.model} · ${l.year}`;
-  document.getElementById('val-low').textContent = '$' + r.valuation_low.toLocaleString();
-  document.getElementById('val-high').textContent = '$' + r.valuation_high.toLocaleString();
-  const liqClass = { high: 'badge-green', medium: 'badge-gold', low: 'badge-red' }[r.liquidity];
+  document.getElementById('val-low').textContent = 'SGD ' + r.valuation_low.toLocaleString();
+  document.getElementById('val-high').textContent = 'SGD ' + r.valuation_high.toLocaleString();
+  const liqClass = { high: 'badge-green', medium: 'badge-gold', low: 'badge-red' }[r.liquidity] || 'badge-gray';
   document.getElementById('val-liquidity-badge').className = `badge ${liqClass}`;
-  document.getElementById('val-liquidity-badge').textContent = r.liquidity.toUpperCase() + ' LIQUIDITY';
+  document.getElementById('val-liquidity-badge').textContent = (r.liquidity || 'medium').toUpperCase() + ' LIQUIDITY';
   const suggested = Math.round((r.valuation_low + r.valuation_high) / 2 / 100) * 100;
-  document.getElementById('val-suggested').textContent = '$' + suggested.toLocaleString();
+  document.getElementById('val-suggested').textContent = 'SGD ' + suggested.toLocaleString();
   document.getElementById('val-analysis').textContent = r.analysis;
+  // Fix animated bar — reset then re-trigger
+  const barFill = document.querySelector('.val-bar-fill');
+  if (barFill) {
+    barFill.style.animation = 'none';
+    barFill.offsetHeight; // force reflow
+    barFill.style.animation = '';
+  }
+  // Pre-fill asking price with suggested
+  const askInput = document.getElementById('asking-price');
+  if (askInput && !askInput.value) askInput.value = suggested;
   document.getElementById('val-factors-list').innerHTML = (r.factors || []).map(f =>
-    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);">
-      <span style="font-size:13px;color:var(--text2);">${f.label}</span>
-      <span style="display:flex;align-items:center;gap:6px;"><span style="font-size:12px;color:var(--text3);">${f.note}</span>
-      <span style="font-size:16px;color:${f.impact==='+' ? 'var(--green)' : f.impact==='-' ? 'var(--red)' : 'var(--text3)'};">${f.impact}</span></span>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#111;border:1px solid #2a2a2a;border-radius:8px;">
+      <span style="font-size:13px;color:#9a9590;">${f.label}</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="font-size:12px;color:#5a5550;">${f.note}</span>
+      <span style="font-size:16px;color:${f.impact==='+' ? '#4caf7d' : f.impact==='-' ? '#e05555' : '#5a5550'};">${f.impact}</span></span>
     </div>`
   ).join('');
 }
 
+function checkAskingPrice() {
+  const price = parseFloat(document.getElementById('asking-price').value);
+  const warning = document.getElementById('asking-price-warning');
+  const ok = document.getElementById('asking-price-ok');
+  if (!price || !state.valResult) { warning.style.display = 'none'; ok.style.display = 'none'; return; }
+  const low = state.valResult.valuation_low;
+  const high = state.valResult.valuation_high;
+  const pctFromLow = ((price - low) / low * 100).toFixed(0);
+  const pctFromHigh = ((price - high) / high * 100).toFixed(0);
+  if (price < low * 0.8) {
+    warning.style.display = '';
+    warning.textContent = `⚠ Your asking price is ${Math.abs(pctFromLow)}% below the AI conservative estimate (SGD ${low.toLocaleString()}). This may undervalue your watch significantly.`;
+    ok.style.display = 'none';
+  } else if (price > high * 1.2) {
+    warning.style.display = '';
+    warning.textContent = `⚠ Your asking price is ${Math.abs(pctFromHigh)}% above the AI optimistic estimate (SGD ${high.toLocaleString()}). This may make it harder to sell.`;
+    ok.style.display = 'none';
+  } else {
+    warning.style.display = 'none';
+    ok.style.display = '';
+  }
+}
+
 function publishListing() {
+  const askingPrice = parseFloat(document.getElementById('asking-price')?.value);
+  if (!askingPrice || askingPrice <= 0) { showToast('Please enter your asking price'); return; }
   const l = state.currentListing;
   const r = state.valResult || state.currentListing;
   const newListing = {
@@ -2295,10 +2560,12 @@ function publishListing() {
     concerns: state.authResult?.concerns || [],
     valLow: r.valuation_low || l.valLow || 8000,
     valHigh: r.valuation_high || l.valHigh || 12000,
+    askPrice: askingPrice,
     liquidity: r.liquidity || l.liquidity || 'medium',
     status: 'listed',
     seller: state.user?.name || 'Unknown',
-    offers: []
+    offers: [],
+    photos: state.photos.filter(Boolean)
   };
   state.listings.push(newListing);
   localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
@@ -2306,36 +2573,66 @@ function publishListing() {
   renderRecentListings();
   goTo('screen-home');
   showToast('✓ Listing published to marketplace');
-  // Send push notification to dealers
-  sendListingNotification(newListing);
+  setTimeout(() => sendListingNotification(newListing), 800);
 }
 
 // ═══════════════════════════════════════════════════════════════
 // MARKETPLACE
 // ═══════════════════════════════════════════════════════════════
-function renderMarketplace(filter='') {
+let currentBrandFilter = '';
+
+function renderMarketplace() {
   const container = document.getElementById('marketplace-listings');
-  let listings = state.listings.filter(l => l.status === 'listed');
-  if (filter) listings = listings.filter(l => l.brand.toLowerCase().includes(filter.toLowerCase()) || l.model.toLowerCase().includes(filter.toLowerCase()));
-  container.innerHTML = listings.length ? listings.map(l => listingCardHTML(l)).join('') : '<div style="text-align:center;padding:32px;color:var(--text3);">No listings match your search.</div>';
+  const countEl = document.getElementById('marketplace-count');
+  if (!container) return;
+  const search = (document.getElementById('marketplace-search')?.value || '').toLowerCase();
+  const sort = document.getElementById('marketplace-sort')?.value || 'recent';
+  const statusFilter = document.getElementById('marketplace-filter-status')?.value || 'all';
+
+  let listings = state.listings.filter(l => l.status === 'listed'); // exclude sold
+  if (currentBrandFilter) listings = listings.filter(l => l.brand === currentBrandFilter);
+  if (search) listings = listings.filter(l => l.brand.toLowerCase().includes(search) || l.model.toLowerCase().includes(search));
+  if (statusFilter === 'offered') listings = listings.filter(l => l.offers.length > 0);
+  if (statusFilter === 'no_offer') listings = listings.filter(l => l.offers.length === 0);
+
+  // Sort
+  if (sort === 'price_asc') listings.sort((a, b) => (a.askPrice || a.valLow) - (b.askPrice || b.valLow));
+  else if (sort === 'price_desc') listings.sort((a, b) => (b.askPrice || b.valLow) - (a.askPrice || a.valLow));
+  else if (sort === 'score') listings.sort((a, b) => b.authScore - a.authScore);
+  else if (sort === 'alpha') listings.sort((a, b) => a.brand.localeCompare(b.brand));
+
+  if (countEl) countEl.textContent = `${listings.length} listing${listings.length !== 1 ? 's' : ''} found`;
+  container.innerHTML = listings.length ? listings.map(l => listingCardHTML(l)).join('') : '<div style="text-align:center;padding:32px;color:#5a5550;">No listings match your search.</div>';
 }
 
-function filterListings(val) { renderMarketplace(val); }
-function filterByBrand(brand) { renderMarketplace(brand); }
-function showFilters() { showToast('Filter panel coming soon'); }
+function filterListings(val) { renderMarketplace(); }
+
+function filterByBrand(brand, el) {
+  currentBrandFilter = brand;
+  document.querySelectorAll('#filter-chips .badge').forEach(b => {
+    b.className = 'badge badge-gray';
+    b.style.cursor = 'pointer';
+    b.style.flexShrink = '0';
+  });
+  if (el) { el.className = 'badge badge-gold'; el.style.cursor = 'pointer'; el.style.flexShrink = '0'; }
+  renderMarketplace();
+}
+
+function showFilters() { showToast('Use the Sort and Filter dropdowns above'); }
 
 // ═══════════════════════════════════════════════════════════════
 // MAKE OFFER
 // ═══════════════════════════════════════════════════════════════
 function openMakeOffer(listing) {
   document.getElementById('offer-watch-name').textContent = `${listing.brand} ${listing.model}`;
-  document.getElementById('offer-watch-details').textContent = `${listing.year} · Ref. ${listing.ref || 'N/A'}`;
+  document.getElementById('offer-watch-details').textContent = `${listing.year} · Ref. ${listing.ref || 'N/A'} · ${(listing.condition||'').replace('_',' ')}`;
   document.getElementById('offer-auth-badge').textContent = `Auth ${listing.authScore}/100`;
   document.getElementById('offer-auth-badge').className = `badge ${listing.authScore >= 85 ? 'badge-green' : listing.authScore >= 65 ? 'badge-gold' : 'badge-red'}`;
   document.getElementById('offer-condition-badge').textContent = (listing.condition || '').replace('_',' ');
-  document.getElementById('offer-val-range').textContent = `$${listing.valLow?.toLocaleString()} – $${listing.valHigh?.toLocaleString()}`;
+  document.getElementById('offer-val-range').textContent = `SGD ${listing.valLow?.toLocaleString()} – ${listing.valHigh?.toLocaleString()}`;
   document.getElementById('offer-auth-score').textContent = `${listing.authScore} / 100`;
   document.getElementById('offer-price').value = '';
+  document.getElementById('offer-message').value = '';
   document.getElementById('offer-calc').style.display = 'none';
   goTo('screen-make-offer');
 }
@@ -2345,26 +2642,28 @@ function updateOfferCalc() {
   const l = state.selectedListing;
   if (!price || !l) { document.getElementById('offer-calc').style.display = 'none'; return; }
   document.getElementById('offer-calc').style.display = '';
-  document.getElementById('calc-offer').textContent = '$' + price.toLocaleString();
+  document.getElementById('calc-offer').textContent = 'SGD ' + price.toLocaleString();
   const vl = l.valLow, vh = l.valHigh;
   const pctLow = ((price / vl - 1) * 100).toFixed(1);
   const pctHigh = ((price / vh - 1) * 100).toFixed(1);
-  document.getElementById('calc-vs-low').textContent = `${pctLow > 0 ? '+' : ''}${pctLow}% vs $${vl?.toLocaleString()}`;
-  document.getElementById('calc-vs-high').textContent = `${pctHigh > 0 ? '+' : ''}${pctHigh}% vs $${vh?.toLocaleString()}`;
+  document.getElementById('calc-vs-low').textContent = `${pctLow > 0 ? '+' : ''}${pctLow}% vs SGD ${vl?.toLocaleString()}`;
+  document.getElementById('calc-vs-high').textContent = `${pctHigh > 0 ? '+' : ''}${pctHigh}% vs SGD ${vh?.toLocaleString()}`;
 }
 
 function submitOffer() {
   const price = parseFloat(document.getElementById('offer-price').value);
   if (!price || price <= 0) { showToast('Please enter a valid offer price'); return; }
+  const validity = document.querySelector('#screen-make-offer select')?.value || '48 hours';
   const offer = {
     id: 'O' + Date.now(),
     listingId: state.selectedListing?.id,
     dealer: state.user?.name || 'Dealer',
     dealerEmail: state.user?.email || '',
     price,
+    currency: 'SGD',
     message: document.getElementById('offer-message').value,
     status: 'pending',
-    validity: '48 hours'
+    validity
   };
   state.offers.push(offer);
   const listing = state.listings.find(l => l.id === offer.listingId);
@@ -2372,7 +2671,9 @@ function submitOffer() {
   localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
   localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
   goBack();
-  showToast(`✓ Offer of $${price.toLocaleString()} submitted`);
+  showToast(`✓ Offer of SGD ${price.toLocaleString()} submitted`);
+  // Refresh marketplace to update offer counter
+  setTimeout(() => { if (document.getElementById('marketplace-listings')) renderMarketplace(); }, 400);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2382,7 +2683,7 @@ function openReviewOffers(listing) {
   document.getElementById('review-watch-name').textContent = `${listing.brand} ${listing.model}`;
   document.getElementById('review-auth-badge').textContent = `Auth ${listing.authScore}/100`;
   document.getElementById('review-auth-badge').className = `badge ${listing.authScore >= 85 ? 'badge-green' : 'badge-gold'}`;
-  document.getElementById('review-val-range').textContent = `$${listing.valLow?.toLocaleString()} – $${listing.valHigh?.toLocaleString()}`;
+  document.getElementById('review-val-range').textContent = `SGD ${listing.valLow?.toLocaleString()} – ${listing.valHigh?.toLocaleString()}`;
   const offers = state.offers.filter(o => o.listingId === listing.id);
   const container = document.getElementById('offers-list');
   const noOffers = document.getElementById('no-offers');
@@ -2395,27 +2696,68 @@ function openReviewOffers(listing) {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
             <div style="font-size:14px;font-weight:500;">${o.dealer}</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px;">${o.dealerEmail}</div>
+            <div style="font-size:11px;color:#5a5550;margin-top:2px;">${o.dealerEmail}</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-family:var(--font-mono);font-size:20px;color:${i===0 && o.status!=='accepted' ? 'var(--gold)' : o.status==='accepted' ? 'var(--green)' : 'var(--text)'};">$${o.price.toLocaleString()}</div>
+            <div style="font-family:var(--font-mono);font-size:20px;color:${i===0 && o.status!=='accepted' ? '#c9a84c' : o.status==='accepted' ? '#4caf7d' : '#f0ede8'};">SGD ${o.price.toLocaleString()}</div>
             <div class="badge ${o.status==='accepted'?'badge-green':'badge-gray'} mt-4" style="font-size:10px;">${o.status==='accepted'?'✓ ACCEPTED':i===0?'HIGHEST':'OFFER'}</div>
           </div>
         </div>
-        ${o.message ? `<div style="font-size:12px;color:var(--text3);padding:10px;background:var(--bg3);border-radius:8px;">"${o.message}"</div>` : ''}
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);">
+        ${o.message ? `<div style="font-size:12px;color:#5a5550;padding:10px;background:#181818;border-radius:8px;">"${o.message}"</div>` : ''}
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#5a5550;">
           <span>Valid for: ${o.validity}</span>
-          <span>vs. AI val: ${((o.price / ((listing.valLow + listing.valHigh)/2) - 1) * 100).toFixed(1)}%</span>
+          <span>vs AI val: ${((o.price / ((listing.valLow + listing.valHigh)/2) - 1) * 100).toFixed(1)}%</span>
         </div>
         ${o.status !== 'accepted' && listing.status !== 'sold' ? `
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-gold" style="flex:1;padding:12px;" onclick="acceptOffer('${o.id}','${listing.id}')">Accept Offer</button>
-            <button class="btn btn-ghost" style="padding:12px 16px;" onclick="showToast('Offer declined')">Decline</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <button class="btn btn-gold" style="padding:12px;font-size:13px;" onclick="acceptOffer('${o.id}','${listing.id}')">Accept</button>
+            <button class="btn btn-outline" style="padding:12px;font-size:13px;" onclick="openCounterOffer('${o.id}','${listing.id}')">Counter</button>
+            <button class="btn btn-ghost" style="padding:12px;font-size:13px;" onclick="declineOffer('${o.id}','${listing.id}')">Decline</button>
           </div>` : ''}
-        ${o.status === 'accepted' ? `<div style="text-align:center;color:var(--green);font-size:13px;font-weight:500;">✓ Offer Accepted — Deal in Progress</div>` : ''}
+        ${o.status === 'accepted' ? `<div style="text-align:center;color:#4caf7d;font-size:13px;font-weight:500;">✓ Offer Accepted — Deal in Progress</div>` : ''}
+        ${o.status === 'rejected' ? `<div style="text-align:center;color:#e05555;font-size:13px;">✗ Declined</div>` : ''}
+        ${o.status === 'countered' ? `<div style="padding:10px;background:rgba(201,168,76,0.08);border:1px solid #7a5c1e;border-radius:8px;font-size:12px;color:#c9a84c;">↩ Counter offer of SGD ${o.counterPrice?.toLocaleString()} sent to dealer</div>` : ''}
       </div>`).join('');
   }
   goTo('screen-review-offers');
+}
+
+function declineOffer(offerId, listingId) {
+  const offer = state.offers.find(o => o.id === offerId);
+  if (offer) { offer.status = 'rejected'; }
+  localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
+  openReviewOffers(state.listings.find(l => l.id === listingId));
+  showToast('Offer declined');
+}
+
+function openCounterOffer(offerId, listingId) {
+  const listing = state.listings.find(l => l.id === listingId);
+  const offer = state.offers.find(o => o.id === offerId);
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML = `<div style="background:#111;border-radius:20px 20px 0 0;width:100%;max-width:430px;padding:28px 24px 40px;">
+    <div style="font-size:16px;font-weight:500;margin-bottom:6px;">Counter Offer</div>
+    <div style="font-size:12px;color:#5a5550;margin-bottom:16px;">Dealer's offer: SGD ${offer?.price?.toLocaleString()}. Valid for: ${offer?.validity}. Your counter must be accepted within the same validity period.</div>
+    <div class="input-group" style="margin-bottom:16px;">
+      <label class="input-label">Your Counter Price (SGD) *</label>
+      <input class="input" type="number" id="counter-price-input" placeholder="e.g. 13500" style="font-family:var(--font-mono);font-size:20px;"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="submitCounterOffer('${offerId}','${listingId}');this.closest('[style*=fixed]').remove()" style="padding:14px;background:linear-gradient(135deg,#7a5c1e,#c9a84c);border:none;border-radius:8px;color:#000;font-weight:600;cursor:pointer;">Send Counter</button>
+      <button onclick="this.closest('[style*=fixed]').remove()" style="padding:14px;background:#181818;border:1px solid #333;border-radius:8px;color:#f0ede8;cursor:pointer;">Cancel</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+function submitCounterOffer(offerId, listingId) {
+  const counterPrice = parseFloat(document.getElementById('counter-price-input')?.value);
+  if (!counterPrice || counterPrice <= 0) { showToast('Please enter a valid counter price'); return; }
+  const offer = state.offers.find(o => o.id === offerId);
+  if (offer) { offer.status = 'countered'; offer.counterPrice = counterPrice; }
+  localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
+  showToast(`↩ Counter offer of SGD ${counterPrice.toLocaleString()} sent`);
+  openReviewOffers(state.listings.find(l => l.id === listingId));
 }
 
 function acceptOffer(offerId, listingId) {
@@ -2427,12 +2769,12 @@ function acceptOffer(offerId, listingId) {
   state.offers.forEach(o => { if (o.listingId === listingId && o.id !== offerId) o.status = 'rejected'; });
   localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
   localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
-  // Go to deal complete
   document.getElementById('deal-watch-name').textContent = `${listing.brand} ${listing.model}`;
-  document.getElementById('deal-price').textContent = '$' + offer.price.toLocaleString();
+  document.getElementById('deal-price').textContent = 'SGD ' + offer.price.toLocaleString();
   document.getElementById('deal-dealer').textContent = offer.dealer;
   document.getElementById('deal-id').textContent = 'CHR-' + Date.now().toString(36).toUpperCase();
   updateHomeStats();
+  renderMyListings(); // refresh my listings to show SOLD
   goTo('screen-deal-done');
 }
 
@@ -2451,16 +2793,26 @@ function renderMyListings() {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
             <div style="font-family:var(--font-display);font-size:20px;font-weight:300;">${l.brand}</div>
-            <div style="font-size:13px;color:var(--text2);">${l.model} · ${l.year}</div>
+            <div style="font-size:13px;color:#9a9590;">${l.model} · ${l.year}</div>
           </div>
           <div class="badge ${l.status==='sold'?'badge-green':l.status==='listed'?'badge-gold':'badge-gray'}">${l.status.toUpperCase()}</div>
         </div>
-        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
-          <span style="font-family:var(--font-mono);font-size:13px;color:var(--gold);">$${l.valLow?.toLocaleString()} – $${l.valHigh?.toLocaleString()}</span>
-          <span class="badge badge-gray" style="font-size:11px;">Auth ${l.authScore}/100</span>
-          ${l.offers.length > 0 ? `<span class="badge badge-blue" style="font-size:11px;">${l.offers.length} offer${l.offers.length>1?'s':''}</span>` : ''}
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;flex-direction:column;">
+          <div style="display:flex;justify-content:space-between;">
+            <span style="font-size:11px;color:#5a5550;">AI Valuation</span>
+            <span style="font-family:var(--font-mono);font-size:12px;color:#9a9590;">SGD ${l.valLow?.toLocaleString()} – ${l.valHigh?.toLocaleString()}</span>
+          </div>
+          ${l.askPrice ? `<div style="display:flex;justify-content:space-between;">
+            <span style="font-size:11px;color:#5a5550;">Asking Price</span>
+            <span style="font-family:var(--font-mono);font-size:13px;color:#c9a84c;">SGD ${l.askPrice?.toLocaleString()}</span>
+          </div>` : ''}
+          <div style="display:flex;justify-content:space-between;">
+            <span style="font-size:11px;color:#5a5550;">Auth Score</span>
+            <span class="badge ${l.authScore>=85?'badge-green':l.authScore>=65?'badge-gold':'badge-red'}" style="font-size:11px;">${l.authScore}/100</span>
+          </div>
         </div>
-        ${l.offers.length > 0 ? `<button class="btn btn-outline btn-sm mt-12" onclick="event.stopPropagation();openListing('${l.id}')">Review Offers →</button>` : ''}
+        ${l.offers.length > 0 && l.status !== 'sold' ? `<button class="btn btn-outline btn-sm mt-12" onclick="event.stopPropagation();openListing('${l.id}')">Review ${l.offers.length} Offer${l.offers.length>1?'s':''} →</button>` : ''}
+        ${l.status === 'sold' ? `<div style="margin-top:10px;padding:8px;background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);border-radius:8px;font-size:12px;color:#4caf7d;text-align:center;">✓ Sold — Deal Complete</div>` : ''}
       </div>
     </div>`).join('');
 }
@@ -2476,35 +2828,126 @@ function renderMyOffers() {
   const container = document.getElementById('my-offers-container');
   const empty = document.getElementById('my-offers-empty');
   const dealerName = state.user?.name || '';
-  const myOffers = state.offers.filter(o => o.dealer === dealerName);
+  const search = (document.getElementById('my-offers-search')?.value || '').toLowerCase();
+  const sort = document.getElementById('my-offers-sort')?.value || 'recent';
+  const filter = document.getElementById('my-offers-filter')?.value || 'all';
+
+  let myOffers = state.offers.filter(o => o.dealer === dealerName);
+  if (filter !== 'all') myOffers = myOffers.filter(o => o.status === filter);
+  if (search) {
+    myOffers = myOffers.filter(o => {
+      const listing = state.listings.find(l => l.id === o.listingId);
+      return listing && (`${listing.brand} ${listing.model}`).toLowerCase().includes(search);
+    });
+  }
+  if (sort === 'price_desc') myOffers.sort((a, b) => b.price - a.price);
+  else if (sort === 'price_asc') myOffers.sort((a, b) => a.price - b.price);
+
   if (myOffers.length === 0) { container.innerHTML = ''; empty.style.display = ''; return; }
   empty.style.display = 'none';
   container.innerHTML = myOffers.map(o => {
     const listing = state.listings.find(l => l.id === o.listingId);
     if (!listing) return '';
-    const statusClass = { pending: 'badge-gold', accepted: 'badge-green', rejected: 'badge-red' }[o.status] || 'badge-gray';
+    const statusClass = { pending: 'badge-gold', accepted: 'badge-green', rejected: 'badge-red', countered: 'badge-blue' }[o.status] || 'badge-gray';
+    const statusLabel = { pending: 'PENDING', accepted: 'ACCEPTED', rejected: 'DECLINED', countered: 'COUNTERED' }[o.status] || o.status.toUpperCase();
     return `<div class="offer-card ${o.status === 'accepted' ? 'accepted' : ''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
         <div>
           <div style="font-family:var(--font-display);font-size:18px;font-weight:300;">${listing.brand} ${listing.model}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${listing.year} · ${(listing.condition||'').replace('_',' ')}</div>
+          <div style="font-size:12px;color:#5a5550;margin-top:2px;">${listing.year} · ${(listing.condition||'').replace('_',' ')}</div>
         </div>
-        <div class="badge ${statusClass}">${o.status.toUpperCase()}</div>
+        <div class="badge ${statusClass}">${statusLabel}</div>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <div style="font-size:12px;color:var(--text3);">Your offer</div>
-        <div style="font-family:var(--font-mono);font-size:18px;color:${o.status==='accepted'?'var(--green)':'var(--gold)'};">$${o.price.toLocaleString()}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid #2a2a2a;">
+        <div style="font-size:12px;color:#5a5550;">Your offer</div>
+        <div style="font-family:var(--font-mono);font-size:18px;color:${o.status==='accepted'?'#4caf7d':'#c9a84c'};">SGD ${o.price.toLocaleString()}</div>
       </div>
-      <div style="font-size:11px;color:var(--text3);">Valid for: ${o.validity}</div>
-      ${o.status === 'accepted' ? `<div style="background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);border-radius:var(--radius2);padding:10px;font-size:12px;color:var(--green);">✓ Congratulations! Your offer was accepted. The seller will contact you shortly.</div>` : ''}
+      <div style="font-size:11px;color:#5a5550;">Valid for: ${o.validity}</div>
+      ${o.status === 'countered' ? `<div style="background:rgba(201,168,76,0.08);border:1px solid #7a5c1e;border-radius:8px;padding:10px;font-size:12px;color:#c9a84c;">Seller countered: SGD ${o.counterPrice?.toLocaleString()}<br/>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn btn-gold btn-sm" onclick="acceptCounterOffer('${o.id}')">Accept Counter</button>
+          <button class="btn btn-ghost btn-sm" onclick="rejectCounterOffer('${o.id}')">Decline</button>
+        </div></div>` : ''}
+      ${o.status === 'accepted' ? `<div style="background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);border-radius:8px;padding:10px;font-size:12px;color:#4caf7d;">✓ Congratulations! Your offer was accepted. The seller will contact you shortly.</div>` : ''}
     </div>`;
   }).join('');
+}
+
+function acceptCounterOffer(offerId) {
+  const offer = state.offers.find(o => o.id === offerId);
+  if (!offer) return;
+  offer.price = offer.counterPrice;
+  offer.status = 'accepted';
+  const listing = state.listings.find(l => l.id === offer.listingId);
+  if (listing) listing.status = 'sold';
+  localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
+  localStorage.setItem('chronos_listings', JSON.stringify(state.listings));
+  showToast('✓ Counter offer accepted');
+  renderMyOffers();
+}
+
+function rejectCounterOffer(offerId) {
+  const offer = state.offers.find(o => o.id === offerId);
+  if (offer) offer.status = 'rejected';
+  localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
+  showToast('Counter offer declined');
+  renderMyOffers();
 }
 
 // ═══════════════════════════════════════════════════════════════
 // MISC
 // ═══════════════════════════════════════════════════════════════
-function requestHumanAuth() { showToast('Human authentication request sent'); }
+const HUMAN_AUTH_PROVIDERS = [
+  { id: 'watchfinder', name: 'Watchfinder & Co.', fee: 'SGD 150', time: '5–7 working days', location: 'Singapore CBD', specialty: 'Rolex, Patek, AP' },
+  { id: 'acronym', name: 'Acronym Watches', fee: 'SGD 200', time: '3–5 working days', location: 'Orchard Road, SG', specialty: 'All major brands' },
+  { id: 'luxe', name: 'Luxe Authentication SG', fee: 'SGD 120', time: '7–10 working days', location: 'Marina Bay, SG', specialty: 'Omega, IWC, Breitling' },
+];
+let selectedAuthProvider = null;
+
+function requestHumanAuth() {
+  // Render providers
+  document.getElementById('auth-provider-list').innerHTML = HUMAN_AUTH_PROVIDERS.map(p => `
+    <div onclick="selectAuthProvider('${p.id}')" id="provider-${p.id}" style="background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:border-color .2s;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:15px;font-weight:500;">${p.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.specialty}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-mono);font-size:14px;color:var(--gold);">${p.fee}</div>
+          <div style="font-size:11px;color:var(--text3);">${p.time}</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text3);">📍 ${p.location}</div>
+    </div>`).join('');
+  document.getElementById('selected-provider-details').style.display = 'none';
+  document.getElementById('human-auth-submit-btn').disabled = true;
+  selectedAuthProvider = null;
+  goTo('screen-human-auth');
+}
+
+function selectAuthProvider(id) {
+  selectedAuthProvider = HUMAN_AUTH_PROVIDERS.find(p => p.id === id);
+  // Highlight selected
+  HUMAN_AUTH_PROVIDERS.forEach(p => {
+    const el = document.getElementById('provider-' + p.id);
+    if (el) el.style.borderColor = p.id === id ? 'var(--gold)' : 'var(--border2)';
+  });
+  if (selectedAuthProvider) {
+    document.getElementById('sel-provider-name').textContent = selectedAuthProvider.name;
+    document.getElementById('sel-provider-fee').textContent = selectedAuthProvider.fee;
+    document.getElementById('sel-provider-time').textContent = selectedAuthProvider.time;
+    document.getElementById('sel-provider-loc').textContent = selectedAuthProvider.location;
+    document.getElementById('selected-provider-details').style.display = '';
+    document.getElementById('human-auth-submit-btn').disabled = false;
+  }
+}
+
+function submitHumanAuth() {
+  if (!selectedAuthProvider) { showToast('Please select an authentication provider'); return; }
+  document.getElementById('human-auth-email').textContent = state.user?.email || 'your registered email';
+  goTo('screen-human-auth-confirm');
+}
 
 function switchTab(idx) {
   if (idx === 0) { /* already on home, do nothing */ }
@@ -2548,28 +2991,30 @@ async function requestNotifPermission() {
 
 async function sendListingNotification(listing) {
   const title = `New Listing: ${listing.brand} ${listing.model}`;
-  const body = `Auth score ${listing.authScore}/100 · $${listing.valLow.toLocaleString()}–$${listing.valHigh.toLocaleString()}`;
-  // Try native push first
-  const granted = await requestNotifPermission();
-  if (granted && document.visibilityState === 'hidden') {
-    new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%230a0a0a"/><text y="48" font-size="48">⌚</text></svg>' });
+  const body = `Auth ${listing.authScore}/100 · SGD ${listing.valLow?.toLocaleString()}–${listing.valHigh?.toLocaleString()}`;
+  if ('Notification' in window && Notification.permission === 'granted' && document.visibilityState === 'hidden') {
+    new Notification(title, { body });
   }
-  // Always show in-app banner
-  setTimeout(() => showNotifBanner('🏪', title, body), 600);
+  showNotifBanner('🔔', title, body);
 }
 
 function showNotifBanner(icon, title, body) {
-  document.getElementById('notif-icon').textContent = icon;
-  document.getElementById('notif-title').textContent = title;
-  document.getElementById('notif-body').textContent = body;
   const banner = document.getElementById('notif-banner');
+  if (!banner) return;
+  const iconEl = document.getElementById('notif-icon');
+  const titleEl = document.getElementById('notif-title');
+  const bodyEl = document.getElementById('notif-body');
+  if (iconEl) iconEl.textContent = icon;
+  if (titleEl) titleEl.textContent = title;
+  if (bodyEl) bodyEl.textContent = body;
   banner.classList.add('show');
   clearTimeout(notifTimer);
-  notifTimer = setTimeout(dismissNotif, 5000);
+  notifTimer = setTimeout(dismissNotif, 6000);
 }
 
 function dismissNotif() {
-  document.getElementById('notif-banner').classList.remove('show');
+  const banner = document.getElementById('notif-banner');
+  if (banner) banner.classList.remove('show');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2584,11 +3029,14 @@ let viewerSwipeStart = 0;
 
 function openPhotoViewer(listingId) {
   const listing = state.listings.find(l => l.id === listingId);
-  // Use actual uploaded photos if available (current listing), else demo placeholders
-  const photos = (listingId === state.currentListing?.id && state.photos.filter(Boolean).length)
-    ? state.photos.filter(Boolean)
-    : null;
-  viewerPhotos = photos || []; // will show placeholder emoji if empty
+  // Use listing's saved photos, or current upload photos
+  if (listingId === state.currentListing?.id && state.photos.filter(Boolean).length > 0) {
+    viewerPhotos = state.photos.filter(Boolean);
+  } else if (listing?.photos?.length > 0) {
+    viewerPhotos = listing.photos;
+  } else {
+    viewerPhotos = []; // will show placeholder
+  }
   viewerIdx = 0;
   viewerScale = 1;
   const viewer = document.getElementById('photo-viewer');
@@ -2602,20 +3050,29 @@ function renderViewerPhoto() {
   const img = document.getElementById('viewer-img');
   const counter = document.getElementById('viewer-counter');
   const dots = document.getElementById('viewer-dots');
-  const total = Math.max(viewerPhotos.length, 1);
+  const total = viewerPhotos.length || 1;
+  const prevBtn = document.getElementById('viewer-prev');
+  const nextBtn = document.getElementById('viewer-next');
+
   if (viewerPhotos.length > 0 && viewerPhotos[viewerIdx]) {
     img.src = viewerPhotos[viewerIdx];
     img.style.display = '';
   } else {
-    img.src = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="#181818"/><text x="150" y="180" font-size="120" text-anchor="middle">⌚</text><text x="150" y="240" font-size="16" fill="#5a5550" text-anchor="middle" font-family="sans-serif">No photo uploaded</text></svg>`);
+    img.src = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="#181818"/><text x="150" y="170" font-size="80" text-anchor="middle">⌚</text><text x="150" y="220" font-size="14" fill="#5a5550" text-anchor="middle" font-family="sans-serif">No photo uploaded</text></svg>')}`;
     img.style.display = '';
   }
   img.style.transform = `scale(${viewerScale})`;
+
+  // Always show counter
   counter.textContent = `${viewerIdx + 1} / ${total}`;
+
+  // Always show dots
   dots.innerHTML = Array.from({length: total}, (_, i) =>
-    `<div class="viewer-dot ${i===viewerIdx?'active':''}"></div>`).join('');
-  document.getElementById('viewer-prev').style.opacity = viewerIdx > 0 ? '1' : '0.2';
-  document.getElementById('viewer-next').style.opacity = viewerIdx < total - 1 ? '1' : '0.2';
+    `<div class="viewer-dot ${i === viewerIdx ? 'active' : ''}"></div>`).join('');
+
+  // Show/hide prev/next based on position
+  if (prevBtn) prevBtn.style.opacity = viewerIdx > 0 ? '1' : '0.2';
+  if (nextBtn) nextBtn.style.opacity = viewerIdx < total - 1 ? '1' : '0.2';
 }
 
 function viewerNav(dir) {
@@ -2703,7 +3160,7 @@ function generatePriceHistory(listing, months) {
 
 function renderPriceChart() {
   if (!chartListing) return;
-  const monthCounts = { '3m': 3, '6m': 6, '1y': 12, 'all': 24 };
+  const monthCounts = { '1m': 1, '3m': 3, '6m': 6, '1y': 12, 'all': 24 };
   const months = monthCounts[chartPeriod] || 12;
   const data = generatePriceHistory(chartListing, months);
   const minVal = Math.min(...data);
@@ -2799,22 +3256,25 @@ function kycUpload(step) {
 function submitKYC() {
   const bizName = document.getElementById('kyc-biz-name').value.trim();
   const regNo = document.getElementById('kyc-reg-no').value.trim();
-  if (!bizName || !regNo) { showToast('Please fill in business details'); return; }
+  const years = document.querySelector('#screen-kyc select:last-of-type')?.value;
+  if (!bizName) { showToast('Please enter your business name'); return; }
+  if (!regNo) { showToast('Please enter your registration number'); return; }
   const uploadedCount = Object.values(kycUploaded).filter(Boolean).length;
-  if (uploadedCount < 2) { showToast('Please upload at least 2 documents'); return; }
-  // Update status banner
+  if (uploadedCount < 3) {
+    showToast(`Please upload all 3 documents (${uploadedCount}/3 uploaded)`);
+    return;
+  }
   document.getElementById('kyc-status-icon').textContent = '🔄';
   document.getElementById('kyc-status-title').textContent = 'Under Review';
   document.getElementById('kyc-status-sub').textContent = 'Your documents are being reviewed. Expected: 1–2 business days.';
   document.getElementById('kyc-status-banner').style.background = 'rgba(85,153,224,0.08)';
-  document.getElementById('kyc-status-banner').style.borderColor = 'var(--blue)';
+  document.getElementById('kyc-status-banner').style.borderColor = '#5599e0';
   document.getElementById('kyc-submit-btn').disabled = true;
   document.getElementById('kyc-submit-btn').textContent = '✓ Submitted — Under Review';
-  // Hide KYC CTA on home
   const cta = document.getElementById('kyc-cta');
   if (cta) cta.innerHTML = `<span style="font-size:20px;">🔄</span><div style="flex:1;"><div style="font-size:13px;color:var(--text);">KYC Under Review</div><div style="font-size:11px;color:var(--text3);">Expected approval in 1–2 business days</div></div>`;
-  showToast('KYC submitted for review ✓');
-  setTimeout(() => goBack(), 1200);
+  showToast('✓ KYC submitted for review');
+  setTimeout(() => goBack(), 1500);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2831,18 +3291,21 @@ function isWatchlisted(listingId) {
 function toggleWatchlist(listingId) {
   let wl = getWatchlist();
   const btn = document.getElementById(`bm-${listingId}`);
-  if (wl.includes(listingId)) {
+  const isSaved = wl.includes(listingId);
+  if (isSaved) {
     wl = wl.filter(id => id !== listingId);
     if (btn) btn.classList.remove('saved');
     showToast('Removed from watchlist');
   } else {
     wl.push(listingId);
-    if (btn) { btn.classList.add('saved'); }
+    if (btn) btn.classList.add('saved');
     showToast('🔖 Saved to watchlist');
   }
   localStorage.setItem('chronos_watchlist', JSON.stringify(wl));
-  // Animate bookmark
-  if (btn) { btn.style.transform = 'scale(1.3)'; setTimeout(() => btn.style.transform = '', 200); }
+  if (btn) {
+    btn.style.transform = 'scale(1.35)';
+    setTimeout(() => { if (btn) btn.style.transform = ''; }, 250);
+  }
 }
 
 function renderWatchlist() {
@@ -2882,12 +3345,6 @@ function renderWatchlist() {
 // INIT
 // ═══════════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    const splash = document.getElementById('splash');
-    splash.classList.add('fade');
-    setTimeout(() => splash.remove(), 800);
-  }, 2200);
-
   // Register service worker for PWA installability
   if ('serviceWorker' in navigator) {
     const swCode = `
