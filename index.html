@@ -307,15 +307,15 @@
 /* ── PHOTO ZOOM VIEWER ── */
 #photo-viewer { position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:9000; display:none; flex-direction:column; align-items:center; justify-content:center; touch-action:none; }
 #photo-viewer.open { display:flex; }
-#viewer-img { max-width:100%; max-height:80vh; object-fit:contain; border-radius:4px; user-select:none; pointer-events:none; transition:transform 0.1s; transform-origin:center center; }
-#viewer-close { position:absolute; top:calc(var(–safe-top) + 16px); right:20px; width:36px; height:36px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:#fff; z-index:10; }
-#viewer-counter { position:absolute; top:calc(var(–safe-top) + 22px); left:50%; transform:translateX(-50%); font-size:12px; color:rgba(255,255,255,0.5); letter-spacing:0.1em; }
-#viewer-dots { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
-.viewer-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); transition:background .2s; }
-.viewer-dot.active { background:var(–gold); }
-#viewer-prev, #viewer-next { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; background:rgba(255,255,255,0.08); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; color:#fff; }
-#viewer-prev { left:12px; }
-#viewer-next { right:12px; }
+#viewer-img { max-width:88%; max-height:72vh; object-fit:contain; border-radius:4px; user-select:none; pointer-events:none; transition:transform 0.15s; transform-origin:center center; }
+#viewer-close { position:absolute; top:calc(env(safe-area-inset-top, 0px) + 14px); left:16px; width:40px; height:40px; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; color:#fff; z-index:10; }
+#viewer-counter { position:absolute; top:calc(env(safe-area-inset-top, 0px) + 22px); left:50%; transform:translateX(-50%); font-size:12px; color:rgba(255,255,255,0.7); letter-spacing:0.1em; background:rgba(0,0,0,0.4); padding:4px 12px; border-radius:20px; white-space:nowrap; }
+#viewer-dots { position:absolute; bottom:50px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:5; }
+.viewer-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.3); transition:background .2s; flex-shrink:0; }
+.viewer-dot.active { background:#c9a84c; }
+#viewer-prev { position:absolute; top:50%; left:12px; transform:translateY(-50%); width:40px; height:40px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; color:#fff; z-index:5; }
+#viewer-next { position:absolute; top:50%; right:12px; transform:translateY(-50%); width:40px; height:40px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; color:#fff; z-index:5; }
+#viewer-label { position:absolute; bottom:22px; left:50%; transform:translateX(-50%); font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; }
 
 /* ── PRICE CHART ── */
 .chart-container { background:var(–bg2); border:1px solid var(–border); border-radius:var(–radius); padding:16px; margin:12px 0; }
@@ -755,12 +755,7 @@
         </div>
       </div>
       <div class="photo-grid" id="photo-grid">
-        <input type="file" accept="image/*" class="hidden-file" id="file-0" onchange="handlePhoto(0,this)"/>
-        <input type="file" accept="image/*" class="hidden-file" id="file-1" onchange="handlePhoto(1,this)"/>
-        <input type="file" accept="image/*" class="hidden-file" id="file-2" onchange="handlePhoto(2,this)"/>
-        <input type="file" accept="image/*" class="hidden-file" id="file-3" onchange="handlePhoto(3,this)"/>
-        <input type="file" accept="image/*" class="hidden-file" id="file-4" onchange="handlePhoto(4,this)"/>
-        <input type="file" accept="image/*" class="hidden-file" id="file-5" onchange="handlePhoto(5,this)"/>
+        <!-- Populated by renderPhotoGrid() -->
       </div>
       <div style="padding:0 20px 32px;">
         <div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px;" id="photo-count-text">0 / 6 photos added</div>
@@ -1595,6 +1590,7 @@
   <img id="viewer-img" src="" alt="Watch photo"/>
   <div id="viewer-next" onclick="viewerNav(1)">›</div>
   <div id="viewer-dots"></div>
+  <div id="viewer-label"></div>
 </div>
 
 <!-- ── IN-APP NOTIFICATION BANNER ── -->
@@ -1691,6 +1687,7 @@ function goTo(screenId) {
   if (screenId === 'screen-my-listings') setTimeout(renderMyListings, 80);
   if (screenId === 'screen-my-offers') setTimeout(renderMyOffers, 80);
   if (screenId === 'screen-watchlist') setTimeout(renderWatchlist, 80);
+  if (screenId === 'screen-upload-photos') setTimeout(renderPhotoGrid, 80);
   if (screenId === 'screen-human-auth') { /* handled by requestHumanAuth */ }
 }
 
@@ -3050,9 +3047,11 @@ function renderViewerPhoto() {
   const img = document.getElementById('viewer-img');
   const counter = document.getElementById('viewer-counter');
   const dots = document.getElementById('viewer-dots');
+  const label = document.getElementById('viewer-label');
   const total = viewerPhotos.length || 1;
   const prevBtn = document.getElementById('viewer-prev');
   const nextBtn = document.getElementById('viewer-next');
+  const photoLabels = ['Front Dial','Case Back','Crown','Bracelet','Serial No.','Close-up'];
 
   if (viewerPhotos.length > 0 && viewerPhotos[viewerIdx]) {
     img.src = viewerPhotos[viewerIdx];
@@ -3062,15 +3061,10 @@ function renderViewerPhoto() {
     img.style.display = '';
   }
   img.style.transform = `scale(${viewerScale})`;
-
-  // Always show counter
   counter.textContent = `${viewerIdx + 1} / ${total}`;
-
-  // Always show dots
+  if (label) label.textContent = photoLabels[viewerIdx] || '';
   dots.innerHTML = Array.from({length: total}, (_, i) =>
     `<div class="viewer-dot ${i === viewerIdx ? 'active' : ''}"></div>`).join('');
-
-  // Show/hide prev/next based on position
   if (prevBtn) prevBtn.style.opacity = viewerIdx > 0 ? '1' : '0.2';
   if (nextBtn) nextBtn.style.opacity = viewerIdx < total - 1 ? '1' : '0.2';
 }
