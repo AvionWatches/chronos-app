@@ -4,538 +4,435 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CHRONOS — UAT Checklist v2</title>
+<title>CHRONOS UAT Checklist v2</title>
+
+<script type="application/json" id="td">[
+  {"num":1,"title":"App Loading and Dark Theme","tests":[
+    {"id":"T001","pri":"high","tag":"ui","title":"Login screen shows immediately with no splash delay",
+     "steps":["Open the app URL fresh in Safari","Observe what appears immediately on screen"],
+     "expect":"No splash screen. The CHRONOS login page shows immediately with gold logo, Authentication Marketplace subtitle, Sign In and Create Account tabs, email field, and all buttons visible."},
+    {"id":"T002","pri":"blocker","tag":"ui","title":"Dark theme renders correctly on all login elements",
+     "steps":["Look at the full login screen","Check each element: email input, gold button, Google button, Apple button, demo buttons, divider lines"],
+     "expect":"Black background. Gold gradient Send OTP to Email button. Dark grey email input with subtle rounded border. Google button dark grey. Apple button white with black text clearly visible. Divider lines visible on both sides of or continue with text."},
+    {"id":"T003","pri":"high","tag":"ui","title":"PWA install banner appears after a few seconds",
+     "steps":["Open URL in Safari on iPhone","Wait 4 or more seconds without tapping"],
+     "expect":"Install CHRONOS banner slides up from the bottom saying Tap Share then Add to Home Screen."}
+  ]},
+  {"num":2,"title":"Sign In via Email OTP","tests":[
+    {"id":"T004","pri":"blocker","tag":"both","title":"Empty email field shows toast error and stays on login",
+     "steps":["Leave the email field empty","Tap Send OTP to Email button"],
+     "expect":"Toast appears saying: Please enter a valid email address. Does not proceed to OTP screen."},
+    {"id":"T005","pri":"blocker","tag":"both","title":"Valid email proceeds to OTP screen with correct content",
+     "steps":["Enter: test@gmail.com in the email field","Tap Send OTP to Email"],
+     "expect":"OTP screen slides in showing email icon, Check your email heading, test@gmail.com displayed, 6 empty input boxes, demo OTP code shown below boxes, Your Name input field, and a spam folder hint."},
+    {"id":"T006","pri":"blocker","tag":"both","title":"OTP boxes auto-advance and Verify button only activates when all 6 filled",
+     "steps":["On OTP screen type digits one by one into the boxes"],
+     "expect":"Focus jumps to next box automatically after each digit. Verify and Sign In button stays grey until all 6 boxes are filled. After 6 digits the button turns gold and becomes tappable."},
+    {"id":"T007","pri":"blocker","tag":"both","title":"Wrong OTP shows error message and clears boxes",
+     "steps":["Enter 6 wrong digits such as 000000","Tap Verify and Sign In"],
+     "expect":"Toast: Incorrect OTP. Please try again. Boxes flash red border briefly then clear. Focus returns to first box. Button disables again."},
+    {"id":"T008","pri":"blocker","tag":"both","title":"Correct OTP plus name logs in showing correct name on home",
+     "steps":["Enter name: Jerry Tan in the name field","Enter the exact 6-digit demo code shown","Tap Verify and Sign In"],
+     "expect":"Home screen shows Jerry Tan as the name. Toast: Welcome, Jerry. Must NOT show James Whitmore or any email-derived name."},
+    {"id":"T009","pri":"high","tag":"both","title":"Resend OTP generates a new code with toast confirmation",
+     "steps":["On OTP screen tap Resend code link"],
+     "expect":"Toast: New OTP sent. Demo OTP hint below the boxes updates to show a different 6-digit number."},
+    {"id":"T010","pri":"high","tag":"both","title":"Change email link returns to login screen",
+     "steps":["On OTP screen tap the Change email link at the bottom"],
+     "expect":"Slides back to Sign In screen with the email field visible and ready to edit."}
+  ]},
+  {"num":3,"title":"Sign In via Social and Demo","tests":[
+    {"id":"T011","pri":"blocker","tag":"seller","title":"Seller Demo login shows correct seller home screen",
+     "steps":["Tap the Seller Demo button on the login screen"],
+     "expect":"Home shows James Whitmore with Seller badge. Seller nav bar at bottom with 5 tabs. New Watch Listing and My Listings buttons visible. Demo listings appear in Recent Listings section."},
+    {"id":"T012","pri":"blocker","tag":"dealer","title":"Dealer Demo login shows correct dealer home screen",
+     "steps":["Tap the Dealer Demo button on the login screen"],
+     "expect":"Home shows Harrison and Co with Dealer badge. Seller nav bar is NOT visible. Browse Marketplace, My Submitted Offers, Saved Watchlist buttons and KYC verification CTA are shown."},
+    {"id":"T013","pri":"blocker","tag":"both","title":"Google login carries through correct name and email",
+     "steps":["Tap Continue with Google","Select an account from the bottom sheet","Choose a role","Tap Continue"],
+     "expect":"Bottom sheet shows 2 Google accounts with a gold checkmark on selection. Login completes with that account exact name and email visible on home screen and in settings."},
+    {"id":"T014","pri":"blocker","tag":"both","title":"Apple button is white with clearly visible black text",
+     "steps":["Check Apple button appearance on login screen","Tap Continue with Apple","Select an account and tap Continue"],
+     "expect":"Apple button is white with black Continue with Apple text that is clearly readable. Bottom sheet shows Apple accounts. Login completes correctly with name shown on home screen."}
+  ]},
+  {"num":4,"title":"Create Account","tests":[
+    {"id":"T015","pri":"blocker","tag":"both","title":"Create Account tab shows correct form with no optional labels",
+     "steps":["Tap Create Account tab on login screen","Review all visible form fields"],
+     "expect":"Form shows: Full Name with asterisk, Email Address with asterisk, Mobile Number with asterisk and country code dropdown, I am a dropdown, Create Account button. The word optional must NOT appear anywhere on this screen."},
+    {"id":"T016","pri":"blocker","tag":"both","title":"All 3 fields are mandatory with specific error toasts each",
+     "steps":["Leave name empty and tap Create Account","Fill name only then tap Create Account","Fill name and email but not phone then tap Create Account"],
+     "expect":"First: Please enter your full name toast. Second: Please enter a valid email address toast. Third: Please enter a valid mobile number toast. None of the attempts proceed to OTP screen."},
+    {"id":"T017","pri":"blocker","tag":"both","title":"Country code dropdown shows flag and code without being cut off",
+     "steps":["On signup form tap the country code dropdown"],
+     "expect":"Dropdown shows Singapore flag emoji with +65 as default and neither is cut off. The full flag and code are visible inside the dropdown selector without truncation."},
+    {"id":"T018","pri":"blocker","tag":"both","title":"Full signup creates account using the exact name entered",
+     "steps":["Enter Name: Jerry Tan","Enter Email: jerry@test.com","Enter Phone: 81234567","Select Role: Watch Seller","Tap Create Account and Verify","Enter the shown OTP code on OTP screen","Tap Verify and Sign In"],
+     "expect":"Home shows Jerry Tan. Toast: Welcome, Jerry. Settings shows Jerry Tan and jerry@test.com. Must NOT show a default or generated name."}
+  ]},
+  {"num":5,"title":"Home Screen","tests":[
+    {"id":"T019","pri":"blocker","tag":"seller","title":"Seller home shows stats and recent listings correctly",
+     "steps":["Login as Seller Demo","Review the home screen content"],
+     "expect":"Stats card shows Listings, Offers and Sold counts. Recent Listings shows Rolex and Omega cards with AI Valuation label in SGD, Asking Price in gold SGD, and Auth Score with label."},
+    {"id":"T020","pri":"blocker","tag":"seller","title":"Seller nav bar all 5 tabs navigate to correct screens",
+     "steps":["Tap each nav tab one by one: home icon, listings icon, plus centre button, offers icon, profile icon"],
+     "expect":"Home stays. Listings goes to My Listings screen. Plus goes to Watch Details screen. Offers goes to Review Offers or shows a toast. Profile goes to Settings screen."},
+    {"id":"T021","pri":"blocker","tag":"dealer","title":"Dealer home shows correct CTAs and no seller nav bar",
+     "steps":["Login as Dealer Demo","Review the home screen"],
+     "expect":"Seller nav bar at bottom is NOT visible. Browse Marketplace, My Submitted Offers and Saved Watchlist buttons are shown. KYC verification CTA with ID card icon is visible."}
+  ]},
+  {"num":6,"title":"Watch Listing Flow","tests":[
+    {"id":"T022","pri":"blocker","tag":"seller","title":"Watch details form validates all required fields individually",
+     "steps":["Tap New Watch Listing","Try tapping Continue to Photos with each field left empty one at a time"],
+     "expect":"Each missing field shows a specific toast for that field. Box and Papers field defaults to Select box and papers status. Progress stepper shows Step 1 active in gold colour."},
+    {"id":"T023","pri":"blocker","tag":"seller","title":"Photo slots show labels and gold checkmark after upload",
+     "steps":["Fill all watch details and proceed to photos screen","Tap a photo slot and upload any image from your phone"],
+     "expect":"6 photo slots shown with correct labels: Front Dial, Case Back, Crown, Bracelet, Serial No, Close-up. After upload photo appears in slot with a clearly visible gold checkmark. Counter shows how many of 6 are added."},
+    {"id":"T024","pri":"blocker","tag":"seller","title":"All 6 photos required before AI analysis can start",
+     "steps":["Upload only 1 to 5 photos","Tap Analyze with AI button"],
+     "expect":"Toast: Please upload all 6 photos with the current count. Analysis does not start. Button shows the count like 3 of 6 photos added."},
+    {"id":"T025","pri":"blocker","tag":"seller","title":"AI Authentication result screen loads with all elements",
+     "steps":["Upload all 6 photos","Tap Analyze with AI"],
+     "expect":"Loading screen with rotating step messages. Then result shows: animated score ring fills with gold, score number counts up, verdict badge, confidence badge, AI summary text, authentication details list, Get AI Valuation and Request Human Authentication buttons."},
+    {"id":"T026","pri":"blocker","tag":"seller","title":"Human Authentication provider selection and confirmation screen work",
+     "steps":["On auth result tap Request Human Authentication","Select a provider from the list","Tap Request Authentication"],
+     "expect":"Provider screen shows 3 options each with name, SGD fee, turnaround time and location in Singapore. Selecting one highlights in gold. Tapping Request goes to confirmation screen saying the team will contact within 3 to 5 working days."},
+    {"id":"T027","pri":"blocker","tag":"seller","title":"AI Valuation shows animated bar, SGD prices and asking price field",
+     "steps":["On auth result tap Get AI Valuation","Wait for result to load"],
+     "expect":"Loading shows Estimating Value. Result shows watch name, SGD conservative and optimistic prices, gold bar animates filling from left, Market Liquidity badge, Suggested Ask in SGD, Market Analysis text, Value Factors list. Asking price field pre-filled with suggested value."},
+    {"id":"T028","pri":"blocker","tag":"seller","title":"Asking price is required with warnings for extreme values",
+     "steps":["Leave asking price blank and tap Publish","Enter a price 3 times higher than valuation and observe","Enter a price within the AI range and observe"],
+     "expect":"Blank: toast Please enter your asking price. Too high: red warning showing percentage above estimate. Within range: green message confirming price is within recommended range."},
+    {"id":"T029","pri":"blocker","tag":"seller","title":"Publish listing shows toast, notification banner and updates stats",
+     "steps":["Enter a valid asking price","Tap Publish to Marketplace"],
+     "expect":"Returns to home. Toast: Listing published to marketplace. Notification banner slides down from top showing watch name and details. Listings stat count increases by 1. New listing appears in Recent Listings."}
+  ]},
+  {"num":7,"title":"Dealer Marketplace","tests":[
+    {"id":"T030","pri":"blocker","tag":"dealer","title":"Marketplace listings show AI Valuation and Asking Price in SGD",
+     "steps":["Login as Dealer Demo","Tap Browse Marketplace"],
+     "expect":"Each listing card shows AI Valuation label with SGD range, Asking Price label in gold SGD, Auth Score X of 100 label, bookmark icon, Price History button and Make Offer button. Listing count text shown."},
+    {"id":"T031","pri":"blocker","tag":"dealer","title":"Auth score info popup appears when tapping the i button",
+     "steps":["Tap the small i button next to Auth Score on any listing card"],
+     "expect":"Popup appears explaining the Auth Score from 0 to 100 and what each range means. Got it button closes the popup cleanly."},
+    {"id":"T032","pri":"high","tag":"dealer","title":"Search bar and brand filter chips filter listings correctly",
+     "steps":["Type Rolex in the search bar","Tap the Rolex brand chip","Tap All to reset"],
+     "expect":"Search filters listings in real time. Rolex chip shows only Rolex listings. Tapping All resets and shows everything again."},
+    {"id":"T033","pri":"high","tag":"dealer","title":"Sort and status filter dropdowns reorder and filter listings",
+     "steps":["Change sort to Price descending","Change filter to With Offers"],
+     "expect":"Sort reorders by price from high to low. Filter shows only listings with at least one offer. Listing count text updates to reflect the result."},
+    {"id":"T034","pri":"blocker","tag":"dealer","title":"Sold listings do not appear in the marketplace",
+     "steps":["Accept an offer as seller to mark a listing as SOLD","Login as dealer and check marketplace"],
+     "expect":"SOLD listings are not shown in the marketplace. Only active listed watches appear."}
+  ]},
+  {"num":8,"title":"Offers and Deal Flow","tests":[
+    {"id":"T035","pri":"blocker","tag":"dealer","title":"Make Offer screen shows SGD details and price calculator",
+     "steps":["Tap Make Offer on any listing","Enter an offer price like 12000"],
+     "expect":"Screen shows watch name, year, condition, AI Valuation range in SGD, Auth Score. Entering a price shows a calculator with percentage vs conservative and optimistic valuations in SGD."},
+    {"id":"T036","pri":"blocker","tag":"dealer","title":"Submitting offer shows toast and updates offer counter on card",
+     "steps":["Enter a price, add a message, tap Submit Offer"],
+     "expect":"Toast: Offer of SGD 12,000 submitted. Returns to marketplace. The listing card offer count badge increases by 1 to reflect the new offer."},
+    {"id":"T037","pri":"blocker","tag":"dealer","title":"Submitting with no price shows an error toast",
+     "steps":["Open Make Offer screen","Leave price field blank","Tap Submit Offer"],
+     "expect":"Toast: Please enter a valid offer price. Does not submit and stays on the make offer screen."},
+    {"id":"T038","pri":"blocker","tag":"dealer","title":"My Offers has search, sort and filter controls that work",
+     "steps":["Go to My Submitted Offers","Try searching a watch name","Change the sort dropdown","Change the status filter dropdown"],
+     "expect":"Offers list shows watch name, year, SGD price and status badge. Search filters by watch name. Sort reorders by price. Status filter shows only the selected status such as Pending or Accepted."},
+    {"id":"T039","pri":"blocker","tag":"seller","title":"Review Offers shows 3 equal buttons ranked by price",
+     "steps":["Login as Seller Demo","Tap the Rolex listing to see its offers"],
+     "expect":"Offers sorted highest price first. Top offer shows HIGHEST badge. Each offer has 3 equal-width buttons: Accept in gold, Counter in outline, Decline in ghost style. Shows dealer name, email, SGD price, message, validity and percentage vs AI valuation."},
+    {"id":"T040","pri":"high","tag":"seller","title":"Counter offer modal sends counter price to dealer",
+     "steps":["Tap Counter button on any offer","Enter a counter price","Tap Send Counter"],
+     "expect":"Modal shows dealer original offer and validity reminder. After submitting: toast says counter offer sent with SGD amount. Offer card shows COUNTERED badge with the counter price displayed."},
+    {"id":"T041","pri":"blocker","tag":"seller","title":"Accepting offer shows Deal Complete screen with all details",
+     "steps":["Tap Accept on any offer"],
+     "expect":"Deal Complete screen shows handshake emoji, watch name, SGD accepted price in green, dealer name, unique transaction ID, next steps list with 3 items, Back to Home button, and Download Confirmation button."},
+    {"id":"T042","pri":"blocker","tag":"seller","title":"Download Confirmation button downloads a file",
+     "steps":["On Deal Complete screen tap Download Confirmation"],
+     "expect":"A text file downloads to the device containing transaction details: watch name, SGD price, dealer, transaction ID, date and next steps. Toast: Confirmation downloaded."},
+    {"id":"T043","pri":"blocker","tag":"seller","title":"Sold listing stays visible in My Listings with SOLD badge",
+     "steps":["After accepting an offer navigate to My Listings screen"],
+     "expect":"The sold watch appears in the list with green SOLD badge and a Sold Deal Complete message. It must NOT disappear from the list."}
+  ]},
+  {"num":9,"title":"Enhancements","tests":[
+    {"id":"T044","pri":"blocker","tag":"both","title":"Photo viewer has no overlapping elements when opened",
+     "steps":["Tap any watch photo thumbnail on a listing card in the marketplace"],
+     "expect":"Fullscreen viewer opens. Close X is at TOP-LEFT. Photo counter like 1 of 6 is at TOP-CENTRE. Previous arrow is on LEFT side. Next arrow is on RIGHT side. Dot indicators are at BOTTOM. No elements overlap each other at all."},
+    {"id":"T045","pri":"blocker","tag":"both","title":"Photo viewer swipe navigation and close button work",
+     "steps":["Open photo viewer on any listing","Swipe left and right","Tap the arrow buttons","Tap X to close"],
+     "expect":"Swipe left shows next photo. Swipe right shows previous. Arrow buttons navigate correctly. Active dot updates to match current photo position. X button closes viewer and returns to listing view."},
+    {"id":"T046","pri":"blocker","tag":"both","title":"Price history chart is clearly visible with all 5 period tabs",
+     "steps":["Tap Price History button on any listing card","Tap each period tab: 1M, 3M, 6M, 1Y, All"],
+     "expect":"Chart screen shows watch name, Current Average in SGD, 12 month Change percentage. Bright gold SVG line chart with gradient fill is clearly visible and not faded. Each period tab updates the chart and date labels."},
+    {"id":"T047","pri":"blocker","tag":"dealer","title":"Watchlist bookmark saves listing with toast and persists",
+     "steps":["Go to Marketplace as Dealer","Tap the bookmark icon on a listing","Check the toast","Go to Saved Watches","Tap bookmark again to remove"],
+     "expect":"Saving: toast Saved to watchlist, icon animates. Saved Watches screen shows that listing with buttons. Removing: toast Removed from watchlist, listing disappears from watchlist."},
+    {"id":"T048","pri":"high","tag":"dealer","title":"KYC requires all 3 documents and shows correct toasts",
+     "steps":["Go to Complete Dealer Verification","Check country dropdown","Upload only 1 document then tap Submit","Upload all 3 documents, fill fields, tap Submit"],
+     "expect":"Country shows only Singapore flag and +65. With 1 doc: toast says please upload all 3 documents with count. With all 3 and fields filled: status changes to Under Review in blue, submit button disables, toast: KYC submitted for review."}
+  ]},
+  {"num":10,"title":"Settings and Navigation","tests":[
+    {"id":"T049","pri":"blocker","tag":"both","title":"Settings shows correct user info with no data mixing",
+     "steps":["Login as Seller Demo and open Settings","Sign out then login as Dealer Demo and open Settings"],
+     "expect":"Seller: James Whitmore, Demo Access, Seller badge. Dealer: Harrison and Co, Demo Access, Dealer badge. No data from one account appears when viewing the other."},
+    {"id":"T050","pri":"high","tag":"both","title":"Save email in settings works with toast and validation",
+     "steps":["In Settings enter recovery@test.com in Email Address field and tap Save","Try saving an invalid email without the at symbol"],
+     "expect":"Valid email: toast Email address saved. Invalid email: toast Please enter a valid email address."},
+    {"id":"T051","pri":"blocker","tag":"both","title":"Sign Out returns cleanly to login with no visual glitch",
+     "steps":["Login as Seller Demo, go to Settings, tap Sign Out","Repeat the same as Dealer Demo"],
+     "expect":"Returns to login screen with no split screen, no hanging elements, no visual glitch. Toast: Signed out. Login screen shows correctly with dark theme and gold button."},
+    {"id":"T052","pri":"blocker","tag":"both","title":"Back buttons work on every screen without getting stuck",
+     "steps":["Navigate through: Watch Details then Photos then Auth then Valuation and use back on each","Also test back on Settings, My Listings, Marketplace, Make Offer, KYC, Price Chart and Human Auth"],
+     "expect":"Every back button slides to the correct previous screen with smooth animation. No stuck screens, no crashes, no split view at any point. Settings back always returns to home."},
+    {"id":"T053","pri":"blocker","tag":"both","title":"All toast messages appear correctly throughout the app",
+     "steps":["Trigger toasts by: submitting empty forms, saving email, submitting an offer, publishing a listing, saving to watchlist, signing out"],
+     "expect":"Every action that should show a toast does show one. Toast slides up from the bottom, stays 2 to 3 seconds, and auto-dismisses. Text is correct and readable for each action."},
+    {"id":"T054","pri":"low","tag":"both","title":"Tapping input fields does not zoom the page on iPhone",
+     "steps":["Tap on any input field such as email, offer price, name or notes"],
+     "expect":"Keyboard appears but the page does NOT zoom in. The layout stays the same size and all content remains readable without having to zoom back out."}
+  ]}
+]</script>
+
 <style>
-  :root {
-    --bg:#0a0a0a; --bg2:#111; --bg3:#181818;
-    --gold:#c9a84c; --gold3:#7a5c1e; --gold2:#e8c97a;
-    --text:#f0ede8; --text2:#9a9590; --text3:#5a5550;
-    --green:#4caf7d; --red:#e05555; --blue:#5599e0;
-    --border:#2a2a2a; --border2:#333;
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; font-size:14px; padding-bottom:100px; }
-
-/* HEADER */
-.header { background:var(–bg2); border-bottom:1px solid var(–border); padding:16px 20px; position:sticky; top:0; z-index:100; }
-.header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.logo { font-family:Georgia,serif; font-size:20px; font-weight:300; letter-spacing:0.2em; color:var(–gold); }
-.sub { font-size:10px; letter-spacing:0.2em; color:var(–text3); text-transform:uppercase; }
-.save-status { font-size:11px; color:var(–text3); display:flex; align-items:center; gap:5px; }
-.save-dot { width:7px; height:7px; border-radius:50%; background:var(–green); }
-.save-dot.dirty { background:var(–gold); }
-.progress-bar { background:var(–border); border-radius:4px; height:6px; overflow:hidden; }
-.progress-fill { height:100%; background:linear-gradient(90deg,#7a5c1e,#c9a84c); border-radius:4px; transition:width .4s; }
-.progress-text { font-size:11px; color:var(–text3); text-align:right; margin-top:4px; }
-
-/* CONTAINER */
-.container { max-width:860px; margin:0 auto; padding:20px 16px; }
-
-/* INTRO */
-.intro { background:var(–bg2); border:1px solid var(–border); border-radius:12px; padding:20px; margin-bottom:24px; }
-.intro h2 { font-family:Georgia,serif; font-size:18px; font-weight:300; color:var(–gold); margin-bottom:10px; }
-.intro p { color:var(–text2); font-size:13px; line-height:1.7; margin-bottom:6px; }
-.legend { display:flex; gap:14px; margin-top:12px; flex-wrap:wrap; }
-.legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(–text2); }
-.legend-dot { width:11px; height:11px; border-radius:3px; }
-
-/* SECTION */
-.section { margin-bottom:24px; }
-.section-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(–border); }
-.section-num { width:30px; height:30px; border-radius:50%; background:#7a5c1e; color:#c9a84c; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.section-title { font-family:Georgia,serif; font-size:17px; font-weight:300; flex:1; }
-.section-count { font-size:11px; color:var(–text3); background:var(–bg3); padding:3px 8px; border-radius:10px; }
-
-/* TEST ITEM */
-.item { background:var(–bg2); border:1px solid var(–border); border-radius:10px; margin-bottom:8px; overflow:hidden; transition:border-color .2s; }
-.item.pass { background:#0d1f15; border-color:#4caf7d; }
-.item.fail { background:#1f0d0d; border-color:#e05555; }
-.item.skip { background:#0d0d1f; border-color:#5566aa; }
-.item-header { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; user-select:none; }
-.item-id { font-size:10px; color:var(–text3); font-family:monospace; flex-shrink:0; min-width:44px; }
-.item-title { font-size:13px; font-weight:500; flex:1; line-height:1.4; }
-.item-priority { font-size:11px; flex-shrink:0; }
-.item-badge { font-size:10px; padding:2px 8px; border-radius:10px; flex-shrink:0; font-weight:600; }
-.badge-pass { background:rgba(76,175,125,0.2); color:#4caf7d; }
-.badge-fail { background:rgba(224,85,85,0.2); color:#e05555; }
-.badge-skip { background:rgba(85,102,170,0.2); color:#8899dd; }
-.chevron { color:var(–text3); font-size:12px; flex-shrink:0; transition:transform .2s; }
-.chevron.open { transform:rotate(90deg); }
-
-/* ITEM BODY */
-.item-body { display:none; padding:0 14px 14px 14px; }
-.item-body.open { display:block; }
-.steps-label { font-size:10px; color:var(–text3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; margin-top:2px; }
-.steps ol { padding-left:18px; }
-.steps li { font-size:13px; color:var(–text2); margin-bottom:3px; line-height:1.5; }
-.expect { background:var(–bg3); border-left:3px solid #7a5c1e; padding:10px 12px; border-radius:0 6px 6px 0; margin:10px 0; }
-.expect-label { font-size:10px; color:#c9a84c; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px; }
-.expect p { font-size:13px; color:var(–text2); line-height:1.6; }
-.actions { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
-.btn-p { background:rgba(76,175,125,0.15); color:#4caf7d; border:1px solid rgba(76,175,125,0.4); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; transition:all .15s; }
-.btn-p:active { background:rgba(76,175,125,0.3); }
-.btn-f { background:rgba(224,85,85,0.15); color:#e05555; border:1px solid rgba(224,85,85,0.4); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; transition:all .15s; }
-.btn-f:active { background:rgba(224,85,85,0.3); }
-.btn-s { background:rgba(85,102,170,0.15); color:#8899dd; border:1px solid rgba(85,102,170,0.4); padding:8px 18px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; }
-.btn-r { background:transparent; color:var(–text3); border:1px solid var(–border2); padding:8px 14px; border-radius:6px; cursor:pointer; font-size:12px; }
-.notes-label { font-size:11px; color:var(–text3); margin-top:10px; margin-bottom:4px; }
-.notes { width:100%; background:var(–bg); border:1px solid var(–border2); border-radius:6px; padding:8px 10px; color:var(–text); font-size:12px; outline:none; resize:vertical; min-height:44px; font-family:inherit; }
-.notes:focus { border-color:#7a5c1e; }
-
-/* TAGS */
-.tag { font-size:10px; padding:2px 7px; border-radius:8px; font-weight:500; }
-.tag-seller { background:rgba(201,168,76,0.15); color:#c9a84c; }
-.tag-dealer { background:rgba(85,153,224,0.15); color:#5599e0; }
-.tag-both { background:rgba(76,175,125,0.15); color:#4caf7d; }
-.tag-ui { background:rgba(180,100,220,0.15); color:#bb88ee; }
-
-/* BOTTOM BAR */
-.bottom-bar { position:fixed; bottom:0; left:0; right:0; background:var(–bg2); border-top:1px solid var(–border); padding:10px 16px; display:flex; align-items:center; gap:12px; z-index:100; }
-.stat { display:flex; flex-direction:column; align-items:center; min-width:36px; }
-.stat-num { font-size:18px; font-weight:700; font-family:monospace; }
-.stat-lbl { font-size:9px; color:var(–text3); text-transform:uppercase; }
-.num-pass { color:#4caf7d; }
-.num-fail { color:#e05555; }
-.num-skip { color:#8899dd; }
-.num-tot { color:var(–text2); }
-.btn-save { background:var(–bg3); color:var(–text); border:1px solid var(–border2); padding:9px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:500; }
-.btn-export { background:linear-gradient(135deg,#7a5c1e,#c9a84c); color:#000; border:none; padding:9px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; margin-left:auto; }
-.btn-export:active { opacity:.85; }
-
-/* TOAST */
-#uat-toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px); background:var(–bg3); border:1px solid var(–border2); border-radius:20px; padding:9px 18px; font-size:13px; opacity:0; transition:all .3s; pointer-events:none; white-space:nowrap; z-index:9999; }
-#uat-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-@media(max-width:500px){
-.container { padding:14px 10px; }
-.bottom-bar { padding:8px 10px; gap:8px; }
-.stat-num { font-size:15px; }
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#f0ede8;font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;padding-bottom:100px}
+.hdr{background:#111;border-bottom:1px solid #2a2a2a;padding:14px 16px;position:sticky;top:0;z-index:100}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-family:Georgia,serif;font-size:20px;font-weight:300;letter-spacing:.2em;color:#c9a84c}
+.sub{font-size:10px;letter-spacing:.12em;color:#5a5550;text-transform:uppercase;margin-top:2px}
+.ss{display:flex;align-items:center;gap:6px;font-size:11px;color:#5a5550}
+.sd{width:8px;height:8px;border-radius:50%;background:#4caf7d;transition:background .3s}
+.sd.dirty{background:#c9a84c}
+.pb{background:#2a2a2a;border-radius:4px;height:6px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,#7a5c1e,#c9a84c);border-radius:4px;transition:width .4s;width:0%}
+.pt{font-size:11px;color:#5a5550;text-align:right;margin-top:4px}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+.intro{background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:18px;margin-bottom:20px}
+.intro h2{font-family:Georgia,serif;font-size:17px;font-weight:300;color:#c9a84c;margin-bottom:10px}
+.intro p{color:#9a9590;font-size:13px;line-height:1.7;margin-bottom:6px}
+.leg{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:6px;font-size:12px;color:#9a9590}
+.ld{width:10px;height:10px;border-radius:3px}
+.sec{margin-bottom:20px}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #2a2a2a}
+.sn{width:28px;height:28px;border-radius:50%;background:#7a5c1e;color:#c9a84c;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.st{font-family:Georgia,serif;font-size:16px;font-weight:300;flex:1}
+.sc{font-size:11px;color:#5a5550;background:#181818;padding:3px 8px;border-radius:10px}
+.item{background:#111;border:1px solid #2a2a2a;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.item.pass{background:#091a10;border-color:#4caf7d}
+.item.fail{background:#1a0909;border-color:#e05555}
+.item.skip{background:#09091a;border-color:#5566aa}
+.ih{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.iid{font-size:10px;color:#5a5550;font-family:monospace;flex-shrink:0;min-width:40px}
+.ititle{font-size:13px;font-weight:500;flex:1;line-height:1.4}
+.ipri{font-size:13px;flex-shrink:0}
+.itag{font-size:10px;padding:2px 7px;border-radius:8px;flex-shrink:0;font-weight:500}
+.ts{background:rgba(201,168,76,.15);color:#c9a84c}
+.td{background:rgba(85,153,224,.15);color:#5599e0}
+.tb{background:rgba(76,175,125,.15);color:#4caf7d}
+.tu{background:rgba(180,100,220,.15);color:#bb88ee}
+.ibadge{font-size:10px;padding:2px 8px;border-radius:10px;flex-shrink:0;font-weight:700}
+.bp{background:rgba(76,175,125,.2);color:#4caf7d}
+.bf{background:rgba(224,85,85,.2);color:#e05555}
+.bk{background:rgba(85,102,170,.2);color:#8899dd}
+.ch{color:#5a5550;font-size:13px;flex-shrink:0;transition:transform .2s}
+.ch.open{transform:rotate(90deg)}
+.ib{display:none;padding:0 14px 14px}
+.ib.open{display:block}
+.bl{font-size:10px;color:#5a5550;text-transform:uppercase;letter-spacing:.1em;margin:8px 0 5px}
+.sl{padding-left:16px}
+.sl li{font-size:13px;color:#9a9590;margin-bottom:3px;line-height:1.5}
+.eb{background:#181818;border-left:3px solid #7a5c1e;padding:10px 12px;border-radius:0 6px 6px 0;margin:8px 0}
+.el{font-size:10px;color:#c9a84c;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.et{font-size:13px;color:#9a9590;line-height:1.6}
+.acts{display:flex;gap:6px;margin-top:10px}
+.bp2{background:rgba(76,175,125,.15);color:#4caf7d;border:1px solid rgba(76,175,125,.4);padding:9px 0;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;flex:1;-webkit-appearance:none;appearance:none}
+.bf2{background:rgba(224,85,85,.15);color:#e05555;border:1px solid rgba(224,85,85,.4);padding:9px 0;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;flex:1;-webkit-appearance:none;appearance:none}
+.bk2{background:rgba(85,102,170,.15);color:#8899dd;border:1px solid rgba(85,102,170,.4);padding:9px 0;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;flex:1;-webkit-appearance:none;appearance:none}
+.br2{background:transparent;color:#5a5550;border:1px solid #333;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:12px;-webkit-appearance:none;appearance:none}
+.nl{font-size:11px;color:#5a5550;margin-top:10px;margin-bottom:4px}
+.nt{width:100%;background:#0a0a0a;border:1px solid #333;border-radius:6px;padding:8px 10px;color:#f0ede8;font-size:12px;outline:none;resize:vertical;min-height:44px;font-family:inherit;-webkit-appearance:none;appearance:none}
+.nt:focus{border-color:#7a5c1e}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #2a2a2a;padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:100}
+.stat{display:flex;flex-direction:column;align-items:center;min-width:32px}
+.sn2{font-size:17px;font-weight:700;font-family:monospace}
+.sl2{font-size:9px;color:#5a5550;text-transform:uppercase}
+.np{color:#4caf7d}.nf{color:#e05555}.nk{color:#8899dd}.nt2{color:#9a9590}
+.bsave{background:#181818;color:#f0ede8;border:1px solid #333;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;-webkit-appearance:none;appearance:none}
+.bexp{background:linear-gradient(135deg,#7a5c1e,#c9a84c);color:#000;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;margin-left:auto;-webkit-appearance:none;appearance:none}
+#toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(16px);background:#181818;border:1px solid #333;border-radius:20px;padding:9px 18px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:9999;color:#f0ede8}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
-    <div>
-      <div class="logo">CHRONOS</div>
-      <div class="sub">UAT Checklist v2 · Pre-Launch</div>
-    </div>
-    <div class="save-status">
-      <div class="save-dot" id="save-dot"></div>
-      <span id="save-label">Saved</span>
-    </div>
+<div class="hdr">
+  <div class="hdr-top">
+    <div><div class="logo">CHRONOS</div><div class="sub">UAT Checklist v2</div></div>
+    <div class="ss"><div class="sd" id="sd"></div><span id="sl">Saved</span></div>
   </div>
-  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-  <div class="progress-text" id="prog-text">0 / 45 completed</div>
+  <div class="pb"><div class="pf" id="pf"></div></div>
+  <div class="pt" id="pt">0 / 54 completed</div>
 </div>
 
-<div class="container">
+<div class="wrap">
   <div class="intro">
     <h2>How to use this checklist</h2>
-    <p>Open the CHRONOS web app at <strong style="color:var(--gold)">https://avionwatches.github.io/chronos-app/</strong> and test each item below. Tap any row to expand it, then mark <strong>Pass</strong>, <strong>Fail</strong> or <strong>Skip</strong>.</p>
-    <p>Your progress <strong style="color:var(--gold)">auto-saves every time you tap Pass/Fail/Skip</strong> — you will not lose it if you close this page. Use the <strong>Save</strong> button to force-save at any point. When done, tap <strong>Export Report</strong> — it downloads a <code>.txt</code> file you can share.</p>
-    <p style="margin-top:6px;"><strong style="color:#e05555">🔴 Blocker</strong> — must fix before go-live &nbsp;|&nbsp; <strong style="color:#c9a84c">🟡 High</strong> — should fix &nbsp;|&nbsp; <strong style="color:#4caf7d">🟢 Low</strong> — nice to have</p>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#0d1f15;border:1px solid #4caf7d"></div>Pass</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#1f0d0d;border:1px solid #e05555"></div>Fail</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#0d0d1f;border:1px solid #5566aa"></div>Skip</div>
+    <p>Open the CHRONOS app at <strong style="color:#c9a84c">avionwatches.github.io/chronos-app</strong> alongside this page. Tap any test to expand it, follow the steps, then tap Pass, Fail or Skip.</p>
+    <p>Progress <strong style="color:#c9a84c">saves instantly</strong> every time you tap Pass, Fail or Skip. You will not lose progress if you close the page. The Save button force-saves at any time. Export downloads a text file report.</p>
+    <p>🔴 Blocker — must fix before go-live &nbsp; 🟡 High — should fix &nbsp; 🟢 Low — nice to have</p>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#091a10;border:1px solid #4caf7d"></div>Pass</div>
+      <div class="li"><div class="ld" style="background:#1a0909;border:1px solid #e05555"></div>Fail</div>
+      <div class="li"><div class="ld" style="background:#09091a;border:1px solid #5566aa"></div>Skip</div>
     </div>
   </div>
-
-  <!-- ══════════════════════════════════════════════
-       BUILD TEST DATA
-  ══════════════════════════════════════════════ -->
-
-  <div id="test-root"></div>
+  <div id="root"></div>
 </div>
 
-<div class="bottom-bar">
-  <div class="stat"><div class="stat-num num-pass" id="s-pass">0</div><div class="stat-lbl">Pass</div></div>
-  <div class="stat"><div class="stat-num num-fail" id="s-fail">0</div><div class="stat-lbl">Fail</div></div>
-  <div class="stat"><div class="stat-num num-skip" id="s-skip">0</div><div class="stat-lbl">Skip</div></div>
-  <div class="stat"><div class="stat-num num-tot" id="s-tot">45</div><div class="stat-lbl">Total</div></div>
-  <button class="btn-save" onclick="saveNow()">💾 Save</button>
-  <button class="btn-export" onclick="exportReport()">⬇ Export</button>
+<div class="bar">
+  <div class="stat"><div class="sn2 np" id="sp">0</div><div class="sl2">Pass</div></div>
+  <div class="stat"><div class="sn2 nf" id="sf">0</div><div class="sl2">Fail</div></div>
+  <div class="stat"><div class="sn2 nk" id="sk">0</div><div class="sl2">Skip</div></div>
+  <div class="stat"><div class="sn2 nt2" id="st">54</div><div class="sl2">Total</div></div>
+  <button class="bsave" onclick="saveNow()">Save</button>
+  <button class="bexp" onclick="exportReport()">Export</button>
 </div>
 
-<div id="uat-toast"></div>
+<div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-// TEST DATA
-// ══════════════════════════════════════════════════════════════
-const SECTIONS = [
-  {
-    num:1, title:'App Loading & Dark Theme',
-    tests:[
-      { id:'T001', pri:'🟡', tag:'ui', title:'Splash screen removed — login screen shows immediately',
-        steps:['Open the app URL fresh','Observe what shows immediately'],
-        expect:'No splash screen. The CHRONOS login page shows immediately with gold logo, Sign In / Create Account tabs, email field, and all buttons visible.' },
-      { id:'T002', pri:'🔴', tag:'ui', title:'Dark theme renders correctly — all buttons and inputs dark',
-        steps:['Look at the full login screen','Check: input fields, Send OTP button, Google/Apple buttons, demo buttons, divider lines'],
-        expect:'Black background. Gold gradient "Send OTP to Email" button. Dark grey email input with subtle border. Google button dark grey. Apple button white with black text. "or continue with" divider has horizontal lines on both sides.' },
-      { id:'T003', pri:'🟡', tag:'ui', title:'PWA install banner appears after a few seconds',
-        steps:['Open URL in Safari on iPhone','Wait 4+ seconds without tapping anything'],
-        expect:'"Install CHRONOS — Tap Share then Add to Home Screen" banner slides up from bottom.' },
-    ]
-  },
-  {
-    num:2, title:'Sign In — Email OTP',
-    tests:[
-      { id:'T004', pri:'🔴', tag:'both', title:'Empty email field shows toast error',
-        steps:['Leave email field empty','Tap "Send OTP to Email"'],
-        expect:'Toast appears: "Please enter a valid email address". Does NOT proceed to OTP screen.' },
-      { id:'T005', pri:'🔴', tag:'both', title:'Valid email proceeds to OTP screen with correct info',
-        steps:['Enter: test@gmail.com','Tap "Send OTP to Email"'],
-        expect:'OTP screen slides in with 📧 icon, "Check your email" heading, test@gmail.com displayed, 6 empty input boxes, demo OTP code shown below boxes, "Your Name" input field, spam folder hint.' },
-      { id:'T006', pri:'🔴', tag:'both', title:'OTP boxes auto-advance and Verify button activates only when full',
-        steps:['On OTP screen, type digits one by one'],
-        expect:'Focus jumps to next box automatically. Verify button stays grey/disabled until all 6 boxes filled. After 6 digits, button turns gold and becomes tappable.' },
-      { id:'T007', pri:'🔴', tag:'both', title:'Wrong OTP shows error and clears boxes',
-        steps:['Enter 6 wrong digits (e.g. 000000)','Tap "Verify & Sign In"'],
-        expect:'Toast: "Incorrect OTP. Please try again." Boxes turn red border briefly, then clear. Focus returns to first box. Button disables again.' },
-      { id:'T008', pri:'🔴', tag:'both', title:'Correct OTP + name logs in with correct name on home',
-        steps:['Enter name: "Jerry Tan" in the name field','Enter the exact 6-digit demo code shown','Tap "Verify & Sign In"'],
-        expect:'Home screen shows "Jerry Tan". Toast: "Welcome, Jerry ✓". NOT "James Whitmore" or email-derived name.' },
-      { id:'T009', pri:'🟡', tag:'both', title:'Resend OTP generates new code and shows toast',
-        steps:['On OTP screen, tap "Resend code"'],
-        expect:'Toast: "New OTP sent ✓". Demo OTP hint updates to a new 6-digit number.' },
-      { id:'T010', pri:'🟡', tag:'both', title:'"← Change email" returns to login',
-        steps:['On OTP screen, tap "← Change email"'],
-        expect:'Slides back to Sign In screen with email field visible.' },
-    ]
-  },
-  {
-    num:3, title:'Sign In — Social & Demo',
-    tests:[
-      { id:'T011', pri:'🔴', tag:'seller', title:'Seller Demo login — correct home screen',
-        steps:['Tap "👤 Seller Demo"'],
-        expect:'Home shows "James Whitmore", Seller role badge. Seller nav bar at bottom (5 tabs). "New Watch Listing" and "My Listings & Offers" buttons visible. Demo listings in Recent Listings.' },
-      { id:'T012', pri:'🔴', tag:'dealer', title:'Dealer Demo login — correct home screen',
-        steps:['Tap "🏪 Dealer Demo"'],
-        expect:'Home shows "Harrison & Co.", Dealer role. NO seller nav bar. Browse Marketplace, My Submitted Offers, Saved Watchlist and KYC CTA visible.' },
-      { id:'T013', pri:'🔴', tag:'both', title:'Google login — name and email carry through',
-        steps:['Tap "Continue with Google"','Select an account (e.g. James Whitmore)','Select role','Tap Continue'],
-        expect:'Bottom sheet shows 2 Google accounts. Selecting one shows checkmark. Login uses that account\'s exact name and email on home screen and settings.' },
-      { id:'T014', pri:'🔴', tag:'both', title:'Apple login — button is white with black visible text',
-        steps:['Look at Apple button on login screen','Tap "Continue with Apple"','Select an account','Tap Continue'],
-        expect:'Apple button is white with black "Continue with Apple" text clearly visible. Bottom sheet shows Apple accounts. Login works correctly.' },
-    ]
-  },
-  {
-    num:4, title:'Create Account',
-    tests:[
-      { id:'T015', pri:'🔴', tag:'both', title:'Create Account tab shows correct form',
-        steps:['Tap "Create Account" tab'],
-        expect:'Form shows: Full Name *, Email Address *, Mobile Number * (with country code dropdown), I am a dropdown, Create Account button. No word "optional" anywhere.' },
-      { id:'T016', pri:'🔴', tag:'both', title:'All 3 fields are mandatory with correct error messages',
-        steps:['Leave name empty → tap Create Account','Fill name, leave email empty → tap','Fill email, leave phone empty → tap'],
-        expect:'Step 1: "Please enter your full name" toast. Step 2: "Please enter a valid email address" toast. Step 3: "Please enter a valid mobile number" toast. None proceed to OTP.' },
-      { id:'T017', pri:'🔴', tag:'both', title:'Country code dropdown shows flag and code fully',
-        steps:['On signup, tap the country code dropdown','Check it shows 🇸🇬 +65 as default'],
-        expect:'Dropdown shows flag emoji + country code (e.g. 🇸🇬 +65) without truncation. SGD Singapore is the default selection.' },
-      { id:'T018', pri:'🔴', tag:'both', title:'Full signup flow creates account with correct name',
-        steps:['Name: Jerry Tan','Email: jerry@test.com','Phone: 8123 4567','Role: Watch Seller','Tap Create Account','Enter the shown OTP code on OTP screen','Tap Verify'],
-        expect:'Home shows "Jerry Tan" — NOT a generated name. Toast: "Welcome, Jerry ✓". Settings shows Jerry Tan and jerry@test.com.' },
-    ]
-  },
-  {
-    num:5, title:'Home Screen',
-    tests:[
-      { id:'T019', pri:'🔴', tag:'seller', title:'Seller home stats and listings show correctly',
-        steps:['Login as Seller Demo','Review home screen'],
-        expect:'Stats card shows Listings (2), Offers (2), Sold (0). Recent Listings shows Rolex and Omega cards with AI Valuation, Asking Price and Auth Score labels.' },
-      { id:'T020', pri:'🔴', tag:'seller', title:'Seller nav bar — all 5 tabs navigate correctly',
-        steps:['Tap each nav tab: ⌚ Home, 📋 Listings, + centre, 💬 Offers, 👤 Profile'],
-        expect:'Home stays. Listings → My Listings screen. + → Watch Details screen. Offers → Review Offers (or toast). Profile → Settings screen.' },
-      { id:'T021', pri:'🔴', tag:'dealer', title:'Dealer home — no seller nav, correct CTAs',
-        steps:['Login as Dealer Demo','Review home'],
-        expect:'NO seller nav bar at bottom. Browse Marketplace, My Submitted Offers, Saved Watchlist buttons. KYC CTA with 🪪 icon visible.' },
-    ]
-  },
-  {
-    num:6, title:'Watch Listing Flow',
-    tests:[
-      { id:'T022', pri:'🔴', tag:'seller', title:'Watch details form — all fields validated',
-        steps:['Tap New Watch Listing','Try continuing with each required field empty one at a time'],
-        expect:'Each missing field shows specific toast: brand, model, year, condition, box & papers. Box & Papers shows "Select box & papers status" as default. Progress stepper shows Step 1 active in gold.' },
-      { id:'T023', pri:'🔴', tag:'seller', title:'Photo upload — 6 slots shown, checkmarks appear',
-        steps:['Fill all details and proceed to photos','Tap a photo slot and upload any image'],
-        expect:'6 photo slots shown with labels (Front Dial, Case Back etc). After upload: photo appears in slot with visible gold ✓ checkmark. Counter updates: "1 / 6 photos added". Analyze button shows count.' },
-      { id:'T024', pri:'🔴', tag:'seller', title:'All 6 photos required — cannot proceed with fewer',
-        steps:['Upload only 1–5 photos','Tap "Analyze with AI"'],
-        expect:'Toast: "Please upload all 6 photos. X/6 added." Does not proceed to analysis.' },
-      { id:'T025', pri:'🔴', tag:'seller', title:'AI Authentication result screen',
-        steps:['Upload all 6 photos','Tap "Analyze with AI"'],
-        expect:'Loading screen with rotating step messages. Then: animated score ring fills with gold. Score number shown. Verdict badge. Confidence badge. Summary text. Details list. "Get AI Valuation" and "Request Human Authentication" buttons.' },
-      { id:'T026', pri:'🔴', tag:'seller', title:'Human Authentication screen — provider selection',
-        steps:['On auth result, tap "Request Human Authentication"','Select a provider','Tap "Request Authentication"'],
-        expect:'Provider screen shows 3 options with name, fee (SGD), turnaround time and location. Selecting highlights in gold. Tapping request goes to confirmation page saying contacted within 3–5 working days.' },
-      { id:'T027', pri:'🔴', tag:'seller', title:'AI Valuation screen — animated bar, SGD, asking price',
-        steps:['Tap "Get AI Valuation →"','Wait for result','Enter an asking price'],
-        expect:'Loading → result shows watch name, SGD conservative and optimistic prices, animated gold bar fills from left. Market Liquidity badge. Suggested Ask in SGD. Value Factors list. Asking price field pre-filled. Warning shows if price too far from range.' },
-      { id:'T028', pri:'🔴', tag:'seller', title:'Asking price required — warning for extreme prices',
-        steps:['Leave asking price blank → tap Publish','Enter price 3x above valuation → check warning','Enter price within range → check ok message'],
-        expect:'Blank: toast "Please enter your asking price". 3x above: red warning "X% above AI optimistic estimate". Within range: green "✓ Asking price is within the AI recommended range".' },
-      { id:'T029', pri:'🔴', tag:'seller', title:'Publish listing — toast, notification, listing appears',
-        steps:['Enter a valid asking price','Tap "Publish to Marketplace →"'],
-        expect:'Returns to home. Toast: "✓ Listing published to marketplace". Notification banner slides in from top showing watch name and details. Stats Listings count increases. Listing appears in Recent Listings.' },
-    ]
-  },
-  {
-    num:7, title:'Dealer Marketplace',
-    tests:[
-      { id:'T030', pri:'🔴', tag:'dealer', title:'Marketplace shows listings with correct labels',
-        steps:['Login as Dealer Demo','Tap "Browse Marketplace"'],
-        expect:'Listings show "AI Valuation" label with SGD range, "Asking Price" in gold SGD, "Auth Score X/100" label. Bookmark 🔖 icon on each card. "📈 Price History" and "Make Offer" buttons.' },
-      { id:'T031', pri:'🔴', tag:'dealer', title:'Auth score ⓘ popup explains the score',
-        steps:['Tap the ⓘ button next to Auth Score on any listing card'],
-        expect:'Popup appears explaining Auth Score 0–100, what 85+/65-84/below 65 means. "Got it" button closes it.' },
-      { id:'T032', pri:'🟡', tag:'dealer', title:'Search and brand filter chips work',
-        steps:['Type "Rolex" in search bar','Tap "Rolex" brand chip','Tap "All" to reset'],
-        expect:'Search filters in real-time. Brand chip shows only matching listings. "All" resets to show everything.' },
-      { id:'T033', pri:'🟡', tag:'dealer', title:'Sort and status filter dropdowns work',
-        steps:['Change sort to "Price ↓"','Change filter to "With Offers"'],
-        expect:'Sort reorders listings by price descending. Status filter shows only listings that have offers. Count text updates.' },
-      { id:'T034', pri:'🔴', tag:'dealer', title:'Sold listings do NOT appear in marketplace',
-        steps:['Accept an offer as seller (creates a SOLD listing)','Login as dealer and check marketplace'],
-        expect:'SOLD listings are not shown in the marketplace. Only status="listed" items appear.' },
-    ]
-  },
-  {
-    num:8, title:'Making & Managing Offers',
-    tests:[
-      { id:'T035', pri:'🔴', tag:'dealer', title:'Make Offer screen shows SGD details and price calculator',
-        steps:['Tap "Make Offer" on any listing','Enter offer price e.g. 12000'],
-        expect:'Screen shows watch name, year, condition. AI Valuation range in SGD. Auth Score. Entering price shows calculator with % vs conservative and optimistic valuations in SGD.' },
-      { id:'T036', pri:'🔴', tag:'dealer', title:'Offer submitted — toast, marketplace counter updates',
-        steps:['Enter price, add message, tap "Submit Offer"'],
-        expect:'Toast: "✓ Offer of SGD 12,000 submitted". Returns to marketplace. That listing\'s offer count badge increases (e.g. "1 offer").' },
-      { id:'T037', pri:'🔴', tag:'dealer', title:'No price entered shows error',
-        steps:['Open Make Offer screen','Leave price blank','Tap Submit Offer'],
-        expect:'Toast: "Please enter a valid offer price". Does not submit.' },
-      { id:'T038', pri:'🔴', tag:'dealer', title:'My Offers — search, sort and filter work',
-        steps:['Go to My Submitted Offers','Try searching a watch name','Try sort and status filter'],
-        expect:'Offers list shows with watch name, year, SGD price, status badge. Search filters by watch name. Sort reorders by price. Filter shows only selected status.' },
-      { id:'T039', pri:'🔴', tag:'seller', title:'Review Offers — 3 equal buttons, ranked by price',
-        steps:['Login as Seller Demo','Tap Rolex listing → see offers'],
-        expect:'Offers sorted highest price first. Top offer has HIGHEST badge. Each offer has 3 equal-width buttons: Accept (gold), Counter (outline), Decline (ghost). Dealer name, email, SGD price, message, validity shown.' },
-      { id:'T040', pri:'🟡', tag:'seller', title:'Counter offer flow works',
-        steps:['Tap "Counter" on an offer','Enter a counter price','Tap "Send Counter"'],
-        expect:'Modal shows dealer\'s offer, validity reminder. Entering price and submitting shows toast "↩ Counter offer of SGD X sent". Offer card shows COUNTERED badge with counter price.' },
-      { id:'T041', pri:'🔴', tag:'seller', title:'Accept offer — deal complete screen and listing marked SOLD',
-        steps:['Tap "Accept" on any offer'],
-        expect:'Deal Complete screen with 🤝 emoji, watch name, SGD price in green, dealer name, transaction ID. Next steps list. "Back to Home" and "Download Confirmation" buttons.' },
-      { id:'T042', pri:'🔴', tag:'seller', title:'Download Confirmation works',
-        steps:['On Deal Complete screen, tap "Download Confirmation"'],
-        expect:'A .txt file downloads (or opens) containing transaction details: watch name, price, dealer, transaction ID, date, next steps. Toast: "✓ Confirmation downloaded".' },
-      { id:'T043', pri:'🔴', tag:'seller', title:'Sold listing stays in My Listings with SOLD badge',
-        steps:['After accepting offer, go to My Listings'],
-        expect:'The sold watch appears with green SOLD badge and "✓ Sold — Deal Complete" message. It is NOT missing from the list.' },
-    ]
-  },
-  {
-    num:9, title:'Enhancements',
-    tests:[
-      { id:'T044', pri:'🔴', tag:'both', title:'Photo viewer — no overlap between X, counter and arrows',
-        steps:['Tap any watch photo thumbnail on a listing card'],
-        expect:'Fullscreen viewer opens. X (close) is TOP-LEFT. Counter "1/6" is TOP-CENTRE. ‹ prev arrow on LEFT SIDE. › next arrow on RIGHT SIDE. Dot indicators at BOTTOM. No elements overlap.' },
-      { id:'T045', pri:'🔴', tag:'both', title:'Photo viewer — swipe navigation and close work',
-        steps:['Open photo viewer','Swipe left/right','Tap › and ‹ arrows','Tap ✕ to close'],
-        expect:'Swipe left shows next photo, swipe right shows previous. Arrows navigate correctly. Active dot updates. ✕ closes viewer and returns to listing view.' },
-      { id:'T046', pri:'🔴', tag:'both', title:'Price history chart — all 5 periods work, chart is visible',
-        steps:['Tap "📈 Price History" on any listing','Tap each period tab: 1M, 3M, 6M, 1Y, All'],
-        expect:'Chart screen shows watch name, Current Avg (SGD), 12m Change %. Bright gold SVG line chart with gradient fill visible clearly (not faded). Each period tab updates the chart and x-axis labels.' },
-      { id:'T047', pri:'🔴', tag:'dealer', title:'Watchlist — bookmark saves, toast appears, persists',
-        steps:['Go to Marketplace as Dealer','Tap 🔖 on a listing','Check toast','Go to Saved Watches','Tap 🔖 again to remove'],
-        expect:'Tap: toast "🔖 Saved to watchlist", icon animates. Saved Watches screen shows the listing. Removing: toast "Removed from watchlist", listing disappears.' },
-      { id:'T048', pri:'🟡', tag:'dealer', title:'KYC — Singapore only, all 3 docs required',
-        steps:['Go to Complete Dealer Verification','Check country dropdown','Upload only 1 document → tap Submit','Upload all 3 → tap Submit'],
-        expect:'Country dropdown shows only 🇸🇬 Singapore. 1 doc: toast "Please upload all 3 documents (1/3 uploaded)". All 3 uploaded + fields filled: status changes to "Under Review", toast "✓ KYC submitted for review".' },
-    ]
-  },
-  {
-    num:10, title:'Settings & Navigation',
-    tests:[
-      { id:'T049', pri:'🔴', tag:'both', title:'Settings shows correct user info per account',
-        steps:['Login as Seller Demo → check Settings','Sign out → login as Dealer Demo → check Settings'],
-        expect:'Seller: James Whitmore, Demo Access, Seller badge. Dealer: Harrison & Co., Demo Access, Dealer badge. No mixing of data between accounts.' },
-      { id:'T050', pri:'🟡', tag:'both', title:'Save email address in settings works',
-        steps:['In Settings, enter recovery@test.com in Email Address field','Tap Save','Try saving an invalid email (no @)'],
-        expect:'Valid: toast "✓ Email address saved". Invalid: toast "Please enter a valid email address".' },
-      { id:'T051', pri:'🔴', tag:'both', title:'Sign Out returns cleanly to login — no split screen',
-        steps:['Login as Seller → go to Settings → tap Sign Out','Login as Dealer → go to Settings → tap Sign Out'],
-        expect:'Returns to login screen cleanly. NO split screen, no visual glitch, no hanging elements. Toast: "Signed out". Login screen shows full dark theme correctly.' },
-      { id:'T052', pri:'🔴', tag:'both', title:'Back buttons work on every screen',
-        steps:['Navigate: Details→Photos→Auth→Valuation, use ← on each','Also test: Settings, My Listings, Marketplace, Make Offer, KYC, Price Chart, Human Auth'],
-        expect:'Every ← back button slides to the correct previous screen. No stuck screens, no crashes, no split view. Settings back always goes to home.' },
-      { id:'T053', pri:'🔴', tag:'both', title:'All toast messages appear throughout the app',
-        steps:['Trigger toasts: empty form submit, save email, submit offer, publish listing, save watchlist, sign out'],
-        expect:'Every action that should show a toast does show one — slides up from bottom, stays ~2.5 seconds, auto-dismisses. Toast text is correct for each action.' },
-      { id:'T054', pri:'🟡', tag:'both', title:'Tapping inputs does not zoom the page',
-        steps:['Tap on any input field (email, offer price, name, notes etc.)'],
-        expect:'Keyboard appears but page does NOT zoom in. Layout stays same size.' },
-    ]
-  },
-];
-
-// ══════════════════════════════════════════════════════════════
-// STATE & STORAGE
-// ══════════════════════════════════════════════════════════════
-const STORAGE_KEY = 'chronos_uat_v2';
+const SECTIONS = JSON.parse(document.getElementById('td').textContent);
+const KEY = 'chronos_uat_v2';
 let results = {};
-let isDirty = false;
-let autoSaveTimer = null;
+let dirty = false;
+let autoT = null;
 
-function loadResults() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) results = JSON.parse(saved);
-  } catch(e) { results = {}; }
+function load() {
+  try { const s = localStorage.getItem(KEY); if(s) results = JSON.parse(s); } catch(e) {}
 }
 
-function saveResults() {
+function save() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
-    isDirty = false;
-    document.getElementById('save-dot').className = 'save-dot';
-    document.getElementById('save-label').textContent = 'Saved ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    localStorage.setItem(KEY, JSON.stringify(results));
+    dirty = false;
+    document.getElementById('sd').className = 'sd';
+    document.getElementById('sl').textContent = 'Saved ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } catch(e) {}
 }
 
-function markDirty() {
-  isDirty = true;
-  document.getElementById('save-dot').className = 'save-dot dirty';
-  document.getElementById('save-label').textContent = 'Unsaved changes';
-  clearTimeout(autoSaveTimer);
-  autoSaveTimer = setTimeout(saveResults, 1500); // auto-save after 1.5s idle
+function touch() {
+  dirty = true;
+  document.getElementById('sd').className = 'sd dirty';
+  document.getElementById('sl').textContent = 'Unsaved';
+  clearTimeout(autoT);
+  autoT = setTimeout(save, 1000);
 }
 
-function saveNow() {
-  saveResults();
-  showUatToast('✓ Progress saved');
-}
+function saveNow() { save(); showToast('Progress saved'); }
 
-// ══════════════════════════════════════════════════════════════
-// RENDER
-// ══════════════════════════════════════════════════════════════
+function priIcon(p) { return p==='blocker'?'🔴':p==='high'?'🟡':'🟢'; }
+function tagCls(t) { return {seller:'ts',dealer:'td',both:'tb',ui:'tu'}[t]||'tb'; }
+function tagLbl(t) { return {seller:'Seller',dealer:'Dealer',both:'Both',ui:'UI'}[t]||t; }
+
 function render() {
-  const root = document.getElementById('test-root');
-  const tagLabels = { seller:'Seller', dealer:'Dealer', both:'Both', ui:'UI' };
-  const tagClasses = { seller:'tag-seller', dealer:'tag-dealer', both:'tag-both', ui:'tag-ui' };
-
+  const root = document.getElementById('root');
   root.innerHTML = SECTIONS.map(sec => {
-    const secIds = sec.tests.map(t => t.id);
-    const doneSec = secIds.filter(id => results[id]).length;
+    const done = sec.tests.filter(t=>results[t.id]).length;
     const items = sec.tests.map(t => {
       const r = results[t.id];
-      const itemClass = r ? r.status : '';
-      const badgeHtml = r ? `<div class="item-badge ${r.status === 'pass' ? 'badge-pass' : r.status === 'fail' ? 'badge-fail' : 'badge-skip'}">${r.status === 'pass' ? '✓ PASS' : r.status === 'fail' ? '✗ FAIL' : '— SKIP'}</div>` : '';
-      return `<div class="item ${itemClass}" id="item-${t.id}">
-        <div class="item-header" onclick="toggleItem('${t.id}')">
-          <div class="item-id">${t.id}</div>
-          <div class="item-title">${t.pri} ${t.title}</div>
-          <div class="tag ${tagClasses[t.tag]}">${tagLabels[t.tag]}</div>
-          ${badgeHtml}
-          <div class="chevron" id="chev-${t.id}">›</div>
+      const cls = r ? r.status : '';
+      const badge = r ? `<div class="ibadge ${r.status==='pass'?'bp':r.status==='fail'?'bf':'bk'}">${r.status==='pass'?'PASS':r.status==='fail'?'FAIL':'SKIP'}</div>` : '';
+      const notes = r ? (r.notes||'') : '';
+      const stepsHtml = t.steps.map(s=>`<li>${s}</li>`).join('');
+      return `<div class="item ${cls}" id="i-${t.id}">
+        <div class="ih" onclick="tog('${t.id}')">
+          <div class="iid">${t.id}</div>
+          <div class="ititle">${t.title}</div>
+          <div class="ipri">${priIcon(t.pri)}</div>
+          <div class="itag ${tagCls(t.tag)}">${tagLbl(t.tag)}</div>
+          ${badge}
+          <div class="ch" id="c-${t.id}">›</div>
         </div>
-        <div class="item-body" id="body-${t.id}">
-          <div class="steps-label">Steps to test</div>
-          <div class="steps"><ol>${t.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div>
-          <div class="expect">
-            <div class="expect-label">Expected result</div>
-            <p>${t.expect}</p>
+        <div class="ib" id="b-${t.id}">
+          <div class="bl">Steps to test</div>
+          <ol class="sl">${stepsHtml}</ol>
+          <div class="eb"><div class="el">Expected Result</div><div class="et">${t.expect}</div></div>
+          <div class="acts">
+            <button class="bp2" onclick="mark('${t.id}','pass')">✓ Pass</button>
+            <button class="bf2" onclick="mark('${t.id}','fail')">✗ Fail</button>
+            <button class="bk2" onclick="mark('${t.id}','skip')">— Skip</button>
+            <button class="br2" onclick="mark('${t.id}','reset')">↺</button>
           </div>
-          <div class="actions">
-            <button class="btn-p" onclick="mark('${t.id}','pass')">✓ Pass</button>
-            <button class="btn-f" onclick="mark('${t.id}','fail')">✗ Fail</button>
-            <button class="btn-s" onclick="mark('${t.id}','skip')">— Skip</button>
-            <button class="btn-r" onclick="mark('${t.id}','reset')">Reset</button>
-          </div>
-          <div class="notes-label">Notes (describe what went wrong or any observations):</div>
-          <textarea class="notes" id="notes-${t.id}" placeholder="Add notes here..." onchange="saveNote('${t.id}')" oninput="markDirty()">${r?.notes||''}</textarea>
+          <div class="nl">Notes (describe issue if failed):</div>
+          <textarea class="nt" id="n-${t.id}" placeholder="Add notes here..." oninput="saveNote('${t.id}')">${notes}</textarea>
 
 ```
     </div>
   </div>`;
 }).join('');
-
-return `<div class="section">
-  <div class="section-header">
-    <div class="section-num">${sec.num}</div>
-    <div class="section-title">${sec.title}</div>
-    <div class="section-count" id="sc-${sec.num}">${doneSec}/${sec.tests.length}</div>
-  </div>
+return `<div class="sec">
+  <div class="sh"><div class="sn">${sec.num}</div><div class="st">${sec.title}</div><div class="sc" id="sc-${sec.num}">${done}/${sec.tests.length}</div></div>
   ${items}
 </div>`;
 ```
 
 }).join(’’);
-
 updateStats();
 }
 
-function toggleItem(id) {
-const body = document.getElementById(‘body-’+id);
-const chev = document.getElementById(‘chev-’+id);
-const isOpen = body.classList.contains(‘open’);
-body.classList.toggle(‘open’, !isOpen);
-if (chev) chev.classList.toggle(‘open’, !isOpen);
+function tog(id) {
+const b = document.getElementById(‘b-’+id);
+const c = document.getElementById(‘c-’+id);
+const open = b.classList.contains(‘open’);
+b.classList.toggle(‘open’, !open);
+if(c) c.classList.toggle(‘open’, !open);
 }
 
 function mark(id, status) {
-const item = document.getElementById(‘item-’+id);
-const chev = document.getElementById(‘chev-’+id);
-const notes = document.getElementById(‘notes-’+id)?.value || ‘’;
+const item = document.getElementById(‘i-’+id);
+const chev = document.getElementById(‘c-’+id);
 item.classList.remove(‘pass’,‘fail’,‘skip’);
+item.querySelector(’.ibadge’)?.remove();
 
-// Remove existing badge
-item.querySelector(’.item-badge’)?.remove();
-
-if (status === ‘reset’) {
+if(status === ‘reset’) {
 delete results[id];
+document.getElementById(‘b-’+id)?.classList.remove(‘open’);
+if(chev) chev.classList.remove(‘open’);
 } else {
+const notes = document.getElementById(‘n-’+id)?.value || ‘’;
 results[id] = { status, notes };
 item.classList.add(status);
-// Add badge next to chevron
-const hdr = item.querySelector(’.item-header’);
+const hdr = item.querySelector(’.ih’);
 const badge = document.createElement(‘div’);
-badge.className = `item-badge ${status==='pass'?'badge-pass':status==='fail'?'badge-fail':'badge-skip'}`;
-badge.textContent = status===‘pass’?‘✓ PASS’:status===‘fail’?‘✗ FAIL’:’— SKIP’;
-hdr.insertBefore(badge, chev);
-// Auto-close and open next
-const body = document.getElementById(‘body-’+id);
-if (body) { body.classList.remove(‘open’); if(chev) chev.classList.remove(‘open’); }
-openNextTest(id);
+badge.className = `ibadge ${status==='pass'?'bp':status==='fail'?'bf':'bk'}`;
+badge.textContent = status===‘pass’?‘PASS’:status===‘fail’?‘FAIL’:‘SKIP’;
+hdr.insertBefore(badge, hdr.querySelector(’.ch’));
+document.getElementById(‘b-’+id)?.classList.remove(‘open’);
+if(chev) chev.classList.remove(‘open’);
+openNext(id);
 }
-markDirty();
-saveResults(); // immediate save on every mark action
+save();
 updateStats();
 }
 
-function openNextTest(currentId) {
-// Find the next test ID
-const allIds = SECTIONS.flatMap(s => s.tests.map(t => t.id));
-const idx = allIds.indexOf(currentId);
-if (idx >= 0 && idx < allIds.length - 1) {
-const nextId = allIds[idx + 1];
+function openNext(curId) {
+const allIds = SECTIONS.flatMap(s=>s.tests.map(t=>t.id));
+const idx = allIds.indexOf(curId);
+if(idx >= 0 && idx < allIds.length - 1) {
+const nextId = allIds[idx+1];
 setTimeout(() => {
-const nextBody = document.getElementById(‘body-’+nextId);
-const nextChev = document.getElementById(‘chev-’+nextId);
-if (nextBody && !results[nextId]) {
-nextBody.classList.add(‘open’);
-if (nextChev) nextChev.classList.add(‘open’);
-document.getElementById(‘item-’+nextId)?.scrollIntoView({ behavior:‘smooth’, block:‘start’ });
+if(!results[nextId]) {
+const nb = document.getElementById(‘b-’+nextId);
+const nc = document.getElementById(‘c-’+nextId);
+if(nb) { nb.classList.add(‘open’); if(nc) nc.classList.add(‘open’); }
+document.getElementById(‘i-’+nextId)?.scrollIntoView({behavior:‘smooth’,block:‘nearest’});
 }
-}, 200);
+}, 250);
 }
 }
 
 function saveNote(id) {
-const notes = document.getElementById(‘notes-’+id)?.value || ‘’;
-if (results[id]) { results[id].notes = notes; markDirty(); }
+if(results[id]) { results[id].notes = document.getElementById(‘n-’+id)?.value||’’; touch(); }
 }
 
 function updateStats() {
@@ -543,131 +440,97 @@ const vals = Object.values(results);
 const pass = vals.filter(v=>v.status===‘pass’).length;
 const fail = vals.filter(v=>v.status===‘fail’).length;
 const skip = vals.filter(v=>v.status===‘skip’).length;
-const done = pass+fail+skip;
 const total = SECTIONS.reduce((a,s)=>a+s.tests.length,0);
-document.getElementById(‘s-pass’).textContent = pass;
-document.getElementById(‘s-fail’).textContent = fail;
-document.getElementById(‘s-skip’).textContent = skip;
-document.getElementById(‘s-tot’).textContent = total;
-document.getElementById(‘prog-fill’).style.width = (done/total*100)+’%’;
-document.getElementById(‘prog-text’).textContent = `${done} / ${total} completed (${pass} pass, ${fail} fail, ${skip} skip)`;
-
-// Section counts
+const done = pass+fail+skip;
+document.getElementById(‘sp’).textContent = pass;
+document.getElementById(‘sf’).textContent = fail;
+document.getElementById(‘sk’).textContent = skip;
+document.getElementById(‘st’).textContent = total;
+document.getElementById(‘pf’).style.width = (done/total*100)+’%’;
+document.getElementById(‘pt’).textContent = done+’ / ‘+total+’ completed (’+pass+’ pass, ‘+fail+’ fail, ‘+skip+’ skip)’;
 SECTIONS.forEach(sec => {
 const el = document.getElementById(‘sc-’+sec.num);
-if (el) {
-const done = sec.tests.filter(t => results[t.id]).length;
-el.textContent = done+’/’+sec.tests.length;
-}
+if(el) { const d=sec.tests.filter(t=>results[t.id]).length; el.textContent=d+’/’+sec.tests.length; }
 });
 }
 
-// ══════════════════════════════════════════════════════════════
-// EXPORT — downloads a .txt file (works on mobile Safari too)
-// ══════════════════════════════════════════════════════════════
 function exportReport() {
 const vals = Object.values(results);
 const pass = vals.filter(v=>v.status===‘pass’).length;
 const fail = vals.filter(v=>v.status===‘fail’).length;
 const skip = vals.filter(v=>v.status===‘skip’).length;
 const total = SECTIONS.reduce((a,s)=>a+s.tests.length,0);
-const notTested = total - pass - fail - skip;
-const date = new Date().toLocaleString();
+const notTested = total-pass-fail-skip;
 const line = ‘=’.repeat(50);
-
-let report = `CHRONOS UAT REPORT\n${line}\nGenerated: ${date}\n${line}\n\n`;
-report += `SUMMARY\n${'─'.repeat(30)}\n`;
-report += `✓ Pass:       ${pass}\n`;
-report += `✗ Fail:       ${fail}\n`;
-report += `─ Skip:       ${skip}\n`;
-report += `? Not Tested: ${notTested}\n`;
-report += `  Total:      ${total}\n\n`;
-
-if (fail > 0) {
-report += `FAILED ITEMS\n${line}\n`;
+let r = ‘CHRONOS UAT REPORT\n’+line+’\nGenerated: ‘+new Date().toLocaleString()+’\n’+line+’\n\n’;
+r += ‘SUMMARY\n’+’-’.repeat(30)+’\n’;
+r += ‘Pass:       ‘+pass+’\nFail:       ‘+fail+’\nSkip:       ‘+skip+’\nNot Tested: ‘+notTested+’\nTotal:      ‘+total+’\n\n’;
+if(fail>0) {
+r += ‘FAILED ITEMS\n’+line+’\n’;
 SECTIONS.forEach(sec => {
-const failed = sec.tests.filter(t => results[t.id]?.status === ‘fail’);
-if (failed.length > 0) {
-report += `\n[Section ${sec.num}: ${sec.title}]\n`;
+const failed = sec.tests.filter(t=>results[t.id]?.status===‘fail’);
+if(failed.length>0) {
+r += ‘\n[Section ‘+sec.num+’: ‘+sec.title+’]\n’;
 failed.forEach(t => {
-report += `  ${t.id}: ${t.title.replace(/🔴|🟡|🟢/g,'').trim()}\n`;
-if (results[t.id].notes) report += `  Notes: ${results[t.id].notes}\n`;
+r += ’  ‘+t.id+’: ‘+t.title+’\n’;
+const n = results[t.id]?.notes;
+if(n) r += ’  Notes: ‘+n+’\n’;
 });
 }
 });
-report += ‘\n’;
+r += ‘\n’;
 }
-
-if (skip > 0) {
-report += `SKIPPED ITEMS\n${line}\n`;
+if(skip>0) {
+r += ‘SKIPPED\n’+line+’\n’;
 SECTIONS.forEach(sec => {
-const skipped = sec.tests.filter(t => results[t.id]?.status === ‘skip’);
-if (skipped.length > 0) {
-skipped.forEach(t => { report += `  ${t.id}: ${t.title.replace(/🔴|🟡|🟢/g,'').trim()}\n`; });
-}
+sec.tests.filter(t=>results[t.id]?.status===‘skip’).forEach(t=>{ r+=’  ‘+t.id+’: ‘+t.title+’\n’; });
 });
-report += ‘\n’;
+r += ‘\n’;
 }
+const untested = SECTIONS.flatMap(s=>s.tests.filter(t=>!results[t.id]).map(t=>t.id));
+if(untested.length>0) r += ‘NOT TESTED\n’+line+’\n’+untested.join(’, ‘)+’\n\n’;
+r += line+’\nCHRONOS UAT Checklist v2\n’;
 
-if (notTested > 0) {
-const untested = SECTIONS.flatMap(s => s.tests.filter(t => !results[t.id]).map(t => t.id));
-report += `NOT TESTED\n${line}\n${untested.join(', ')}\n\n`;
-}
-
-report += `${line}\nCHRONOS UAT Checklist v2\n`;
-
-// Try to download as file
+// Try download
 try {
-const blob = new Blob([report], { type: ‘text/plain’ });
+const blob = new Blob([r],{type:‘text/plain’});
 const url = URL.createObjectURL(blob);
 const a = document.createElement(‘a’);
-a.href = url;
-a.download = `CHRONOS_UAT_${new Date().toISOString().slice(0,10)}.txt`;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
+a.href=url; a.download=‘CHRONOS_UAT_’+new Date().toISOString().slice(0,10)+’.txt’;
+document.body.appendChild(a); a.click(); document.body.removeChild(a);
 URL.revokeObjectURL(url);
-showUatToast(‘✓ Report downloaded’);
-} catch(e) {
-// Fallback for mobile — copy to clipboard
+showToast(‘Report downloaded’);
+return;
+} catch(e) {}
+// Fallback clipboard
 try {
-navigator.clipboard.writeText(report).then(() => {
-showUatToast(‘✓ Report copied to clipboard’);
-});
-} catch(e2) {
-// Last resort — open in new tab
-const w = window.open(’’, ‘_blank’);
-w.document.write(’<pre style="white-space:pre-wrap;font-family:monospace;padding:20px;background:#0a0a0a;color:#f0ede8;">’ + report + ‘</pre>’);
-w.document.close();
-}
-}
-}
-
-// ══════════════════════════════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════════════════════════════
-let toastTimer;
-function showUatToast(msg) {
-const t = document.getElementById(‘uat-toast’);
-t.textContent = msg;
-t.classList.add(‘show’);
-clearTimeout(toastTimer);
-toastTimer = setTimeout(() => t.classList.remove(‘show’), 2800);
+navigator.clipboard.writeText(r).then(()=>showToast(‘Report copied to clipboard’));
+return;
+} catch(e) {}
+// Last resort data URI
+try {
+const a = document.createElement(‘a’);
+a.href=‘data:text/plain;charset=utf-8,’+encodeURIComponent(r);
+a.download=‘CHRONOS_UAT.txt’;
+document.body.appendChild(a); a.click(); document.body.removeChild(a);
+showToast(‘Report downloaded’);
+} catch(e) { alert(r); }
 }
 
-// ══════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════
-loadResults();
+let toastT;
+function showToast(msg) {
+const el = document.getElementById(‘toast’);
+el.textContent = msg;
+el.classList.add(‘show’);
+clearTimeout(toastT);
+toastT = setTimeout(()=>el.classList.remove(‘show’), 2800);
+}
+
+document.addEventListener(‘visibilitychange’,()=>{ if(document.visibilityState===‘hidden’&&dirty) save(); });
+window.addEventListener(‘pagehide’,()=>{ if(dirty) save(); });
+
+load();
 render();
-
-// Restore open state for items that have notes textarea
-// Save on page hide (covers closing tab, switching app)
-document.addEventListener(‘visibilitychange’, () => {
-if (document.visibilityState === ‘hidden’ && isDirty) saveResults();
-});
-window.addEventListener(‘pagehide’, () => { if (isDirty) saveResults(); });
-window.addEventListener(‘beforeunload’, () => { if (isDirty) saveResults(); });
 </script>
 
 </body>
