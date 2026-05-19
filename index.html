@@ -3339,10 +3339,25 @@ function renderWatchlist() {
 // INIT
 // ═══════════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
+  // Restore user session if previously logged in
+  try {
+    const storedUser = JSON.parse(localStorage.getItem('chronos_user') || 'null');
+    if (storedUser) {
+      state.user = storedUser;
+      state.listings = JSON.parse(localStorage.getItem('chronos_listings') || '[]');
+      state.offers = JSON.parse(localStorage.getItem('chronos_offers') || '[]');
+      resetToScreen('screen-home');
+      updateHomeForRole(storedUser.role);
+      populateDemoListings();
+    }
+  } catch(e) {
+    localStorage.removeItem('chronos_user');
+  }
+
   // Register service worker for PWA installability
   if ('serviceWorker' in navigator) {
     const swCode = `
-      const CACHE = 'chronos-v1';
+      const CACHE = 'chronos-v2';
       const ASSETS = ['./', './index.html'];
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
