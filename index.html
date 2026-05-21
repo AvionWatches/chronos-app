@@ -259,8 +259,11 @@
 .concern-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
 
 /* TOAST */
-#toast { position: fixed; bottom: calc(80px + var(--safe-bot)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg3); border: 1px solid var(--border2); border-radius: 24px; padding: 10px 20px; font-size: 13px; color: var(--text); white-space: nowrap; opacity: 0; transition: all .3s; z-index: 9999; pointer-events: none; max-width: 340px; text-align: center; }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast { position: fixed; left: 0; right: 0; padding: 14px 20px; font-size: 14px; font-weight: 500; text-align: center; line-height: 1.5; opacity: 0; transition: opacity .25s, transform .25s; z-index: 9999; pointer-events: none; }
+#toast.toast-error { top: 50%; transform: translateY(calc(-50% + 12px)); background: rgba(190,48,48,0.96); border-top: 1px solid rgba(224,85,85,0.4); border-bottom: 1px solid rgba(224,85,85,0.4); color: #fff; }
+#toast.toast-error.show { opacity: 1; transform: translateY(-50%); }
+#toast.toast-success, #toast.toast-info { top: calc(var(--safe-top) + 52px); transform: translateY(-10px); background: var(--bg2); border-bottom: 1px solid var(--gold3); color: var(--gold); }
+#toast.toast-success.show, #toast.toast-info.show { opacity: 1; transform: translateY(0); }
 
 /* SPLASH */
 #splash { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; transition: opacity .8s; }
@@ -526,7 +529,7 @@
       <span style="color:var(--gold);cursor:pointer;" onclick="resendOTP()">Resend code</span>
     </div>
     <div style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center;">Check your spam or junk folder if you don't see it.</div>
-    <div style="margin-top:12px;font-size:13px;color:var(--text3);cursor:pointer;" onclick="goBack()">← Change email</div>
+    <div id="otp-change-email" style="margin-top:12px;font-size:13px;color:var(--text3);cursor:pointer;" onclick="goBack()">← Change email</div>
 
     <!-- Biometric option shown if supported -->
     <div id="otp-biometric-section" style="display:none;margin-top:32px;width:100%;">
@@ -1730,8 +1733,8 @@ function formatPhone(input) {
 // ── OTP REQUEST ──
 function requestOTP() {
   const email = document.getElementById('login-email').value.trim();
-  if (!email || !email.includes('@')) { showToast('Please enter a valid email address'); return; }
-  pendingAuth = { ...pendingAuth, email, source: 'email', name: '', role: 'seller' };
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email address', 'error'); return; }
+  pendingAuth = { ...pendingAuth, email, source: 'email', name: '', role: 'seller', isSignup: false };
   launchOTPScreen(email);
 }
 
@@ -1741,41 +1744,39 @@ function handleSignup() {
   const cc = document.getElementById('signup-cc').value;
   const phone = document.getElementById('signup-phone').value.replace(/\s/g,'');
   const role = document.getElementById('signup-role').value;
-  if (!name) { showToast('Please enter your full name'); return; }
-  if (!email || !email.includes('@')) { showToast('Please enter a valid email address'); return; }
-  if (phone.length < 6) { showToast('Please enter a valid mobile number'); return; }
-  pendingAuth = { phone, cc, name, email, role, source: 'email' };
+  if (!name) { showToast('Please enter your full name', 'error'); return; }
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email address', 'error'); return; }
+  if (phone.length < 6) { showToast('Please enter a valid mobile number', 'error'); return; }
+  pendingAuth = { phone, cc, name, email, role, source: 'email', isSignup: true };
   launchOTPScreen(email);
 }
 
 function launchOTPScreen(displayEmail) {
-  // Generate a 6-digit demo OTP and store it
   otpCode = String(Math.floor(100000 + Math.random() * 900000));
   document.getElementById('otp-phone-display').textContent = displayEmail;
   document.getElementById('otp-hint').textContent = `Demo OTP: ${otpCode}`;
-  // Clear boxes
   document.querySelectorAll('.otp-box').forEach(b => { b.value = ''; b.classList.remove('filled'); });
   document.getElementById('otp-verify-btn').disabled = true;
-  // Show biometric option if supported
-  detectBiometric().then(type => {
-    const sec = document.getElementById('otp-biometric-section');
-    if (type) {
-      sec.style.display = '';
-      document.getElementById('otp-biometric-icon').textContent = type === 'face' ? '🔒' : '👆';
-      document.getElementById('otp-biometric-label').textContent = type === 'face' ? 'Use Face ID instead' : 'Use Touch ID instead';
-    } else sec.style.display = 'none';
-  });
-  goTo('screen-otp');
-  // Show name field only for login flow (signup already has name)
-  const nameGroup = document.getElementById('otp-name-group');
-  const nameInput = document.getElementById('otp-name-input');
-  if (!pendingAuth.name) {
-    nameGroup.style.display = '';
-    if (nameInput) nameInput.value = '';
+  // Name field never shown — name collected during sign-up or derived from email on sign-in
+  document.getElementById('otp-name-group').style.display = 'none';
+  const isSignup = !!pendingAuth.isSignup;
+  // Button label and change-email link differ between sign-in and sign-up
+  document.getElementById('otp-verify-btn').textContent = isSignup ? 'Verify & Create Account' : 'Verify & Sign In';
+  document.getElementById('otp-change-email').style.display = isSignup ? 'none' : '';
+  // Biometric shortcut only shown during sign-in (not relevant when creating account)
+  if (!isSignup) {
+    detectBiometric().then(type => {
+      const sec = document.getElementById('otp-biometric-section');
+      if (type) {
+        sec.style.display = '';
+        document.getElementById('otp-biometric-icon').textContent = type === 'face' ? '🔒' : '👆';
+        document.getElementById('otp-biometric-label').textContent = type === 'face' ? 'Use Face ID instead' : 'Use Touch ID instead';
+      } else sec.style.display = 'none';
+    });
   } else {
-    nameGroup.style.display = 'none';
+    document.getElementById('otp-biometric-section').style.display = 'none';
   }
-  // Focus first box after transition
+  goTo('screen-otp');
   setTimeout(() => document.querySelector('.otp-box')?.focus(), 400);
 }
 
@@ -1806,13 +1807,14 @@ function checkOTPComplete() {
 function verifyOTP() {
   const boxes = document.querySelectorAll('.otp-box');
   const entered = Array.from(boxes).map(b => b.value).join('');
-  if (entered.length < 6) { showToast('Please enter all 6 digits'); return; }
+  if (entered.length < 6) { showToast('Please enter all 6 digits', 'error'); return; }
   if (entered !== otpCode) {
-    showToast('Incorrect OTP. Please try again.');
-    // Shake the boxes
+    showToast('Incorrect OTP. Please try again.', 'error');
     boxes.forEach(b => { b.style.borderColor = '#e05555'; });
-    setTimeout(() => boxes.forEach(b => { b.style.borderColor = ''; b.value = ''; b.classList.remove('filled'); }), 1200);
-    document.querySelectorAll('.otp-box')[0]?.focus();
+    setTimeout(() => {
+      boxes.forEach(b => { b.style.borderColor = ''; b.value = ''; b.classList.remove('filled'); });
+      document.querySelectorAll('.otp-box')[0]?.focus();
+    }, 1200);
     document.getElementById('otp-verify-btn').disabled = true;
     return;
   }
@@ -1826,9 +1828,7 @@ function resendOTP() {
 }
 
 function completePhoneLogin() {
-  const nameFromField = document.getElementById('otp-name-input')?.value.trim();
-  const name = pendingAuth.name || nameFromField || '';
-  if (!name) { showToast('Please enter your name'); return; }
+  const name = pendingAuth.name || (pendingAuth.email ? pendingAuth.email.split('@')[0] : '') || 'User';
   const user = {
     name,
     phone: pendingAuth.phone ? (pendingAuth.cc + ' ' + pendingAuth.phone) : '',
@@ -1858,10 +1858,10 @@ async function detectBiometric() {
 async function triggerBiometric() {
   const type = await detectBiometric();
   const label = type === 'face' ? 'Face ID' : type === 'touch' ? 'Touch ID' : 'biometrics';
-  if (!type) { showToast('Biometric auth not available on this device'); return; }
+  if (!type) { showToast('Biometric auth not available on this device', 'error'); return; }
   // Check if a registered email exists
   const registeredEmail = localStorage.getItem('chronos_email_registered');
-  if (!registeredEmail) { showToast('Please sign in with OTP first to register biometrics'); return; }
+  if (!registeredEmail) { showToast('Please sign in with OTP first to register biometrics', 'error'); return; }
   showToast(`Requesting ${label}…`);
   try {
     // Attempt WebAuthn get (platform authenticator = Face ID / Touch ID)
@@ -1910,7 +1910,7 @@ async function toggleBiometric() {
   const isOn = toggle.dataset.on === '1';
   if (!isOn) {
     const type = await detectBiometric();
-    if (!type) { showToast('Biometric auth not supported on this device'); return; }
+    if (!type) { showToast('Biometric auth not supported on this device', 'error'); return; }
     const label = type === 'face' ? 'Face ID' : 'Touch ID';
     // Try to register via WebAuthn
     try {
@@ -1984,12 +1984,12 @@ function selectSocialProfile(idx) {
   document.querySelectorAll('.social-account-row').forEach((r, i) => {
     r.classList.toggle('selected', i === idx);
     const check = document.getElementById(`social-check-${i}`);
-    check.innerHTML = i === idx ? '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#000" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>' : '';
+    check.innerHTML = i === idx ? '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>' : '';
   });
 }
 
 function confirmSocialLogin() {
-  if (selectedSocialProfile === null) { showToast('Please select an account'); return; }
+  if (selectedSocialProfile === null) { showToast('Please select an account', 'error'); return; }
   const profile = SOCIAL_PROFILES[socialProvider][selectedSocialProfile];
   const role = document.getElementById('social-role').value;
   const user = {
@@ -2092,7 +2092,7 @@ function downloadConfirmation() {
 
 function saveRecoveryEmail() {
   const email = document.getElementById('settings-recovery-email').value.trim();
-  if (!email || !email.includes('@')) { showToast('Please enter a valid email address'); return; }
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email address', 'error'); return; }
   if (state.user) { state.user.email = email; localStorage.setItem('chronos_user', JSON.stringify(state.user)); }
   showToast('✓ Email address saved');
 }
@@ -2233,11 +2233,11 @@ function goToPhotos() {
   const year = document.getElementById('watch-year').value;
   const condition = document.getElementById('watch-condition').value;
   const box = document.getElementById('watch-box').value;
-  if (!brand) { showToast('Please select a brand'); return; }
-  if (!model) { showToast('Please enter the model'); return; }
-  if (!year) { showToast('Please enter the year'); return; }
-  if (!condition) { showToast('Please select the condition'); return; }
-  if (!box) { showToast('Please select box & papers status'); return; }
+  if (!brand) { showToast('Please select a brand', 'error'); return; }
+  if (!model) { showToast('Please enter the model', 'error'); return; }
+  if (!year) { showToast('Please enter the year', 'error'); return; }
+  if (!condition) { showToast('Please select the condition', 'error'); return; }
+  if (!box) { showToast('Please select box & papers status', 'error'); return; }
   state.currentListing = { ...state.currentListing, brand, model, year, condition, ref: document.getElementById('watch-ref').value, box, notes: document.getElementById('watch-notes').value };
   // Reset photos
   state.photos = new Array(6).fill(null);
@@ -2306,7 +2306,7 @@ function renderPhotoGrid() {
 // ═══════════════════════════════════════════════════════════════
 async function startAnalysis() {
   if (state.photoCount < 6) {
-    showToast(`Please upload all 6 photos. ${state.photoCount}/6 added.`);
+    showToast(`Please upload all 6 photos. ${state.photoCount}/6 added.`, 'error');
     return;
   }
   goTo('screen-auth-result');
@@ -2519,8 +2519,9 @@ function checkAskingPrice() {
 
 function publishListing() {
   const askingPrice = parseFloat(document.getElementById('asking-price')?.value);
-  if (!askingPrice || askingPrice <= 0) { showToast('Please enter your asking price'); return; }
+  if (!askingPrice || askingPrice <= 0) { showToast('Please enter your asking price', 'error'); return; }
   const l = state.currentListing;
+  if (!l) { showToast('No listing in progress. Please start a new listing.', 'error'); return; }
   const r = state.valResult || state.currentListing;
   const newListing = {
     ...l,
@@ -2622,7 +2623,7 @@ function updateOfferCalc() {
 
 function submitOffer() {
   const price = parseFloat(document.getElementById('offer-price').value);
-  if (!price || price <= 0) { showToast('Please enter a valid offer price'); return; }
+  if (!price || price <= 0) { showToast('Please enter a valid offer price', 'error'); return; }
   const validity = document.querySelector('#screen-make-offer select')?.value || '48 hours';
   const offer = {
     id: 'O' + Date.now(),
@@ -2722,7 +2723,7 @@ function openCounterOffer(offerId, listingId) {
 
 function submitCounterOffer(offerId, listingId) {
   const counterPrice = parseFloat(document.getElementById('counter-price-input')?.value);
-  if (!counterPrice || counterPrice <= 0) { showToast('Please enter a valid counter price'); return; }
+  if (!counterPrice || counterPrice <= 0) { showToast('Please enter a valid counter price', 'error'); return; }
   const offer = state.offers.find(o => o.id === offerId);
   if (offer) { offer.status = 'countered'; offer.counterPrice = counterPrice; }
   localStorage.setItem('chronos_offers', JSON.stringify(state.offers));
@@ -2914,7 +2915,7 @@ function selectAuthProvider(id) {
 }
 
 function submitHumanAuth() {
-  if (!selectedAuthProvider) { showToast('Please select an authentication provider'); return; }
+  if (!selectedAuthProvider) { showToast('Please select an authentication provider', 'error'); return; }
   document.getElementById('human-auth-email').textContent = state.user?.email || 'your registered email';
   goTo('screen-human-auth-confirm');
 }
@@ -2938,12 +2939,14 @@ function switchTab(idx) {
 }
 
 let toastTimer;
-function showToast(msg) {
+function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.className = `toast-${type}`;
+  void t.offsetWidth;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3224,11 +3227,11 @@ function submitKYC() {
   const bizName = document.getElementById('kyc-biz-name').value.trim();
   const regNo = document.getElementById('kyc-reg-no').value.trim();
   const years = document.querySelector('#screen-kyc select:last-of-type')?.value;
-  if (!bizName) { showToast('Please enter your business name'); return; }
-  if (!regNo) { showToast('Please enter your registration number'); return; }
+  if (!bizName) { showToast('Please enter your business name', 'error'); return; }
+  if (!regNo) { showToast('Please enter your registration number', 'error'); return; }
   const uploadedCount = Object.values(kycUploaded).filter(Boolean).length;
   if (uploadedCount < 3) {
-    showToast(`Please upload all 3 documents (${uploadedCount}/3 uploaded)`);
+    showToast(`Please upload all 3 documents (${uploadedCount}/3 uploaded)`, 'error');
     return;
   }
   document.getElementById('kyc-status-icon').textContent = '🔄';
